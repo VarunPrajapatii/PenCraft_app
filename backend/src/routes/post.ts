@@ -117,7 +117,6 @@ postRouter.get("/bulk", async (c) => {
                 author: {
                     select: {
                         name: true,
-                        
                     }
                 }
             }
@@ -144,6 +143,16 @@ postRouter.get('/:id', async (c) => {
         const post = await prisma.post.findFirst({
             where: {
                 id: id
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         });
       
