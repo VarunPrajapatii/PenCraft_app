@@ -1,7 +1,8 @@
 import { Hono } from 'hono'
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { sign, verify } from 'hono/jwt'
+import { verify } from 'hono/jwt'
+import { createPostInput, updatePostInput } from '@varuntd/pencraft-common';
 
 
 export const postRouter = new Hono<{
@@ -32,12 +33,20 @@ postRouter.use("/*", async (c, next) => {
 
 
 postRouter.post('/', async (c) => {
+    const body = await c.req.json();
+    const {success} = createPostInput.safeParse(body);
+    if(!success) {
+      c.status(411);
+      return c.json({
+        message: "Inputs not correct"
+      });
+    };
+
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
       
-        const body = await c.req.json();
         const authorId = c.get("userId");
       
         const post = await prisma.post.create({
@@ -58,12 +67,19 @@ postRouter.post('/', async (c) => {
 });
   
 postRouter.put('/', async (c) => {
+    const body = await c.req.json();
+    const {success} = updatePostInput.safeParse(body);
+    if(!success) {
+      c.status(411);
+      return c.json({
+        message: "Inputs not correct"
+      });
+    };
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
       
-        const body = await c.req.json();
       
         const post = await prisma.post.update({
             where: {
