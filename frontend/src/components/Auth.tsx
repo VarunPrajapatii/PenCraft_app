@@ -1,6 +1,6 @@
 import { SignupInput } from '@varuntd/pencraft-common'
 import axios from 'axios'
-import React, { ChangeEvent, ChangeEventHandler, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BACKEND_URL } from '../config'
 
@@ -16,7 +16,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   async function sendRequest () {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
-      const jwt = await response.data;
+      const jwt = await response.data.jwt;
       localStorage.setItem("token", jwt);
       navigate("/blogs")
     } catch (error) {

@@ -5,6 +5,7 @@ import Signin from './pages/Signin';
 import Blog from './pages/Blog';
 import Error from './pages/Error';
 import Blogs from './pages/Blogs';
+import { Publish } from './pages/Publish';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
           <Route path='/blog/:id' element={<Blog />} />
           <Route path='/blogs' element={<Blogs />} />
           <Route path='/error' element={<Error />} />
+          <Route path='/publish' element={<Publish />} />
         </Routes>
       </BrowserRouter>
     </>
