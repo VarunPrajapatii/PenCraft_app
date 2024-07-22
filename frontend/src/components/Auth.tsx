@@ -20,7 +20,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       localStorage.setItem("token", jwt);
       navigate("/blogs")
     } catch (error) {
-      alert("Error while singing up")
+      alert(`${type === "signup" ? "Error while signing up" : "Error while signing in"}`)
       // console.log(error)
       // navigate("/error")
     }

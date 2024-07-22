@@ -2,6 +2,7 @@ import React from 'react'
 import { BlogCard } from '../components/BlogCard'
 import { AppBar } from '../components/AppBar'
 import { useBlogs } from '../hooks'
+import { BlogShimmer } from '../components/BlogShimmer'
 
 const Blogs = () => {
     /**
@@ -15,8 +16,20 @@ const Blogs = () => {
     const {loading, blogs} = useBlogs();
 
     if(loading) {
-        return <div>
-            LOading...
+        return <div className='flex justify-center pt-24'>
+            <div>
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+                <BlogShimmer />
+            </div>
         </div>
     }
 

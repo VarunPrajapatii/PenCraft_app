@@ -21,7 +21,7 @@ This stack provides a modern, scalable, and maintainable solution for building a
 
 ## Getting Started
 - Setting up backend first with hono@latest.
-- Setting up required routes.
+- Setting up required routes of user and blog.
 - Initializing database (prisma)
     - Used Aiven DB
     - Got connection pool from prisma

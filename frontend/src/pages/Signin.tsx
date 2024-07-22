@@ -5,7 +5,7 @@ import Quotes from '../components/Quotes'
 const Signin = () => {
   return (
     <div>
-        <div className='grid grid-cols-2 '>
+        <div className='grid grid-cols-1 lg:grid-cols-2'>
             <div className='flex justify-center flex-col'>
                 <Auth type='signin' />
             </div>
