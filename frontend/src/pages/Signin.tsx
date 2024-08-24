@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import Auth from '../components/Auth'
 import Quotes from '../components/Quotes'
 

@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 
 const Quotes = () => {
   return (
@@ -10,7 +10,7 @@ const Quotes = () => {
                     Thakurdas Prajapati
                 </div>
                 <div className=' text-sm font-semibold mt-1 text-slate-400'>
-                    Ex. BSNL Officer
+                    07/05/1949 - 07/09/2023
                 </div>
             </div>
         </div>

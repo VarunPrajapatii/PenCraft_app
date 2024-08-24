@@ -16,6 +16,7 @@ export interface Blog {
 
 export const useBlog = ({id}: {id:string}) => {
     const [loading, setLoading] = useState(true);
+    //@ts-ignore
     const [blog, setBlog] = useState<Blog>([]);
 
     useEffect(() => {
