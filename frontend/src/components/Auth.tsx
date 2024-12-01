@@ -28,14 +28,14 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
 
 
   return (
-    <div className='h-screen flex justify-center flex-col'>
-      <div className='flex justify-center'>
-        <div>
+    <div className='h-scren flex justify-center flex-col'>
+      <div className='flex  justify-center'>
+        <div className='bg-gray-700 rounded-2xl p-16'>
           <div className='px-10'>
-            <div className='text-4xl font-extrabold'>
+            <div className='text-4xl text-white font-extrabold'>
               Create an account
             </div>
-            <div className='text-slate-500 py-2 text-center'>
+            <div className='text-slate-400 py-2 text-center'>
               {type === 'signin' ? "Don't have an account?" : "Already have account?" }
               <Link className='pl-2 underline' to={type === "signin" ? "/signup" : "/signin" }>
                 {type === "signin" ? "Sign up" : "Sign in" }
@@ -68,7 +68,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
             <button 
               onClick={sendRequest}
               type="button" 
-              className="mt-8 w-full bg-gray-900 text-white border border-gray-300 focus:outline-none hover:bg-gray-700 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+              className="mt-8 w-full bg-gray-900 text-white border border-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
             >
               {type === 'signup' ? 'Sign up' : 'Sign in'}
             </button>
@@ -91,12 +91,12 @@ interface LabelledInputProps {
 const LabelledInput: React.FC<LabelledInputProps> = ({ label, placeholder, onChange, type }) => {
   return (
     <div>
-      <label className="block mb-2 text-sm font-semibold">{label}</label>
+      <label className="block mb-2 text-sm font-semibold text-white">{label}</label>
       <input 
         onChange={onChange} 
         id="first_name" 
         type={type || "text"}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+        className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
         placeholder={placeholder} required 
       />
     </div>

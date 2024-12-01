@@ -31,10 +31,10 @@ export const BlogCard = ({
             </div>
             <Link to={`/blog/${id}`}>
                 <div className="cursor-pointer"> 
-                    <div className="text-xl font-semibold pt-2">
-                        {title}
+                    <div className="text-2xl font-bold pt-2">
+                        {title.length >= 100 ? title.slice(0,99) + "..." : title}
                     </div>
-                    <div className="text-md font-thin">
+                    <div className="text-lg font-thin">
                         {content.slice(0, 150) + "..."}
                     </div>
                 </div>
