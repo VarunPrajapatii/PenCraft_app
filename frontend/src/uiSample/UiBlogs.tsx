@@ -1,8 +1,8 @@
 // import React from 'react'
 import { BlogCard } from '../components/BlogCard'
 import { AppBar } from '../components/AppBar'
-import { useBlogs } from '../hooks'
-import { BlogShimmer } from '../components/BlogShimmer'
+import Blog from '../pages/Blog'
+import { blogs } from '../../blogss.js'
 
 const Blogs = () => {
     /**
@@ -13,25 +13,7 @@ const Blogs = () => {
      * * Create out own custom hook called useBlogs
      */
 
-    const {loading, blogs} = useBlogs();
 
-    if(loading) {
-        return <div className='flex justify-center pt-24'>
-            <div>
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-            </div>
-        </div>
-    }
 
   return (
     <div>
@@ -44,8 +26,7 @@ const Blogs = () => {
                     title={blog.title}
                     content={blog.content}
                     publishedDate={"6th May 2024"}
-                />
-                )}
+                />)}
             </div>
         </div>
     </div>

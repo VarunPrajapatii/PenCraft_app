@@ -1,4 +1,11 @@
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHandsClapping } from '@fortawesome/free-solid-svg-icons'
+import { faComment } from '@fortawesome/free-solid-svg-icons'
+
+const clapIcon = <FontAwesomeIcon icon={faHandsClapping} />  // Replace this with any icon you prefer
+const commentIcon = <FontAwesomeIcon icon={faComment} /> // Replace this with any icon you prefer
+
 
 interface BlogCardProps {
     id: string;
@@ -16,7 +23,7 @@ export const BlogCard = ({
     publishedDate
 }: BlogCardProps) => {
     return (
-        <div className="border-b border-slate-200 p-4 min-w-md">
+        <div className="border-b border-slate-200 p-4 w-2/3 min-w-md">
             <div className="flex">
                 <Avatar name={authorName} size={"small"} />
                 <div className="pl-2 text-sm flex justify-center flex-col">
@@ -39,8 +46,25 @@ export const BlogCard = ({
                     </div>
                 </div>
             </Link>
-            <div className="text-slate-500 text-sm font-thin pt-4">
-                {`${Math.ceil(content.length / 1000)} minute(s) read`}
+            <div className="flex pt-4 text-slate-500 items-center justify-between font-thin  ">
+                <div className="flex ">
+                    <div className="text-sm font-normal">
+                        06 May 2024
+                    </div>
+                    <div className="px-4 text-sm ">
+                        {`${Math.ceil(content.length / 1000)} minute(s) read`}
+                    </div>
+                    <div className="flex justify-between items-center  w-48  pr-20">
+                        <div className="flex items-center">
+                            {clapIcon} <div className="pl-2">14</div>
+                        </div>
+                        <div className="flex items-center">
+                            {commentIcon} <div className="pl-1">24</div>
+
+                        </div>
+                    </div>
+                </div>
+                <div className="text-lg font-bold hover:text-black hover:cursor-pointer">Follow Author</div>
             </div>
 
         </div>

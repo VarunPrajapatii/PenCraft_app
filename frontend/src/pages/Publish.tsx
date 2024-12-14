@@ -11,7 +11,6 @@ export const Publish = () => {
 
     return (
         <div>
-            <AppBar />
             <div className="flex justify-center w-full">
                 <div className="max-w-screen-lg w-full">
                     <input 

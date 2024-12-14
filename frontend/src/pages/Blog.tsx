@@ -1,7 +1,7 @@
 // import React from 'react'
 import { useBlog } from '../hooks'
 import { useParams } from 'react-router-dom';
-import { FullBlog } from '../components/FullBlog';
+import { FullBlog } from '../uiSample/FullBlog';
 import { AppBar } from '../components/AppBar';
 import { Spinner } from '../components/Spinner';
 
@@ -13,7 +13,6 @@ const Blog = () => {
 
   if (loading || !blog) {
     return <div>
-        <AppBar />
     
         <div className="h-screen flex flex-col justify-center">
             
@@ -26,7 +25,8 @@ const Blog = () => {
 
   return (
     <div>
-      <FullBlog blog={blog} />
+      {/* <FullBlog blog={blog} /> */}
+      <FullBlog />
     </div>
   )
 }

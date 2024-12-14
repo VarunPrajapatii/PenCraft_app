@@ -1,10 +1,11 @@
 import { SignupInput } from '@varuntd/pencraft-common'
 import axios from 'axios'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BACKEND_URL } from '../config'
 
 const Auth = ({type}: {type: "signup" | "signin"}) => {
+  const submitButtonRef = useRef<HTMLButtonElement | null>(null);
   const [postInputs, setPostInputs] = useState<SignupInput>({
     name: "",
     email: "",
@@ -12,6 +13,13 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   })
 
   const navigate = useNavigate();
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if(event.key === "Enter" && submitButtonRef.current) {
+      submitButtonRef.current.click();
+    }
+  }
+
 
   async function sendRequest () {
     try {
@@ -28,7 +36,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
 
 
   return (
-    <div className='h-scren flex justify-center flex-col'>
+    <div className='h-scren flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
       <div className='flex  justify-center'>
         <div className='bg-gray-700 rounded-2xl p-16'>
           <div className='px-10'>
@@ -67,6 +75,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
           <div className=''>
             <button 
               onClick={sendRequest}
+              ref={submitButtonRef}
               type="button" 
               className="mt-8 w-full bg-gray-900 text-white border border-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
             >
