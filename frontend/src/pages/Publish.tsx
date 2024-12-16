@@ -1,13 +1,26 @@
 import axios from "axios"
-import { AppBar } from "../components/AppBar"
 import { BACKEND_URL } from "../config"
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export const Publish = () => {
     const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+    const [subtitle, setSubtitle] = useState("");
+    const [content, setContent] = useState("");
     const navigate = useNavigate();
+
+    const publishBlog = async () => {
+        const response = await axios.post(`${BACKEND_URL}/api/v1/blog`, {
+            title,
+            subtitle,
+            content,
+        }, {
+            headers: {
+                Authorization: localStorage.getItem("token")
+            }
+        });
+        navigate(`/blog/${response.data.id}`)
+    }
 
     return (
         <div>
@@ -19,19 +32,15 @@ export const Publish = () => {
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
                         placeholder="Title" 
                     />
-                    <TextEditor onChange = {(e) => setDescription(e.target.value)} />
+                    <input 
+                        onChange={(e) => setSubtitle(e.target.value)} 
+                        type="text" 
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                        placeholder="Subtitle" 
+                    />
+                    <TextEditor onChange = {(e) => setContent(e.target.value)} />
                     <button
-                        onClick={async () => {
-                            const response = await axios.post(`${BACKEND_URL}/api/v1/blog`, {
-                                title,
-                                content: description
-                            }, {
-                                headers: {
-                                    Authorization: localStorage.getItem("token")
-                                }
-                            });
-                            navigate(`/blog/${response.data.id}`)
-                        }}
+                        onClick={publishBlog}
                         type="submit"
                         className="mt-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-900 hover:bg-blue-800" 
                     >Publish Post</button>

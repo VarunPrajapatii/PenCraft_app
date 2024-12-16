@@ -1,8 +1,7 @@
 // import React from 'react'
 import { useBlog } from '../hooks'
 import { useParams } from 'react-router-dom';
-import { FullBlog } from '../uiSample/FullBlog';
-import { AppBar } from '../components/AppBar';
+import { FullBlog } from '../components/FullBlog';
 import { Spinner } from '../components/Spinner';
 
 const Blog = () => {
@@ -25,8 +24,7 @@ const Blog = () => {
 
   return (
     <div>
-      {/* <FullBlog blog={blog} /> */}
-      <FullBlog />
+      <FullBlog blog={blog} />
     </div>
   )
 }

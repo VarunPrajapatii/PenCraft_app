@@ -20,14 +20,16 @@ model User {
   password                String
   followersCount          Int                 @default(0)
   followingCount          Int                 @default(0)
+  createdAt               DateTime            @default(now())
   posts                   Post[]
 }
 
 model Post {
   id                      String              @id @default(uuid())
   title                   String
+  subtitle                String
   content                 String
-  published               Boolean             @default(false)
+  publishedDate           DateTime            @default(now())
   author                  User                @relation(fields: [authorId], references: [id])
   authorId                String
   claps                   Int                 @default(0)

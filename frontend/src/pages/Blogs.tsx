@@ -1,6 +1,5 @@
 // import React from 'react'
 import { BlogCard } from '../components/BlogCard'
-import { AppBar } from '../components/AppBar'
 import { useBlogs } from '../hooks'
 import { BlogShimmer } from '../components/BlogShimmer'
 
@@ -36,14 +35,16 @@ const Blogs = () => {
   return (
     <div>
         <div className='flex justify-center'>
-            <div className='p-4 '>
+            <div className='p-5 mx-72 w-full'>
                 {blogs.map(blog => <BlogCard 
                     id={blog.id}
                     key={blog.id}
                     authorName={blog.author.name || "Anonymous"}
                     title={blog.title}
+                    subtitle={blog.subtitle}
                     content={blog.content}
-                    publishedDate={"6th May 2024"}
+                    publishedDate={blog.publishedDate}
+                    claps={blog.claps}
                 />
                 )}
             </div>

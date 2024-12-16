@@ -17,16 +17,22 @@ userRouter.post('/signup', async (c) => {
     }).$extends(withAccelerate());
 
     
-    const body = await c.req.json();
-    const {success} = signupInput.safeParse(body);
-    if(!success) {
-      c.status(411);
-      return c.json({
-        message: "Inputs not correct"
-      });
-    };
-  
     try {
+      const body = await c.req.json();
+
+      if (!body || typeof body !== 'object' || !body.name || !body.email || !body.password) {
+        c.status(400);
+        return c.json({ message: 'Invalid or missing inputs' });
+      }
+
+      const {success} = signupInput.safeParse(body);
+      if(!success) {
+        c.status(411);
+        return c.json({
+          message: "Inputs not correct"
+        });
+      };
+  
       const user = await prisma.user.create({
         data: {
           name: body.name,
@@ -41,7 +47,7 @@ userRouter.post('/signup', async (c) => {
       });
     } catch (error) {
       c.status(411);
-      return c.text("Invalid");
+      return c.text("Somethign went wrong!");
     }
 });
   

@@ -59,6 +59,7 @@ postRouter.post('/', async (c) => {
         const post = await prisma.post.create({
             data: {
                 title: body.title,
+                subtitle: body.subtitle,
                 content: body.content,
                 authorId: authorId
             }
@@ -94,6 +95,7 @@ postRouter.put('/', async (c) => {
             },
             data: {
                 title: body.title,
+                subtitle: body.subtitle,
                 content: body.content
             }
         });
@@ -120,7 +122,10 @@ postRouter.get("/bulk", async (c) => {
             select: {
                 content: true,
                 title: true,
+                subtitle: true,
                 id: true,
+                publishedDate: true,
+                claps: true,
                 author: {
                     select: {
                         name: true,
@@ -155,6 +160,9 @@ postRouter.get('/:id', async (c) => {
                 id: true,
                 title: true,
                 content: true,
+                subtitle: true,
+                publishedDate: true,
+                claps: true,
                 author: {
                     select: {
                         name: true
@@ -162,7 +170,8 @@ postRouter.get('/:id', async (c) => {
                 }
             }
         });
-      
+        console.log(post);
+        
         return c.json({
             post
         });
@@ -170,6 +179,41 @@ postRouter.get('/:id', async (c) => {
         c.status(411);
         return c.json({
             message: "Error while fetching the blog post."
+        });
+    }
+});
+
+postRouter.post('/:id/clap', async (c) => {
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+      
+        const postId = c.req.param("id");
+      
+        const updatedPost = await prisma.post.update({
+            where: {
+                id: postId,
+            },
+            data: {
+                claps: {
+                    increment: 1,
+                },
+            },
+            select: {
+                id: true,
+                claps: true,
+            },
+        });
+      
+        return c.json({
+            id: updatedPost.id,
+            claps: updatedPost.claps,
+        });
+    } catch (error) {
+        c.status(411);
+        return c.json({
+            message: "Error while increasing claps for the blog post.",
         });
     }
 });
