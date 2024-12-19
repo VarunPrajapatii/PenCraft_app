@@ -22,7 +22,7 @@ export const FullBlog = ({blog}: {blog: Blog}) => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/blog/${blog.id}/clap`, {}, {
                 headers: {
-                    Authorization: localStorage.getItem("token")
+                    Authorization: localStorage.getItem("pencraft_token")
                 }
             });
 

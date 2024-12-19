@@ -2,12 +2,18 @@ import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/types';
+import { Navigate } from 'react-router-dom';
 
 export const Publish = () => {
     const [title, setTitle] = useState("");
     const [subtitle, setSubtitle] = useState("");
     const [content, setContent] = useState("");
     const navigate = useNavigate();
+    const access_token = useSelector((store: RootState) => store.auth.access_token)
+
+    if(!access_token) return(<Navigate to="/signup" />)
 
     const publishBlog = async () => {
         const response = await axios.post(`${BACKEND_URL}/api/v1/blog`, {
@@ -16,7 +22,7 @@ export const Publish = () => {
             content,
         }, {
             headers: {
-                Authorization: localStorage.getItem("token")
+                Authorization: localStorage.getItem("pencraft_token")
             }
         });
         navigate(`/blog/${response.data.id}`)

@@ -2,6 +2,9 @@
 import { BlogCard } from '../components/BlogCard'
 import { useBlogs } from '../hooks'
 import { BlogShimmer } from '../components/BlogShimmer'
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/types';
+import { Navigate } from 'react-router-dom';
 
 const Blogs = () => {
     /**
@@ -13,6 +16,9 @@ const Blogs = () => {
      */
 
     const {loading, blogs} = useBlogs();
+    const access_token = useSelector((store: RootState) => store.auth.access_token)
+
+    if(!access_token) return(<Navigate to="/signup" />)
 
     if(loading) {
         return <div className='flex justify-center pt-24'>

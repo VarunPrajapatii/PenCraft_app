@@ -102,6 +102,8 @@ postRouter
 - Added Post Clap feature
 - Made the publishedDate show up on UI
 - Added Subtitles in the posts
+- Integrated Redux Store for efficient state management
+- Made authSlice to handle token/auth data, status
 - Added Followers/Following Counts
 -
 -

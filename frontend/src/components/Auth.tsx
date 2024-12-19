@@ -1,8 +1,11 @@
 import { SignupInput } from '@varuntd/pencraft-common'
 import axios from 'axios'
 import React, { ChangeEvent, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { BACKEND_URL } from '../config'
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from '../redux/types'
+import { authenticate } from '../redux/slice/authSlice'
 
 const Auth = ({type}: {type: "signup" | "signin"}) => {
   const submitButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -13,6 +16,8 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   })
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const access_token = useSelector((store: RootState) => store.auth.access_token);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if(event.key === "Enter" && submitButtonRef.current) {
@@ -20,22 +25,27 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
     }
   }
 
-
   async function sendRequest () {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
+      const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, postInputs);
       const jwt = await response.data.jwt;
-      localStorage.setItem("token", jwt);
+      const userId = await response.data.userId;
+      const authdata = {
+        jwt,
+        userId
+      }
+      console.log(authdata);
+      dispatch(authenticate(authdata));
       navigate("/blogs")
     } catch (error) {
       alert(`${type === "signup" ? "Error while signing up" : "Error while signing in"}`)
-      // console.log(error)
-      // navigate("/error")
     }
   }
 
 
-  return (
+  return access_token ? (
+    <Navigate to={"/blogs"} />
+  ) : (
     <div className='h-scren flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
       <div className='flex  justify-center'>
         <div className='bg-gray-700 rounded-2xl p-16'>

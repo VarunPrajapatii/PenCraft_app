@@ -1,18 +1,67 @@
-import { Link } from "react-router-dom"
-import { Avatar } from "./BlogCard"
+
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Link, useNavigate } from "react-router-dom";
+import { Avatar } from "./BlogCard";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/slice/authSlice";
 
 export const AppBar = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const signOut = () => {
+        dispatch(logout());
+        navigate("/signin")
+    }
+
+
     return (
-        <div className="border-b flex justify-between px-10 py-4">
-            <Link to={"/blogs"} className="flex flex-col justify-center cursor-pointer font-bold text-xl">
-                PenCraft
-            </Link>
-            <div>
-                <Link to={"/publish"} >
-                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm mr-16 px-5 py-2.5 me-2 mb-2">Create blog</button>
-                </Link>
-                <Avatar name={"Varun Prajapati"} size={"big"} />
+        <nav className="bg-white border-b border-gray-200 ">
+            <div className="px-4 py-2 mx-10 my-2">
+                <div className="flex justify-between items-center">
+                    <Link to={"/blogs"}>
+                        <span className="text-gray-800 text-3xl font-bold">PenCraft</span>
+                    </Link>
+
+                    <div className="flex items-center">
+                        <Link to="/publish">
+                            <button
+                                type="button"
+                                className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg px-4 py-2 mr-4"
+                            >
+                                Create Post
+                            </button>
+                        </Link>
+
+                        {/* Profile Dropdown */}
+                        <Menu as="div" className="relative">
+                            <div>
+                                <MenuButton className="flex rounded-full focus:outline-none">
+                                    <Avatar name={"Varun Prajapati"} size={"big"} />
+                                </MenuButton>
+                            </div>
+                            <MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg border border-gray-200">
+                                <MenuItem>
+                                    <Link
+                                        to="/profile"
+                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
+                                    >
+                                        My Profile
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem>
+                                    <button
+                                        
+                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
+                                        onClick={signOut}
+                                    >
+                                        Signout
+                                    </button>
+                                </MenuItem>
+                            </MenuItems>
+                        </Menu>
+                    </div>
+                </div>
             </div>
-        </div>
-    )
+        </nav>
+    );
 }

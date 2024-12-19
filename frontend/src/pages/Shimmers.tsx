@@ -1,7 +1,15 @@
 import React from "react";
 import { BlogShimmer } from "../components/BlogShimmer";
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/types';
+import { Navigate } from 'react-router-dom';
 
 const Shimmers = () => {
+
+  const access_token = useSelector((store: RootState) => store.auth.access_token)
+
+  if(!access_token) return(<Navigate to="/signup" />)
+  
   return (
     <div>
       {" "}
