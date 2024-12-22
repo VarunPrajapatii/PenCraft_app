@@ -14,31 +14,41 @@ datasource db {
 }
 
 model User {
-  id                      String              @id @default(uuid())
+  userId                  String              @id @default(uuid())
   email                   String              @unique
   name                    String?
   password                String
   followersCount          Int                 @default(0)
   followingCount          Int                 @default(0)
+  bio                     String              @default("")
   createdAt               DateTime            @default(now())
-  posts                   Post[]
+  blogs                   Blog[]
+
+  followers               UserRelation[]      @relation("Followers")
+  following               UserRelation[]      @relation("Following")
 }
 
-model Post {
-  id                      String              @id @default(uuid())
+model Blog {
+  blogId                  String              @id @default(uuid())
   title                   String
   subtitle                String
   content                 String
   publishedDate           DateTime            @default(now())
-  author                  User                @relation(fields: [authorId], references: [id])
+  author                  User                @relation(fields: [authorId], references: [userId], onDelete: Cascade)
   authorId                String
   claps                   Int                 @default(0)
 }
 
 model UserRelation {
-  followerId              String              
-  followingId             String              
-  @@id([followerId, followingId])
+  relationId                      String              @id @default(uuid())
+  followerId              String
+  followingId             String
+  createdAt               DateTime            @default(now())
+
+  follower                User                @relation("Following", fields: [followerId], references: [userId], onDelete: Cascade)
+  following               User                @relation("Followers", fields: [followingId], references: [userId], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
 }
