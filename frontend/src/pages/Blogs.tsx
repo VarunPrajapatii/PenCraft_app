@@ -1,6 +1,6 @@
 // import React from 'react'
 import { BlogCard } from '../components/BlogCard'
-import { useBlogs } from '../hooks'
+import { useBlogs } from '../hooks/hooks'
 import { BlogShimmer } from '../components/BlogShimmer'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
@@ -17,6 +17,7 @@ const Blogs = () => {
 
     const {loading, blogs} = useBlogs();
     const access_token = useSelector((store: RootState) => store.auth.access_token)
+
 
     if(!access_token) return(<Navigate to="/signup" />)
 
@@ -43,8 +44,8 @@ const Blogs = () => {
         <div className='flex justify-center'>
             <div className='p-5 mx-72 w-full'>
                 {blogs.map(blog => <BlogCard 
-                    id={blog.id}
-                    key={blog.id}
+                    blogId={blog.blogId}
+                    key={blog.blogId}
                     authorName={blog.author.name || "Anonymous"}
                     title={blog.title}
                     subtitle={blog.subtitle}

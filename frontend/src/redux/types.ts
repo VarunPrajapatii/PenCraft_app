@@ -1,8 +1,11 @@
+import { UserProfileDetails } from "../hooks/hooks";
+
 export interface AuthState {
     access_token: string | null;
-    user: any; // You can refine the type of `user` based on your application's needs
+    user: string;
 }
 
 export interface RootState {
     auth: AuthState;
+    loggedInUserDetails: {userDetails: UserProfileDetails};
 }

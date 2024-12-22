@@ -8,7 +8,7 @@ const commentIcon = <FontAwesomeIcon icon={faComment} /> // Replace this with an
 
 
 interface BlogCardProps {
-    id: string;
+    blogId: string;
     authorName: string;
     title: string;
     subtitle: string;
@@ -18,7 +18,7 @@ interface BlogCardProps {
 }
 
 export const BlogCard = ({
-    id,
+    blogId,
     authorName,
     title,
     subtitle,
@@ -46,7 +46,7 @@ export const BlogCard = ({
                     {publishedDate}
                 </div> */}
             </div>
-            <Link to={`/blog/${id}`}>
+            <Link to={`/blog/${blogId}`}>
                 <div className="cursor-pointer"> 
                     <div className="text-3xl font-bold py-2">
                         {title.length >= 100 ? title.slice(0,99) + "..." : title}
@@ -74,7 +74,6 @@ export const BlogCard = ({
                         </div>
                     </div>
                 </div>
-                <div className="text-lg font-bold hover:text-black hover:cursor-pointer">Follow Author</div>
             </div>
 
         </div>
@@ -90,7 +89,7 @@ export function Circle() {
 
 export function Avatar({name, size = "small"}: {name:string, size: "small" | "big"}) {
     return (
-        <div className={`relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gray-600 ${size === "small" ? "w-6 h-6" : "w-8 h-8"}`}>
+        <div className={`relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gray-600 ${size === "small" ? "w-7 h-7" : "w-11 h-11"}`}>
             <span className={`font-medium ${size === "small" ? "text-xs" : "text-md" } text-gray-600 dark:text-gray-300`}>{name.split(" ")[0][0]}</span>
         </div>
     )

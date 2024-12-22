@@ -25,7 +25,7 @@ export const Publish = () => {
                 Authorization: localStorage.getItem("pencraft_token")
             }
         });
-        navigate(`/blog/${response.data.id}`)
+        navigate(`/blog/${response.data.blogId}`)
     }
 
     return (

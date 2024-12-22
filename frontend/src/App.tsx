@@ -22,8 +22,9 @@ function App() {
             <Route path='/blogs' element={<Blogs />} />
             <Route path='/blog/:id' element={<Blog />} />
             <Route path='/publish' element={<Publish />} />
-            <Route path='/error' element={<Error />} />
           </Route>
+          <Route path='/error' element={<Error />} />
+          <Route path='*' element={<Navigate to="/error" />} />
         </Routes>
       </BrowserRouter>
     </>

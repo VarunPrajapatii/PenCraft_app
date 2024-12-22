@@ -1,11 +1,19 @@
-// import React from 'react'
+import { Link } from "react-router-dom";
 
-const Error = () => {
+export default function Error() {
+
   return (
-    <div className='text-9xl font-extrabold flex justify-center'>
-      Soething went wrong
+    <div className=''>
+      <div className="fixed inset-0 -z-10">
+        <img src='../../img/404.jpg' alt='404' className="w-full h-full object-cover blur-sm brightness-75" />
+      </div>
+      <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 text-center text-white text-2xl z-10">
+        The page you are looking for does not exist. Head back to the 
+        <Link to="/" className="text-black underline">
+          home
+        </Link>{" "} 
+        page and explore blogs :)
+      </div>
     </div>
   )
 }
-
-export default Error

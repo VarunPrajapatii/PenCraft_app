@@ -1,4 +1,3 @@
-// import React from 'react'
 import Auth from "../components/Auth";
 import Quotes from "../components/Quotes";
 import bg_img from "../../img/BG_homepage.webp";

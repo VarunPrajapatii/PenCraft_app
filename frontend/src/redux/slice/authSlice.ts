@@ -18,7 +18,6 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         authenticate: (state, { payload }) => {
-            console.log(payload);
             state.user = payload.userId;
             state.access_token = payload.jwt;
             localStorage.setItem("pencraft_token", payload.jwt);

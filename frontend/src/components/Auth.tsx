@@ -34,7 +34,6 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
         jwt,
         userId
       }
-      console.log(authdata);
       dispatch(authenticate(authdata));
       navigate("/blogs")
     } catch (error) {
