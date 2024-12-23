@@ -1,4 +1,4 @@
-import { Circle } from "./BlogCard"
+import { Circle } from "../blogsHomePage/BlogCard"
 
 export const BlogShimmer = () => {
     return <div role="status" className="animate-pulse">

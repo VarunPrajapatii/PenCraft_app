@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar } from "./BlogCard";
+import { Avatar } from "./blogsHomePage/BlogCard";
 import { blogs } from "../pages/BlogsFE";
 
 const HomeExtras = () => {

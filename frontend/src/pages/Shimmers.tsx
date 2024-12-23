@@ -1,5 +1,5 @@
 import React from "react";
-import { BlogShimmer } from "../components/BlogShimmer";
+import { BlogShimmer } from "../components/loadingAndShimmers/BlogShimmer";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';

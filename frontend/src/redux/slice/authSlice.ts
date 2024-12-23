@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { clearUser } from "./userProfileSlice";
 
 const initialState = {
     access_token: localStorage.getItem("pencraft_token") || null,
@@ -24,6 +25,7 @@ const authSlice = createSlice({
             localStorage.setItem("pencraft_user", JSON.stringify(payload.userId));
         },
         logout: (state) => {
+            clearUser();
             state.user = null;
             state.access_token = null;
             localStorage.removeItem("pencraft_token");

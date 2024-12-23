@@ -1,7 +1,7 @@
 import { useFullBlog } from '../hooks/hooks'
 import { Navigate, useParams } from 'react-router-dom';
 import { FullBlog } from '../components/FullBlog';
-import { Spinner } from '../components/Spinner';
+import { Spinner } from '../components/loadingAndShimmers/Spinner';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 

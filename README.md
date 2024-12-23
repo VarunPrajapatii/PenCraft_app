@@ -109,6 +109,9 @@ This stack provides a modern, scalable, and maintainable solution for building a
 - Created a endpoint to follow/unfollow user
 - Added follow/unfollow button on blog page
 - Created endpoint to get details of author
--
+- Created ProfileLayout for Profile page. Sections included:
+    - Edit Profile
+    - User Blogs
+    - Followers, Following List
 -
 -

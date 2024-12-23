@@ -75,7 +75,6 @@ export const BlogCard = ({
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }
@@ -87,10 +86,10 @@ export function Circle() {
     )
 }
 
-export function Avatar({name, size = "small"}: {name:string, size: "small" | "big"}) {
+export function Avatar({name, size = "small"}: {name:string, size: "small" | "big" | "giant"}) {
     return (
-        <div className={`relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gray-600 ${size === "small" ? "w-7 h-7" : "w-11 h-11"}`}>
-            <span className={`font-medium ${size === "small" ? "text-xs" : "text-md" } text-gray-600 dark:text-gray-300`}>{name.split(" ")[0][0]}</span>
+        <div className={`relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gray-600 ${size === "giant" ? "w-40 h-40" : size === "small" ? "w-7 h-7" : "w-11 h-11"}`}>
+            <span className={`font-medium ${size === "giant" ? "text-5xl" : size === "small" ? "text-xs" : "text-md" } text-gray-600 dark:text-gray-300`}>{name.split(" ")[0][0]}</span>
         </div>
     )
 }

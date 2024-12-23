@@ -1,12 +1,12 @@
-import { AppBar } from './AppBar'
+import { AppBar } from '../components/AppBar'
 import { Outlet } from 'react-router-dom'
-import Footer from './Footer'
+import Footer from '../components/Footer'
 import { useLoggedInUserDetails } from '../hooks/hooks';
 import { useDispatch } from 'react-redux';
 import { setUserProfile } from '../redux/slice/userProfileSlice';
 import { useEffect } from 'react';
 
-const Layout = () => {
+const MainLayout = () => {
 
   const dispatch = useDispatch();
   const { userProfileDetails } = useLoggedInUserDetails();
@@ -20,11 +20,15 @@ const Layout = () => {
 
   return (
     <>
+      <div className="flex flex-col min-h-screen">
         <AppBar />
-        <Outlet />
+        <main className="flex-grow">
+          <Outlet />
+        </main>
         <Footer />
+      </div>
     </>
   )
 }
 
-export default Layout
+export default MainLayout

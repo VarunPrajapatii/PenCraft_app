@@ -5,7 +5,8 @@ export interface AuthState {
     user: string;
 }
 
+
 export interface RootState {
     auth: AuthState;
-    loggedInUserDetails: {userDetails: UserProfileDetails};
+    loggedInUserDetails: UserProfileDetails;
 }

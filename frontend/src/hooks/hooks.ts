@@ -13,6 +13,7 @@ export interface Blog {
         name: string;
     };
 }
+
 export interface FullBlogDetails {
     blogId: string;
     title: string;
@@ -40,7 +41,14 @@ export interface UserProfileDetails {
     createdAt: string;
 }
 
-
+export interface UserBlogsType {
+    blogId: string;
+    title: string;
+    subtitle: string;
+    content: string;
+    publishedDate: string;
+    claps: number;
+}
 
 
 
@@ -146,5 +154,30 @@ export const useLoggedInUserDetails = () => {
     return {
         userProfileDetails,
         loading,
+    };
+}
+
+
+export const useUserBlogs = ({id}: {id: string}) => {
+    const [loading, setLoading] = useState(true);
+    const [userBlogs, setUserBlogs] = useState<UserBlogsType[]>([]);
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_URL}/api/v1/user/${id}/userBlogs`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setUserBlogs(response.data.blogs);
+                console.log(response.data.blogs);
+                setLoading(false);
+            });
+    }, [id]);
+
+    return {
+        loading,
+        userBlogs,
     };
 }

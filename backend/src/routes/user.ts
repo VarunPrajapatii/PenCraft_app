@@ -13,11 +13,11 @@ export const userRouter = new Hono<{
     };
 }>();
 
+// Middleware to ensure that the user is logged in
 userRouter.use("/*", authMiddleware);
 
+
 userRouter.post("/follow/:targetUserId", async (c) => {
-
-
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
@@ -76,9 +76,8 @@ userRouter.post("/follow/:targetUserId", async (c) => {
     }
 });
 
+
 userRouter.post("/unfollow/:targetUserId", async (c) => {
-
-
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
@@ -135,6 +134,7 @@ userRouter.post("/unfollow/:targetUserId", async (c) => {
     }
 });
 
+
 userRouter.get("/authorBasicInfo/:targetUserId", async (c) => {
     try {
         const prisma = new PrismaClient({
@@ -185,7 +185,6 @@ userRouter.get("/authorBasicInfo/:targetUserId", async (c) => {
 });
 
 
-
 userRouter.get("/profile", async (c) => {
     try {
         const prisma = new PrismaClient({
@@ -216,3 +215,34 @@ userRouter.get("/profile", async (c) => {
         );
     }
 });
+
+
+userRouter.get("/:userId/userBlogs", async (c) => {
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+
+        const userId = c.req.param("userId");
+
+        const blogs = await prisma.blog.findMany({
+            where: { authorId: userId },
+            orderBy: { publishedDate: "desc" },
+            select: {
+                blogId: true,
+                title: true,
+                subtitle: true,
+                content: true,
+                publishedDate: true,
+                claps: true,
+            },
+        });
+        return c.json({ blogs });
+    } catch (error) {
+        console.error("Error fetching user blogs:", error);
+        return c.json(
+            { message: "Error while fetching the user's blogs." },
+            500
+        );
+    }
+})

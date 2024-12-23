@@ -1,7 +1,7 @@
 
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar } from "./BlogCard";
+import { Avatar } from "./blogsHomePage/BlogCard";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/slice/authSlice";
 import { useSelector } from "react-redux";
@@ -15,9 +15,8 @@ export const AppBar = () => {
         navigate("/signin")
     }
 
-    const userName = useSelector((store: RootState) => store.loggedInUserDetails.name);
-    console.log(userName);
-
+    const name = useSelector((store: RootState) => store.loggedInUserDetails?.name || "Anyonymous");
+    const email = useSelector((store: RootState) => store.loggedInUserDetails?.email);
 
     return (
         <nav className="bg-white border-b border-gray-200 ">
@@ -41,30 +40,30 @@ export const AppBar = () => {
                         <Menu as="div" className="relative">
                             <div>
                                 <MenuButton className="flex rounded-full focus:outline-none items-center">
-                                    <Avatar name={"Varun Prajapati"} size={"big"} />
+                                    <Avatar name={name} size={"big"} />
                                     <div className="text-gray-800 font-semibold ml-2 text-xl">
-                                        <div>Hi, {userName}</div>
+                                        <div>Hi, {name}</div>
                                     </div>
                                 </MenuButton>
                             </div>
                             <MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg border border-gray-200">
                                 <MenuItem>
                                     <Link
-                                        to="/profile"
-                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
+                                        to={`/@${email?.split('@')[0]}`}
+                                        className="block w-full px-4 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                                     >
                                         My Profile
                                     </Link>
                                 </MenuItem>
                                 <MenuItem>
                                     <button
-                                        
-                                        className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
+                                        className="block w-full px-4 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                                         onClick={signOut}
                                     >
                                         Signout
                                     </button>
                                 </MenuItem>
+
                             </MenuItems>
                         </Menu>
                     </div>

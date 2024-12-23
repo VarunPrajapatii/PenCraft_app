@@ -1,4 +1,4 @@
-import { Avatar } from "../components/BlogCard"
+import { Avatar } from "./blogsHomePage/BlogCard"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHandsClapping } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-solid-svg-icons'
