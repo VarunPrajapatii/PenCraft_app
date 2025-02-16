@@ -171,7 +171,7 @@ export const useUserBlogs = ({id}: {id: string}) => {
             })
             .then((response) => {
                 setUserBlogs(response.data.blogs);
-                console.log(response.data.blogs);
+                // console.log(response.data.blogs);
                 setLoading(false);
             });
     }, [id]);

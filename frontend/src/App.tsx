@@ -11,7 +11,7 @@ import UserBlogs from './components/profilePage/UserBlogs';
 import ProfileLayout from './pages/ProfileLayout';
 import UserFollowers from './components/profilePage/UserFollowers';
 import UserFollowing from './components/profilePage/UserFollowing';
-import LoggedInUserEditProfile from './components/profilePage/LoggedInUserEditProfile';
+import Settings from './pages/Settings';
 
 function App() {
 
@@ -27,11 +27,11 @@ function App() {
             <Route path='/blogs' element={<Blogs />} />
             <Route path='/blog/:id' element={<Blog />} />
             <Route path='/publish' element={<Publish />} />
+            <Route path='/settings' element={<Settings />} />
             <Route element={<ProfileLayout/>}>
               <Route path='/:email' element={<UserBlogs />} />
               <Route path='/:email/followers' element={<UserFollowers />} />
               <Route path='/:email/following' element={<UserFollowing />} />
-              <Route path='/:email/editProfile' element={<LoggedInUserEditProfile />} />
             </Route>
           </Route>
 

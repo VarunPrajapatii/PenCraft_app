@@ -16,7 +16,7 @@ const UserBlogs = () => {
       <div>
         <div className="">
           <div className="text-5xl font-bold mt-[8%]">
-            Varun Prajapati
+            Varun Prajapat
           </div>
           <div className="pt-8 pb-2 text-xl text-gray-600 border-b-2">
             Blogs

@@ -1,12 +1,14 @@
 import { useSelector } from "react-redux";
 import { Avatar } from "../components/blogsHomePage/BlogCard";
 import { RootState } from "../redux/types";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 
 const ProfileLayout = () => {
   const loggedInUserDetails = useSelector((store: RootState) => store.loggedInUserDetails);
+  const access_token = useSelector((store: RootState) => store.auth.access_token);
   const baseUrl = `/@${loggedInUserDetails?.email.split('@')[0]}`;
 
+  if (!access_token) return (<Navigate to="/signin" replace />)
   return (
     <>
       <div>
@@ -34,7 +36,7 @@ const ProfileLayout = () => {
               </div>
               <div>
                 <button className="bg-green-600 text-white px-4 py-2 rounded-lg mt-4 hover:bg-green-700">
-                  <Link to={`${baseUrl}/editProfile`}>Edit Profile</Link>
+                  <Link to={`/settings`}>Edit Profile</Link>
                 </button>
               </div>
             </div>
