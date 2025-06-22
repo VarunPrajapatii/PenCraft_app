@@ -12,6 +12,7 @@ import ProfileLayout from './pages/ProfileLayout';
 import UserFollowers from './components/profilePage/UserFollowers';
 import UserFollowing from './components/profilePage/UserFollowing';
 import LoggedInUserEditProfile from './components/profilePage/LoggedInUserEditProfile';
+import Landing from './pages/Landing';
 
 function App() {
 
@@ -19,7 +20,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Navigate to="/signin" />} />
+          <Route path='/' element={<Landing />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/signin' element={<Signin />} />
 

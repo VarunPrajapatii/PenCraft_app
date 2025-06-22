@@ -4,13 +4,13 @@ const Quotes = () => {
   return (
     <div className=' h-screen flex justify-center flex-col text-white'>
         <div className='flex justify-center'>
-            <div className='max-w-lg text-3xl font-bold text-center '>
-                "Padhoge Likhoge banoge nawaab, samay kharab karoge banoge kharaab. NEVER WASTE TIME!"
+            <div className='max-w-lg text-3xl font-bold text-center text-black  '>
+                "We only know what we know when we need to know it."
                 <div className=' text-xl font-semibold mt-4'>
-                    Thakurdas Prajapati
+                    Varun Prajapati
                 </div>
                 <div className=' text-sm font-semibold mt-1 text-slate-300'>
-                    07/05/1949 - 07/09/2023
+                    
                 </div>
             </div>
         </div>
