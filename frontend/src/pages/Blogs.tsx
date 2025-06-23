@@ -5,6 +5,7 @@ import { BlogShimmer } from '../components/loadingAndShimmers/BlogShimmer'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';
+import BlogCardShimmer from '../components/shimmers/BlogCardShimmer';
 
 const Blogs = () => {
     /**
@@ -22,25 +23,28 @@ const Blogs = () => {
     if(!access_token) return(<Navigate to="/signup" />)
 
     if(loading) {
-        return <div className='flex justify-center pt-24'>
-            <div>
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
-                <BlogShimmer />
+        return <div className='flex justify-center '>
+            <div className='p-5 mx-72 w-full'>
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
+                <BlogCardShimmer />
             </div>
         </div>
     }
 
   return (
+
     <div>
+        
         <div className='flex justify-center'>
             <div className='p-5 mx-72 w-full'>
                 {blogs.map(blog => <BlogCard 

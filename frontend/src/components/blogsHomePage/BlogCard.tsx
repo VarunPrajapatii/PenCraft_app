@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHandsClapping } from '@fortawesome/free-solid-svg-icons'
-import { faComment } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faHandsClapping } from '@fortawesome/free-solid-svg-icons'
+// import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { ClapIcon } from "../Icons/ClapIcon";
+import { CommentsIcon } from "../Icons/CommentsIcon";
+import img2 from '/img2.jpg'; // Adjust the path as needed
+import {blogImageSrcs} from "../../blogss"
 
-const clapIcon = <FontAwesomeIcon icon={faHandsClapping} />  // Replace this with any icon you prefer
-const commentIcon = <FontAwesomeIcon icon={faComment} /> // Replace this with any icon you prefer
+// const clapIcon = <FontAwesomeIcon icon={faHandsClapping} />  // Replace this with any icon you prefer
+// const commentIcon = <FontAwesomeIcon icon={faComment} /> // Replace this with any icon you prefer
 
 
 interface BlogCardProps {
@@ -33,51 +37,86 @@ export const BlogCard = ({
     };
 
     return (
-        <div className="border-b border-slate-200 p-4 w-2/3 min-w-full">
-            <div className="flex">
-                <Avatar name={authorName} size={"small"} />
-                <div className="pl-2 text-sm flex justify-center flex-col">
-                    {authorName}
-                </div>
-                <div className="flex justify-center flex-col pl-2">
-                    <Circle />
-                </div>
-                {/* <div className="pl-2 font-thin text-sm flex justify-center flex-col">
-                    {publishedDate}
-                </div> */}
-            </div>
+        <div>
             <Link to={`/blog/${blogId}`}>
-                <div className="cursor-pointer"> 
-                    <div className="text-3xl font-bold py-2">
-                        {title.length >= 100 ? title.slice(0,99) + "..." : title}
-                    </div>
-                    <div className="text-lg text-gray-500">
-                        {subtitle.slice(0, 150) + "..."}
-                    </div>
-                </div>
-            </Link>
-            <div className="flex pt-4 text-slate-500 items-center justify-between font-thin  ">
-                <div className="flex ">
-                    <div className="text-sm font-normal">
-                        {formatDate(publishedDate)}
-                    </div>
-                    <div className="px-4 text-sm ">
-                        {`${Math.ceil(content.length / 1000)} minute(s) read`}
-                    </div>
-                    <div className="flex justify-between items-center  w-48  pr-20">
-                        <div className="flex items-center">
-                            {clapIcon} <div className="pl-2">{claps}</div>
-                        </div>
-                        <div className="flex items-center">
-                            {commentIcon} <div className="pl-1">soon</div>
+      <div className="
+          pr-2 mb-2.5 flex
+          w-300 h-44 overflow-hidden
+          rounded-3xl border border-gray-200 shadow-xs 
+          transition-all duration-200 hover:-translate-y-1 hover:shadow-lg
+          "
+      >
 
-                        </div>
-                    </div>
-                </div>
-            </div>
+        {/* Left: Image */}
+        <div className=" w-[30%] h-full">
+          <img
+            src={blogImageSrcs[Math.floor(Math.random() * blogImageSrcs.length)]} // Adjust path as needed
+            alt="Blog"
+            className="object-cover"
+          />
         </div>
+
+        {/* Right: Content */}
+        <div className="pl-3 pr-1 w-[70%] flex flex-col justify-between ">
+          {/* title and subtitle */}
+          <div className=''>
+            <h2 className="text-2xl font-semibold leading-[1.2]  py-3 ">{title}</h2>
+            <p className=" text-lg leading-[1.2]">{subtitle.slice(0, 150) + "..."}</p>
+          </div>
+
+          <div className=" h-[1px] w-py bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+          {/* Author info and article info*/}
+          <div className='flex justify-between '>
+            {/* author info */}
+            <div className='text-lg flex items-center '>
+              <div className="">
+                <img
+                  src={img2}
+                  className="w-12 h-12 rounded-full object-cover m-1"
+                  alt="varun's img"
+                  width={48}
+                  height={48}
+                // loading="lazy"
+                />
+              </div>
+              <div>
+                <div className='ml-2 '>
+                  {authorName}
+                </div>
+              </div>
+            </div>
+
+            {/* Readtime info */}
+            <div className='flex items-center gap-2.5'>
+              <div className="">{`${Math.ceil(content.length / 1000)} minute(s) read`}</div>
+              <div className=" text-2xl p-1">•</div>
+              <div className="">Published on {formatDate(publishedDate)}</div>
+            </div>
+
+            {/* claps and comments */}
+            <div className='flex text-lg gap-2.5'>
+              <div className='flex  items-center'>
+                <div><ClapIcon /></div>
+                <div>{claps}</div>
+              </div>
+              <div className='flex  items-center'>
+                <div><CommentsIcon /></div>
+                <div>100</div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+
+</Link>
+    </div>
     )
 }
+
 
 
 export function Circle() {
