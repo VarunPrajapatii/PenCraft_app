@@ -1,5 +1,5 @@
-import logo from "../../../images/Pencraft_Logo.png";
-import title_logo from "../../../images/Pencraft_subtitle_logo.png"
+import logo from "/images/Pencraft_Logo.png";
+import subtitleLogo from "/images/Pencraft_subtitle_logo.png"
 
 
 const Footer = () => {
@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="flex w-full items-center justify-between mb-6">
         <div className="flex items-center">
           <img src={logo} alt="Pencraft Logo" className="h-[6vh] mr-4" />
-          <img src={title_logo} className="hidden lg:block  h-[5vh]" />
+          <img src={subtitleLogo} className="hidden lg:block  h-[5vh]" />
         </div>
         <div className="flex gap-4">
           <button className="group rounded-full bg-white/20 hover:bg-white/40 p-2 transition"

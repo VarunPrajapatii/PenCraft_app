@@ -14,13 +14,7 @@ const UserBlogs = () => {
   return (
     <>
       <div>
-        <div className="">
-          <div className="text-5xl font-bold mt-[8%]">
-            Varun Prajapati
-          </div>
-          <div className="pt-8 pb-2 text-xl text-gray-600 border-b-2">
-            Blogs
-          </div>
+        <div className="overflow-x-hidden">
           {userBlogs.map(blog => <BlogCard
             blogId={""}
             key={blog.blogId}

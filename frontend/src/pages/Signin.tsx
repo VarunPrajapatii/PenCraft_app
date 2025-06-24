@@ -1,6 +1,6 @@
 import Auth from "../components/Auth";
 import Quotes from "../components/Quotes";
-import bg_img from "../../images/BG_homepage.webp";
+import bg_img from "/images/BG_homepage.webp";
 
 const Signin = () => {
   return (

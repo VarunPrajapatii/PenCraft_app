@@ -1,7 +1,6 @@
 import { useFullBlog } from '../hooks/hooks'
 import { Navigate, useParams } from 'react-router-dom';
 import { FullBlog } from '../components/FullBlog';
-import { Spinner } from '../components/loadingAndShimmers/Spinner';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 
@@ -19,7 +18,6 @@ const Blog = () => {
     return <div>
       <div className="h-screen flex flex-col justify-center">
         <div className="flex justify-center">
-          <Spinner />
         </div>
       </div>
     </div>

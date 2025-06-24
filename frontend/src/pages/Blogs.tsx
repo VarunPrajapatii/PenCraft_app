@@ -1,7 +1,6 @@
 // import React from 'react'
 import { BlogCard } from '../components/blogsHomePage/BlogCard'
 import { useBlogs } from '../hooks/hooks'
-import { BlogShimmer } from '../components/loadingAndShimmers/BlogShimmer'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';

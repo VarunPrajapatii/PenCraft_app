@@ -1,4 +1,4 @@
-import Header from '../components/LandingPage/Header'
+import Header from '../components/Header'
 import AnimationOne from '../components/LandingPage/AnimationOne'
 import AnimationTwo from '../components/LandingPage/AnimationTwo'
 import Footer from '../components/LandingPage/Footer'
