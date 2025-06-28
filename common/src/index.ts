@@ -25,14 +25,21 @@ export const signinInput = z.object({
 
 
 export const createPostInput = z.object({
+  blogId: z.string(),
   title: z.string(),
+  subtitle: z.string(),
   content: editorJsContent,
+  bannerImageKey: z.string().optional(),
+  published: z.boolean().optional(),
 });
 
 export const updatePostInput = z.object({
-  id: z.string(),
-  title: z.string(),
-  content: editorJsContent,
+  blogId: z.string(),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  content: editorJsContent.optional(),
+  bannerImageKey: z.string().optional(),
+  published: z.boolean().optional(),
 });
 
 

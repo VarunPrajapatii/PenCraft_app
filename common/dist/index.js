@@ -24,11 +24,18 @@ exports.signinInput = zod_1.default.object({
     password: zod_1.default.string().min(6),
 });
 exports.createPostInput = zod_1.default.object({
+    blogId: zod_1.default.string(),
     title: zod_1.default.string(),
+    subtitle: zod_1.default.string(),
     content: editorJsContent,
+    bannerImageKey: zod_1.default.string().optional(),
+    published: zod_1.default.boolean().optional(),
 });
 exports.updatePostInput = zod_1.default.object({
-    id: zod_1.default.string(),
-    title: zod_1.default.string(),
-    content: editorJsContent,
+    blogId: zod_1.default.string(),
+    title: zod_1.default.string().optional(),
+    subtitle: zod_1.default.string().optional(),
+    content: editorJsContent.optional(),
+    bannerImageKey: zod_1.default.string().optional(),
+    published: zod_1.default.boolean().optional(),
 });
