@@ -47,8 +47,12 @@ authRouter.post('/signup', async (c) => {
         userId: user.userId
       });
     } catch (error) {
-      c.status(411);
-      return c.text("Somethign went wrong!");
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 });
   
@@ -85,7 +89,11 @@ authRouter.post('/signin', async (c) => {
         userId: user.userId
       });
     } catch (error) {
-      c.status(411);
-      return c.text("Invalid");
-    }  
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
+    }
 });

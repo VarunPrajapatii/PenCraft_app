@@ -330,3 +330,41 @@ blogRouter.post("/blogBanner/upload/:blogId", async (c) => {
     return c.text("Failed to generate upload URL");
   }
 });
+
+
+// this endpoint is used to get presigned URLs for uploading multiple blog images
+// Batch endpoint for blog images
+blogRouter.post("/images/batch-upload/:blogId", async (c) => {
+    try {
+        const blogId = c.req.param('blogId');
+        const { images} = await c.req.json();  // its array of { filename, contentType, fileId } objects
+        
+        if (!images || !Array.isArray(images)) {
+            return c.json({ error: "Images array is required" }, 400);
+        }
+
+        const uploadUrls = [];
+        
+        for (const image of images) {
+            const { filename, contentType, fileId } = image;
+            const imageId = crypto.randomUUID();
+            const key = `blog/${blogId}/${imageId}`;
+            
+            // Generate presigned URL
+            const uploadUrl = await generatePOSTPresignedUrl(c, key, contentType);
+            
+            uploadUrls.push({
+                fileId,
+                uploadUrl,
+                key,
+                imageId,
+                publicUrl: getPublicS3Url(c, key)
+            });
+        }
+        
+        return c.json({ uploadUrls });
+    } catch (error) {
+        console.error("Batch upload error:", error);
+        return c.json({ error: "Failed to generate upload URLs" }, 500);
+    }
+});

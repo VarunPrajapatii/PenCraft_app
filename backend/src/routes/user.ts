@@ -249,14 +249,13 @@ userRouter.get("/profile/:userId", async (c) => {
     }
 });
 
-// POST /profile/:userId/image
-userRouter.post("/profile/:userId/image", async (c) => {
+userRouter.post("/profileImage/upload", async (c) => {
   try {
     const { filename, contentType } = await c.req.json() as {
       filename: string;
       contentType: string;
     };
-    const userId = c.req.param("userId");
+    const userId = c.get("userId");
 
     // 1️⃣ Compute a unique S3 key
     const ext = filename.split(".").pop() ?? "";

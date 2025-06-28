@@ -30,7 +30,7 @@ model User {
 }
 
 model Blog {
-  blogId                  String              @id @default(uuid())
+  blogId                  String              @id
   title                   String
   bannerImageKey          String?
   subtitle                String
