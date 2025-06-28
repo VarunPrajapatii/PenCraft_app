@@ -1,5 +1,16 @@
 import z from "zod";
 
+const editorJsBlock = z.object({
+  type: z.string(),
+  data: z.record(z.any()),
+});
+
+const editorJsContent = z.object({
+  time: z.number(),
+  blocks: z.array(editorJsBlock),
+  version: z.string(),
+});
+
 export const signupInput = z.object({
     email: z.string().email(),
     password: z.string().min(6),
@@ -14,15 +25,14 @@ export const signinInput = z.object({
 
 
 export const createPostInput = z.object({
-    title: z.string(),
-    content: z.string(),
+  title: z.string(),
+  content: editorJsContent,
 });
 
-
 export const updatePostInput = z.object({
-    title: z.string(),
-    content: z.string(),
-    id: z.string(),
+  id: z.string(),
+  title: z.string(),
+  content: editorJsContent,
 });
 
 

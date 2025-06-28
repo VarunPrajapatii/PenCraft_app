@@ -24,25 +24,107 @@ export declare const signinInput: z.ZodObject<{
 }>;
 export declare const createPostInput: z.ZodObject<{
     title: z.ZodString;
-    content: z.ZodString;
+    content: z.ZodObject<{
+        time: z.ZodNumber;
+        blocks: z.ZodArray<z.ZodObject<{
+            type: z.ZodString;
+            data: z.ZodRecord<z.ZodString, z.ZodAny>;
+        }, "strip", z.ZodTypeAny, {
+            type: string;
+            data: Record<string, any>;
+        }, {
+            type: string;
+            data: Record<string, any>;
+        }>, "many">;
+        version: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    }, {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    }>;
 }, "strip", z.ZodTypeAny, {
     title: string;
-    content: string;
+    content: {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    };
 }, {
     title: string;
-    content: string;
+    content: {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    };
 }>;
 export declare const updatePostInput: z.ZodObject<{
-    title: z.ZodString;
-    content: z.ZodString;
     id: z.ZodString;
+    title: z.ZodString;
+    content: z.ZodObject<{
+        time: z.ZodNumber;
+        blocks: z.ZodArray<z.ZodObject<{
+            type: z.ZodString;
+            data: z.ZodRecord<z.ZodString, z.ZodAny>;
+        }, "strip", z.ZodTypeAny, {
+            type: string;
+            data: Record<string, any>;
+        }, {
+            type: string;
+            data: Record<string, any>;
+        }>, "many">;
+        version: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    }, {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    }>;
 }, "strip", z.ZodTypeAny, {
     title: string;
-    content: string;
+    content: {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    };
     id: string;
 }, {
     title: string;
-    content: string;
+    content: {
+        time: number;
+        blocks: {
+            type: string;
+            data: Record<string, any>;
+        }[];
+        version: string;
+    };
     id: string;
 }>;
 export type SignupInput = z.infer<typeof signupInput>;
