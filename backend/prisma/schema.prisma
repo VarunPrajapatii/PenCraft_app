@@ -18,12 +18,13 @@ model User {
   email                   String              @unique
   name                    String?
   password                String
+  profileImageKey         String?             @default("")
   followersCount          Int                 @default(0)
   followingCount          Int                 @default(0)
   bio                     String              @default("")
   createdAt               DateTime            @default(now())
   blogs                   Blog[]
-
+  totalClaps              Int                 @default(0)
   followers               UserRelation[]      @relation("Followers")
   following               UserRelation[]      @relation("Following")
 }
@@ -31,9 +32,14 @@ model User {
 model Blog {
   blogId                  String              @id @default(uuid())
   title                   String
+  bannerImageKey          String?
   subtitle                String
-  content                 String
-  publishedDate           DateTime            @default(now())
+  content                 Json
+  publishedDate           DateTime?
+// publishedDate – set to now() when we flip published to true.
+// published – starts false, its in draft mode, when we set it to true, publishedDate is set to now().
+  published               Boolean             @default(false)
+  createdAt               DateTime            @default(now())
   author                  User                @relation(fields: [authorId], references: [userId], onDelete: Cascade)
   authorId                String
   claps                   Int                 @default(0)
