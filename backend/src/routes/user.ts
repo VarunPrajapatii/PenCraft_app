@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { authMiddleware } from "./middleware";
+import { generatePOSTPresignedUrl, getPublicS3Url } from "../lib/s3";
 
 export const userRouter = new Hono<{
     Bindings: {
@@ -16,6 +17,7 @@ export const userRouter = new Hono<{
 // Middleware to ensure that the user is logged in
 userRouter.use("/*", authMiddleware);
 
+// make a url to upload user profile image
 
 userRouter.post("/follow/:targetUserId", async (c) => {
     try {
@@ -68,11 +70,12 @@ userRouter.post("/follow/:targetUserId", async (c) => {
 
         return c.json({ message: "Successfully followed the user!" }, 200);
     } catch (error) {
-        console.error("Error following user:", error);
-        return c.json(
-            { error: "Could not create the follow relationship!" },
-            500
-        );
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 });
 
@@ -126,11 +129,12 @@ userRouter.post("/unfollow/:targetUserId", async (c) => {
 
         return c.json({ message: "Successfully unfollowed the user!" }, 200);
     } catch (error) {
-        console.error("Error unfollowing user:", error);
-        return c.json(
-            { error: "Could not remove the follow relationship!" },
-            500
-        );
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 });
 
@@ -151,7 +155,7 @@ userRouter.get("/authorBasicInfo/:targetUserId", async (c) => {
                 userId: true,
                 email: true,
                 name: true,
-                bio: true,
+                profileImageKey: true,
                 followers: {
                     where: { followerId: loggedInUserId },
                     select: { relationId: true }, // Only fetch relationship ID
@@ -163,6 +167,11 @@ userRouter.get("/authorBasicInfo/:targetUserId", async (c) => {
             return c.json({ error: "Author not found" }, 404);
         }
 
+        let profileImageUrl = null;
+        if( author.profileImageKey) {
+            profileImageUrl = getPublicS3Url(c, author.profileImageKey);
+        }
+
         // Check if the logged-in user follows the author
         const isFollowing = author.followers.length > 0;
         return c.json({
@@ -170,22 +179,23 @@ userRouter.get("/authorBasicInfo/:targetUserId", async (c) => {
                 userId: author.userId,
                 email: author.email,
                 name: author.name,
-                bio: author.bio,
+                profileImageUrl
             },
             isFollowing,
         });
         
     } catch (error) {
-        console.error("Error fetching author info:", error);
-        return c.json(
-            { message: "Error while fetching the author's info." },
-            500
-        );
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 });
 
 
-userRouter.get("/profile", async (c) => {
+userRouter.get("/profile/:userId", async (c) => {
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
@@ -199,6 +209,8 @@ userRouter.get("/profile", async (c) => {
                 email: true,
                 name: true,
                 bio: true,
+                profileImageKey: true,
+                totalClaps: true,
                 followersCount: true,
                 followingCount: true,
                 createdAt: true,
@@ -206,15 +218,70 @@ userRouter.get("/profile", async (c) => {
             },
         });
 
-        return c.json({ user });
+        if (!user) {
+            return c.json({ error: "User not found" }, 404);
+        }
+
+        let profileImageUrl = null
+        if (user.profileImageKey) {
+            profileImageUrl = getPublicS3Url(c, user.profileImageKey)
+        }
+
+        return c.json({
+            user: {
+                email: user.email,
+                name: user.name,
+                bio: user.bio,
+                totalClaps: user.totalClaps,
+                followersCount: user.followersCount,
+                followingCount: user.followingCount,
+                createdAt: user.createdAt,
+                profileImageUrl,
+            }
+        })
     } catch (error) {
-        console.error("Error fetching user profile:", error);
-        return c.json(
-            { message: "Error while fetching the user's profile." },
-            500
-        );
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 });
+
+// POST /profile/:userId/image
+userRouter.post("/profile/:userId/image", async (c) => {
+  try {
+    const { filename, contentType } = await c.req.json() as {
+      filename: string;
+      contentType: string;
+    };
+    const userId = c.req.param("userId");
+
+    // 1️⃣ Compute a unique S3 key
+    const ext = filename.split(".").pop() ?? "";
+    const key = `profiles/${userId}_${new Date().toISOString().slice(0, 10)}.${ext}`;
+
+    // 2️⃣ Generate a presigned PUT URL
+    const uploadUrl = await generatePOSTPresignedUrl(c, key, contentType);
+
+    // 3️⃣ Save the key in the user’s record
+    await new PrismaClient({ datasourceUrl: c.env.DATABASE_URL })
+      .$extends(withAccelerate())
+      .user.update({
+        where: { userId },
+        data: { profileImageKey: key },
+      });
+
+    // 4️⃣ Return the presigned URL and the key
+    return c.json({ uploadUrl, key });
+  } catch (error) {
+    console.error(error);
+    c.status(500);
+    return c.text("Failed to generate upload URL");
+  }
+});
+
 
 
 userRouter.get("/:userId/userBlogs", async (c) => {
@@ -239,10 +306,11 @@ userRouter.get("/:userId/userBlogs", async (c) => {
         });
         return c.json({ blogs });
     } catch (error) {
-        console.error("Error fetching user blogs:", error);
-        return c.json(
-            { message: "Error while fetching the user's blogs." },
-            500
-        );
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
     }
 })
