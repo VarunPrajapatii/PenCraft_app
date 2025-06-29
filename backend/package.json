@@ -8,7 +8,7 @@
     "@aws-sdk/s3-request-presigner": "^3.839.0",
     "@prisma/client": "^6.8.2",
     "@prisma/extension-accelerate": "^1.1.0",
-    "@varuntd/pencraft-common": "^1.1.2",
+    "@varuntd/pencraft-common": "^1.1.3",
     "hono": "^4.4.7"
   },
   "devDependencies": {
