@@ -45,7 +45,9 @@ authRouter.post('/signup', async (c) => {
       const token = await sign({userId: user.userId }, c.env.JWT_SECRET);
       return c.json({
         jwt: token,
-        userId: user.userId
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
       });
     } catch (error) {
         c.status(500);
@@ -89,6 +91,7 @@ authRouter.post('/signin', async (c) => {
         jwt: token,
         userId: user.userId,
         name: user.name,
+        email: user.email,
         profileImageUrl: user.profileImageKey ? getPublicS3Url(c, user.profileImageKey) : null
       });
     } catch (error) {

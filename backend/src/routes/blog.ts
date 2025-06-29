@@ -358,7 +358,6 @@ blogRouter.post("/images/batch-upload/:blogId", async (c) => {
                 uploadUrl,
                 key,
                 imageId,
-                publicUrl: getPublicS3Url(c, key)
             });
         }
         
