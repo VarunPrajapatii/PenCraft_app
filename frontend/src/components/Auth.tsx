@@ -30,14 +30,16 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       const postInputsSignup = {name: postInputs.name, email: postInputs.email, password: postInputs.password};
       const postInputsSignin = {email: postInputs.email, password: postInputs.password};
       const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, type === "signup" ? postInputsSignup : postInputsSignin);
-      const jwt = await response.data.jwt;
-      const userId = await response.data.userId;
-      const name = await response.data.name;
-      const profileImageUrl = await response.data.profileImageUrl || null;
+      const jwt = response.data.jwt;
+      const userId = response.data.userId;
+      const name = response.data.name;
+      const profileImageUrl = response.data.profileImageUrl || null;
+      const email = response.data.email;
       const authdata = {
         jwt,
         userId,
         name,
+        email,
         profileImageUrl
       }
       dispatch(authenticate(authdata));
