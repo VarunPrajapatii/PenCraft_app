@@ -16,7 +16,7 @@ datasource db {
 model User {
   userId                  String              @id @default(uuid())
   email                   String              @unique
-  name                    String?
+  name                    String
   password                String
   profileImageKey         String?             @default("")
   followersCount          Int                 @default(0)

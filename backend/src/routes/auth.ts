@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign } from 'hono/jwt'
 import { signinInput, signupInput } from '@varuntd/pencraft-common';
+import { getPublicS3Url } from '../lib/s3';
 
 export const authRouter = new Hono<{
     Bindings: {
@@ -86,7 +87,9 @@ authRouter.post('/signin', async (c) => {
       const token = await sign({userId: user.userId}, c.env.JWT_SECRET);
       return c.json({
         jwt: token,
-        userId: user.userId
+        userId: user.userId,
+        name: user.name,
+        profileImageUrl: user.profileImageKey ? getPublicS3Url(c, user.profileImageKey) : null
       });
     } catch (error) {
         c.status(500);

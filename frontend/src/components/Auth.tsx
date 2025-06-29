@@ -27,12 +27,18 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
 
   async function sendRequest () {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, postInputs);
+      const postInputsSignup = {name: postInputs.name, email: postInputs.email, password: postInputs.password};
+      const postInputsSignin = {email: postInputs.email, password: postInputs.password};
+      const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, type === "signup" ? postInputsSignup : postInputsSignin);
       const jwt = await response.data.jwt;
       const userId = await response.data.userId;
+      const name = await response.data.name;
+      const profileImageUrl = await response.data.profileImageUrl || null;
       const authdata = {
         jwt,
-        userId
+        userId,
+        name,
+        profileImageUrl
       }
       dispatch(authenticate(authdata));
       navigate("/blogs")
@@ -47,13 +53,13 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   ) : (
     <div className='h-scren flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
       <div className='flex  justify-center'>
-        <div className='bg-gray-700 rounded-2xl p-16'>
+        <div className='rounded-2xl p-16 bg-white/10 backdrop-blur-xl shadow-lg'>
           <div className='px-10'>
             <div className='text-4xl text-white font-extrabold'>
-              Create an account
+              {type === 'signup' ? "Create an account" : "Signin to PenCraft"}
             </div>
-            <div className='text-slate-400 py-2 text-center'>
-              {type === 'signin' ? "Don't have an account?" : "Already have account?" }
+            <div className='text-black font-semibold py-2 text-center'>
+              {type === 'signin' ? "Don't have an account?" : "Already have an account?" }
               <Link className='pl-2 underline' to={type === "signin" ? "/signup" : "/signin" }>
                 {type === "signin" ? "Sign up" : "Sign in" }
               </Link>
@@ -86,7 +92,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
               onClick={sendRequest}
               ref={submitButtonRef}
               type="button" 
-              className="mt-8 w-full bg-gray-900 text-white border border-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+              className="mt-8 w-full bg-gray-800 text-white border border-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
             >
               {type === 'signup' ? 'Sign up' : 'Sign in'}
             </button>
@@ -106,20 +112,25 @@ interface LabelledInputProps {
 }
 
 
-const LabelledInput: React.FC<LabelledInputProps> = ({ label, placeholder, onChange, type }) => {
+const LabelledInput: React.FC<LabelledInputProps> = ({ label, onChange, type }) => {
   return (
-    <div>
-      <label className="block mb-2 text-sm font-semibold text-white">{label}</label>
-      <input 
-        onChange={onChange} 
-        id="first_name" 
+    <div className="relative mb-4">
+      <input
+        onChange={onChange}
+        id={label.toLowerCase().replace(/\s+/g, '_')}
         type={type || "text"}
-        className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-        placeholder={placeholder} required 
+        placeholder=""
+        className="peer w-full rounded-lg border  bg-gray-100 p-2.5 text-sm text-gray-900"
+        required
       />
+      <span
+        className="pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium text-gray-900 transition-all peer-focus:-translate-y-4 peer-focus:scale-90   peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white"
+      >
+        {label}
+      </span>
     </div>
-  )
-}
+  );
+};
 
 
 export default Auth
