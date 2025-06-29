@@ -6,29 +6,36 @@ import { ClapIcon } from "../Icons/ClapIcon";
 import { CommentsIcon } from "../Icons/CommentsIcon";
 import img2 from '/img2.jpg'; // Adjust the path as needed
 import {blogImageSrcs} from "../../blogss"
+import { OutputData } from "@editorjs/editorjs";
 
 // const clapIcon = <FontAwesomeIcon icon={faHandsClapping} />  // Replace this with any icon you prefer
 // const commentIcon = <FontAwesomeIcon icon={faComment} /> // Replace this with any icon you prefer
 
 
 interface BlogCardProps {
+    bannerImageUrl: string | null;
+    profileImageUrl: string | null;
     blogId: string;
     authorName: string;
     title: string;
     subtitle: string;
-    content: string;
+    content: OutputData;
     publishedDate: string;
     claps: number;
+    size: "small" | "large";
 }
 
 export const BlogCard = ({
+    bannerImageUrl,
+    profileImageUrl,
     blogId,
     authorName,
     title,
     subtitle,
     content,
     publishedDate,
-    claps
+    claps,
+    size
 }: BlogCardProps) => {
     const formatDate = (dateString: string): string => {
         const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long", year: "numeric" };
@@ -39,20 +46,20 @@ export const BlogCard = ({
     return (
         <div>
             <Link to={`/blog/${blogId}`}>
-      <div className="
-          pr-2 mb-2.5 flex
-          w-300 h-44 overflow-hidden
-          rounded-3xl border border-gray-200 shadow-xs 
-          transition-all duration-200 hover:-translate-y-1 hover:shadow-lg
-          "
-      >
+            <div className={`
+                pr-2 mb-2.5 flex
+                ${size == "small" ? "w-full" : "w-300"} ${size == "small" ? "h-35" : "h-44"} overflow-hidden
+                rounded-3xl border border-gray-200 shadow-xs 
+                transition-all duration-200 hover:-translate-y-1 hover:shadow-lg
+                `}
+            >
 
         {/* Left: Image */}
-        <div className=" w-[30%] h-full">
+        <div className={` ${size == "small" ? "w-[20%]" : "w-[30%]"} h-full`}>
           <img
-            src={blogImageSrcs[Math.floor(Math.random() * blogImageSrcs.length)]} // Adjust path as needed
+            src={bannerImageUrl? bannerImageUrl : blogImageSrcs[Math.floor(Math.random() * blogImageSrcs.length)]} // Adjust path as needed
             alt="Blog"
-            className="object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
 
@@ -60,8 +67,8 @@ export const BlogCard = ({
         <div className="pl-3 pr-1 w-[70%] flex flex-col justify-between ">
           {/* title and subtitle */}
           <div className=''>
-            <h2 className="text-2xl font-semibold leading-[1.2]  py-3 ">{title}</h2>
-            <p className=" text-lg leading-[1.2]">{subtitle.slice(0, 150) + "..."}</p>
+            <h2 className={`${size == "small" ? "text-xl" : "text-2xl"} font-semibold leading-[1.2]  py-3 `}>{title}</h2>
+            <p className={`${size == "small" ? "text-base" : "text-lg"} leading-[1.2]`}>{subtitle.slice(0, 150) + "..."}</p>
           </div>
 
           <div className=" h-[1px] w-py bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -69,15 +76,15 @@ export const BlogCard = ({
           {/* Author info and article info*/}
           <div className='flex justify-between '>
             {/* author info */}
-            <div className='text-lg flex items-center '>
+            <div className={`${size == "small" ? "hidden" : ""} flex items-center `}>
               <div className="">
                 <img
-                  src={img2}
+                  src={profileImageUrl ? profileImageUrl : img2}
                   className="w-12 h-12 rounded-full object-cover m-1"
                   alt="varun's img"
                   width={48}
                   height={48}
-                // loading="lazy"
+                  // loading="lazy"
                 />
               </div>
               <div>
@@ -89,7 +96,7 @@ export const BlogCard = ({
 
             {/* Readtime info */}
             <div className='flex items-center gap-2.5'>
-              <div className="">{`${Math.ceil(content.length / 1000)} minute(s) read`}</div>
+              <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
               <div className=" text-2xl p-1">•</div>
               <div className="">Published on {formatDate(publishedDate)}</div>
             </div>
