@@ -14,7 +14,7 @@ const editorJsContent = z.object({
 export const signupInput = z.object({
     email: z.string().email(),
     password: z.string().min(6),
-    name: z.string().optional()
+    name: z.string()
 });
 
 
