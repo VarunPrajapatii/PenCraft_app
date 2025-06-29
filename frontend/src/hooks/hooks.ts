@@ -1,28 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../config";
+import { OutputData } from "@editorjs/editorjs";
+
 
 export interface Blog {
     blogId: string;
     title: string;
+    content: OutputData;
     subtitle: string;
-    content: string;
     publishedDate: string;
     claps: number;
+    bannerImageKey: string | null;
+    bannerImageUrl: string | null;
     author: {
         name: string;
-    };
-}
-
-export interface FullBlogDetails {
-    blogId: string;
-    title: string;
-    subtitle: string;
-    content: string;
-    publishedDate: string;
-    claps: number;
-    author: {
-        name: string;
+        profileImageKey: string | null;
+        profileImageUrl: string | null;
         userId: string;
     };
 }
@@ -45,7 +39,7 @@ export interface UserBlogsType {
     blogId: string;
     title: string;
     subtitle: string;
-    content: string;
+    content: OutputData;
     publishedDate: string;
     claps: number;
 }
@@ -55,7 +49,7 @@ export interface UserBlogsType {
 export const useFullBlog = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
 
-    const [fullBlogDetails, setFullBlogDetails] = useState<FullBlogDetails>(); // Note: It was [] as default value before
+    const [fullBlogDetails, setFullBlogDetails] = useState<Blog>(); // Note: It was [] as default value before
 
     useEffect(() => {
         axios
@@ -77,26 +71,63 @@ export const useFullBlog = ({ id }: { id: string }) => {
 };
 
 
-export const useBlogs = () => {
+export const useBlogs = (limit: number = 8) => {
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         axios
-            .get(`${BACKEND_URL}/api/v1/blog/bulk`, {
+            .get(`${BACKEND_URL}/api/v1/blog/bulk?page=1&limit=${limit}`, {
                 headers: {
                     Authorization: localStorage.getItem("pencraft_token"),
                 },
             })
             .then((response) => {
                 setBlogs(response.data.blogs);
+                setCurrentPage(1);
+                setHasMore(response.data.pagination.page < response.data.pagination.pages);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch blogs:", error);
                 setLoading(false);
             });
-    }, []);
+    }, [limit]);
+
+    const loadMore = () => {
+        if (loadingMore || !hasMore) return;
+        
+        setLoadingMore(true);
+        const nextPage = currentPage + 1;
+        
+        axios
+            .get(`${BACKEND_URL}/api/v1/blog/bulk?page=${nextPage}&limit=${limit}`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setBlogs(prevBlogs => [...prevBlogs, ...response.data.blogs]);
+                setCurrentPage(nextPage);
+                setHasMore(response.data.pagination.page < response.data.pagination.pages);
+                setLoadingMore(false);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch more blogs:", error);
+                setLoadingMore(false);
+            });
+    };
 
     return {
         loading,
+        loadingMore,
         blogs,
+        hasMore,
+        loadMore,
     };
 };
 

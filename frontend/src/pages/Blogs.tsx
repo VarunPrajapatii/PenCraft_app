@@ -5,17 +5,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';
 import BlogCardShimmer from '../components/shimmers/BlogCardShimmer';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Blogs = () => {
-    /**
-     * Few ways we can store and show the blogs
-     * * Store it in state
-     * * Store it directly  here
-     * * Store it in a context variables
-     * * Create out own custom hook called useBlogs
-     */
-
-    const {loading, blogs} = useBlogs();
+    const {loading, blogs, hasMore, loadMore} = useBlogs();
     const access_token = useSelector((store: RootState) => store.auth.access_token)
 
 
@@ -24,39 +17,55 @@ const Blogs = () => {
     if(loading) {
         return <div className='flex justify-center '>
             <div className='p-5 mx-72 w-full'>
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
-                <BlogCardShimmer />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
+                <BlogCardShimmer size={"large"} />
             </div>
         </div>
     }
 
   return (
-
     <div>
-        
         <div className='flex justify-center'>
             <div className='p-5 mx-72 w-full'>
-                {blogs.map(blog => <BlogCard 
-                    blogId={blog.blogId}
-                    key={blog.blogId}
-                    authorName={blog.author.name || "Anonymous"}
-                    title={blog.title}
-                    subtitle={blog.subtitle}
-                    content={blog.content}
-                    publishedDate={blog.publishedDate}
-                    claps={blog.claps}
-                />
-                )}
+                <InfiniteScroll
+                    dataLength={blogs.length}
+                    next={loadMore}
+                    hasMore={hasMore}
+                    loader={
+                        <div>
+                            <BlogCardShimmer size={"large"} />
+                            <BlogCardShimmer size={"large"} />
+                            <BlogCardShimmer size={"large"} />
+                        </div>
+                    }
+                    endMessage={
+                        <div className="text-center py-8 text-gray-500">
+                            <p>🎉 You've reached the end of all blogs!</p>
+                        </div>
+                    }
+                >
+                    {blogs.map(blog => 
+                        <BlogCard 
+                            bannerImageUrl={blog.bannerImageUrl}
+                            profileImageUrl={blog.author.profileImageUrl}
+                            blogId={blog.blogId}
+                            key={blog.blogId}
+                            authorName={blog.author.name || "Anonymous"}
+                            title={blog.title}
+                            subtitle={blog.subtitle}
+                            content={blog.content}
+                            publishedDate={blog.publishedDate}
+                            claps={blog.claps}
+                            size={"large"}
+                        />
+                    )}
+                </InfiniteScroll>
             </div>
         </div>
     </div>
