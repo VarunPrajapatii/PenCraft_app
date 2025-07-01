@@ -15,12 +15,32 @@ const editorJsContent = zod_1.default.object({
     version: zod_1.default.string(),
 });
 exports.signupInput = zod_1.default.object({
-    email: zod_1.default.string().email(),
+    username: zod_1.default
+        .string()
+        .min(5, 'Username is required')
+        .max(30, 'Username must be 30 characters or less')
+        .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, 'Username must start with a letter and can only contain letters, numbers, and underscores')
+        .refine((val) => !val.startsWith('_') && !val.endsWith('_'), {
+        message: 'Username cannot start or end with an underscore',
+    })
+        .refine((val) => !val.includes('__'), {
+        message: 'Username cannot contain consecutive underscores',
+    }),
     password: zod_1.default.string().min(6),
     name: zod_1.default.string()
 });
 exports.signinInput = zod_1.default.object({
-    email: zod_1.default.string().email(),
+    username: zod_1.default
+        .string()
+        .min(5, 'Username is required')
+        .max(30, 'Username must be 30 characters or less')
+        .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, 'Username must start with a letter and can only contain letters, numbers, and underscores')
+        .refine((val) => !val.startsWith('_') && !val.endsWith('_'), {
+        message: 'Username cannot start or end with an underscore',
+    })
+        .refine((val) => !val.includes('__'), {
+        message: 'Username cannot contain consecutive underscores',
+    }),
     password: zod_1.default.string().min(6),
 });
 exports.createPostInput = zod_1.default.object({

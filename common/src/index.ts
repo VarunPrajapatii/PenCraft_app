@@ -12,14 +12,40 @@ const editorJsContent = z.object({
 });
 
 export const signupInput = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    name: z.string()
+  username: z
+    .string()
+    .min(5, 'Username is required')
+    .max(30, 'Username must be 30 characters or less')
+    .regex(
+      /^[a-zA-Z][a-zA-Z0-9_]*$/,
+      'Username must start with a letter and can only contain letters, numbers, and underscores'
+    )
+    .refine((val) => !val.startsWith('_') && !val.endsWith('_'), {
+      message: 'Username cannot start or end with an underscore',
+    })
+    .refine((val) => !val.includes('__'), {
+      message: 'Username cannot contain consecutive underscores',
+    }),
+  password: z.string().min(6),
+  name: z.string()
 });
 
 
 export const signinInput = z.object({
-    email: z.string().email(),
+    username: z
+      .string()
+      .min(5, 'Username is required')
+      .max(30, 'Username must be 30 characters or less')
+      .regex(
+        /^[a-zA-Z][a-zA-Z0-9_]*$/,
+        'Username must start with a letter and can only contain letters, numbers, and underscores'
+      )
+      .refine((val) => !val.startsWith('_') && !val.endsWith('_'), {
+        message: 'Username cannot start or end with an underscore',
+      })
+      .refine((val) => !val.includes('__'), {
+        message: 'Username cannot contain consecutive underscores',
+      }),
     password: z.string().min(6),
 });
 
