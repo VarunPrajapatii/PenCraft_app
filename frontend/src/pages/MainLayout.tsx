@@ -1,31 +1,38 @@
-import { AppBar } from '../components/AppBar'
-import { Outlet } from 'react-router-dom'
-import Footer from '../components/Footer'
-import { useLoggedInUserDetails } from '../hooks/hooks';
-import { useDispatch } from 'react-redux';
-import { setUserProfile } from '../redux/slice/userProfileSlice';
-import { useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom'
+import Header from '../components/Header';
 
 const MainLayout = () => {
+  const location = useLocation();
 
-  const dispatch = useDispatch();
-  const { userProfileDetails } = useLoggedInUserDetails();
-
-  useEffect(() => {
-    if (userProfileDetails) {
-      dispatch(setUserProfile(userProfileDetails));
+  const showHeader = () => {
+    if (location.pathname.startsWith('/publish')) {
+      return false;
     }
-  }, [userProfileDetails, dispatch]);
-
+    if (location.pathname.startsWith('/signup') || location.pathname.startsWith('/signin')) {
+      return true;
+    }
+    
+    if (location.pathname.startsWith('/profile') || location.pathname.match(/^\/@/)) {
+      return true;
+    }
+    
+    // Show header on all other routes
+    return true;
+  };
 
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <AppBar />
+        {/* Floating Header */}
+        {showHeader() && (
+          <div className='fixed top-0 left-0 right-0 z-50'>
+            <Header />
+          </div>
+        )}
+
         <main className="flex-grow">
           <Outlet />
         </main>
-        <Footer />
       </div>
     </>
   )
