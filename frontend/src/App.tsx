@@ -7,12 +7,13 @@ import Error from './pages/Error';
 import Blogs from './pages/Blogs';
 import { Publish } from './pages/Publish';
 import MainLayout from './pages/MainLayout';
-import UserBlogs from './components/profilePage/UserBlogs';
+import UserPublished from './components/profilePage/UserPublished';
 import ProfileLayout from './pages/ProfileLayout';
 import UserFollowers from './components/profilePage/UserFollowers';
 import UserFollowing from './components/profilePage/UserFollowing';
-import LoggedInUserEditProfile from './components/profilePage/LoggedInUserEditProfile';
 import Landing from './pages/Landing';
+import UserDrafts from './components/profilePage/UserDrafts';
+import UserEditProfile from './components/profilePage/UserEditProfile';
 
 function App() {
 
@@ -29,10 +30,11 @@ function App() {
             <Route path='/blog/:id' element={<Blog />} />
             <Route path='/publish' element={<Publish />} />
             <Route element={<ProfileLayout/>}>
-              <Route path='/:email' element={<UserBlogs />} />
-              <Route path='/:email/followers' element={<UserFollowers />} />
-              <Route path='/:email/following' element={<UserFollowing />} />
-              <Route path='/:email/editProfile' element={<LoggedInUserEditProfile />} />
+              <Route path='/:username' element={<UserPublished />} />
+              <Route path='/:username/followers' element={<UserFollowers />} />
+              <Route path='/:username/following' element={<UserFollowing />} />
+              <Route path='/:username/drafts' element={<UserDrafts />} />
+              <Route path='/:username/editProfile' element={<UserEditProfile />} />
             </Route>
           </Route>
 
