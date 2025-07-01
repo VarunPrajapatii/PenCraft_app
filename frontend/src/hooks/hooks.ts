@@ -18,30 +18,45 @@ export interface Blog {
         profileImageKey: string | null;
         profileImageUrl: string | null;
         userId: string;
+        username: string;
     };
 }
 
-export interface AuthorBasicInfo {
-    isFollowing: boolean;
-    author: { userId: string; email: string; name: string; bio: string };
-}
-
-export interface UserProfileDetails {
-    email: string;
-    name: string;
-    bio: string;
-    followersCount: number;
-    followingCount: number;
-    createdAt: string;
-}
-
-export interface UserBlogsType {
+export interface UserBlogs {
     blogId: string;
+    authorname: string | null;
+    authorName: string | null;
+    authorUsername: string | null;
+    profileImageUrl: string | null;
     title: string;
     subtitle: string;
     content: OutputData;
-    publishedDate: string;
+    publishedDate: string | null;
     claps: number;
+    bannerImageKey: string | null;
+    bannerImageUrl: string | null;
+}
+
+export interface UserProfileDetails {
+    userId: string;
+    profileImageUrl: string | null;
+    name: string;
+    bio: string;
+    totalClaps: number;
+    followersCount: number;
+    followingCount: number;
+    createdAt: string;
+    profileImageKey: string | null;
+    blogs: UserBlogs[];
+}
+
+export interface UserSmallCard {
+    userId: string;
+    name: string;
+    username: string;
+    profileImageKey?: string | null;
+    profileImageUrl?: string | null;
+    createdAt: string;
 }
 
 
@@ -134,7 +149,7 @@ export const useBlogs = (limit: number = 8) => {
 
 export const useAuthorBasicInfo = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
-    const [authorBasicInfo, setAuthorBasicInfo] = useState<AuthorBasicInfo>();
+    const [authorBasicInfo, setAuthorBasicInfo] = useState();
     const [isFollowing, setIsFollowing] = useState();
 
     useEffect(() => {
@@ -189,26 +204,177 @@ export const useLoggedInUserDetails = () => {
 }
 
 
-export const useUserBlogs = ({id}: {id: string}) => {
+export const useUserProfileInfo = ({ username }: { username: string }) => {
     const [loading, setLoading] = useState(true);
-    const [userBlogs, setUserBlogs] = useState<UserBlogsType[]>([]);
+    const [userProfileDetails, setUserProfileDetails] = useState<UserProfileDetails>();
 
     useEffect(() => {
         axios
-            .get(`${BACKEND_URL}/api/v1/user/${id}/userBlogs`, {
+            .get(`${BACKEND_URL}/api/v1/user/profile/${username.split("@")[1]}`, {
                 headers: {
                     Authorization: localStorage.getItem("pencraft_token"),
                 },
             })
             .then((response) => {
-                setUserBlogs(response.data.blogs);
-                console.log(response.data.blogs);
+                setUserProfileDetails(response.data.user);
                 setLoading(false);
-            });
-    }, [id]);
+            })
+    }, [username])
 
     return {
         loading,
-        userBlogs,
+        userProfileDetails,
+    };
+}
+
+
+export const useUserBlogs = ({username}: {username: string}) => {
+    const [loading, setLoading] = useState(true);
+    const [userPublishedBlogs, setUserPublishedBlogs] = useState<UserBlogs[]>([]);
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_URL}/api/v1/user/${username.split("@")[1]}/userPublishedBlogs`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setUserPublishedBlogs(response.data.blogs);
+                setLoading(false);
+            });
+    }, [username]);
+
+    return {
+        loading,
+        userPublishedBlogs,
+    };
+}
+
+
+export const useUserDrafts = ({username}: {username: string}) => {
+    const [loading, setLoading] = useState(true);
+    const [userDrafts, setUserDrafts] = useState<UserBlogs[]>([]);
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_URL}/api/v1/user/${username.split("@")[1]}/userDrafts`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setUserDrafts(response.data.blogs);
+                setLoading(false);
+            });
+    }, [username]);
+
+    return {
+        loading,
+        userDrafts,
+    };
+}
+
+
+export const useIsFollowing = ({ authorId }: { authorId: string }) => {
+    const [loading, setLoading] = useState(true);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
+
+    useEffect(() => {
+        const checkFollowStatus = async () => {
+            if (!authorId) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${BACKEND_URL}/api/v1/user/checkIsFollowing/${authorId}`, {
+                    headers: {
+                        Authorization: localStorage.getItem("pencraft_token"),
+                    },
+                });
+                setIsFollowing(response.data.isFollowing);
+            } catch (error) {
+                console.error("Failed to check follow status:", error);
+                setIsFollowing(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkFollowStatus();
+    }, [authorId]);
+
+    const updateFollowStatus = (newStatus: boolean) => {
+        setIsFollowing(newStatus);
+    };
+
+    const refetch = () => {
+        setLoading(true);
+        // Re-trigger the effect by updating the state
+        setIsFollowing(false);
+    };
+
+    return {
+        loading,
+        isFollowing,
+        updateFollowStatus,
+        refetch,
+    };
+};
+
+
+export const useUserFollowers = ({ username }: { username: string }) => {
+    const [loading, setLoading] = useState(true);
+    const [followers, setFollowers] = useState<UserSmallCard[]>([]);
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_URL}/api/v1/user/followersList/${username}`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setFollowers(response.data.followers);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch followers:", error);
+                setLoading(false);
+            });
+    }, [username]);
+
+    return {
+        loading,
+        followers,
+    };
+}
+
+
+export const useUserFollowings = ({ username }: { username: string }) => {
+    const [loading, setLoading] = useState(true);
+    const [followings, setFollowings] = useState<UserSmallCard[]>([]);
+
+    useEffect(() => {
+        axios
+            .get(`${BACKEND_URL}/api/v1/user/followingsList/${username}`, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            })
+            .then((response) => {
+                setFollowings(response.data.followings);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch followings:", error);
+                setLoading(false);
+            });
+    }, [username]);
+
+    return {
+        loading,
+        followings,
     };
 }
