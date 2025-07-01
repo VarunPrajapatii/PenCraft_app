@@ -1,18 +1,18 @@
-import { Avatar } from "./blogsHomePage/BlogCard"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHandsClapping } from '@fortawesome/free-solid-svg-icons'
-import { faComment } from '@fortawesome/free-solid-svg-icons'
-import { FullBlogDetails, useAuthorBasicInfo } from "../hooks/hooks"
+import { Blog, useAuthorBasicInfo } from "../hooks/hooks"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../redux/types"
+import BlogContentRenderer from "./BlogPage/BlogContentRenderer"
+import { ClickableClapIcon } from "./Icons/ClapIcon"
+import profileImg from "/img2.jpg"
+import bannerDark from "/img1.jpeg"
+import bannerLight from "/new1.jpg"
+import { Link } from "react-router-dom"
 
-const clapIcon = <FontAwesomeIcon icon={faHandsClapping} />
-const commentIcon = <FontAwesomeIcon icon={faComment} />
 
-export const FullBlog = ({blog}: {blog: FullBlogDetails}) => {
+const FullBlog = ({blog}: {blog: Blog}) => {
     const [claps, setClaps] = useState(blog.claps);
     const {authorBasicInfo, isFollowing, loading} = useAuthorBasicInfo( {id : blog.author.userId || ""} );
     const [followState, setFollowState] = useState<boolean>(false);
@@ -78,68 +78,109 @@ export const FullBlog = ({blog}: {blog: FullBlogDetails}) => {
     }
 
     return (
-        <div>
-            <div className="flex justify-center">
-                <div className="grid grid-cols-12 px-10 w-full pt-200 max-w-screen-xl pt-12">
-                    <div className="col-span-8">
-                        <div className="text-5xl py-2 font-extrabold">
-                            {blog.title}
-                        </div>
-                        <div className="text-3xl text-gray-600 pb-4 font-semibold">
-                            {blog.subtitle}
-                        </div>
-                        <div className="flex justify-between mb-2">
-                            <div className="text-slate-500 pt-2">
-                                Posted on - <span className="font-semibold">{formatDate(blog.publishedDate)}</span>
+        <div className=''>
+            {/* Banner and author section */}
+            <div className=' relative w-full h-[60vh] lg:h-[50vh]'>
+                {/* Banner as background */}
+                <div
+                    className="w-full h-full brightness-80 contrast-80  bg-cover bg-center"
+                    style={blog.bannerImageUrl ? { backgroundImage: `url(${blog.bannerImageUrl})` } : { backgroundImage: `url(${bannerDark})` }}
+                ></div>
+
+                {/* Content (title, author, etc.) absolutely positioned over the background */}
+                <div className="z-10 absolute inset-0 flex flex-col justify-end">
+                    {/* Gradient overlay at the bottom */}
+                    <div className="h-full lg:h-50 absolute bottom-0 left-0 w-full  pointer-events-none z-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
+                    <div className="pb-2 sm:pb-5  w-full sm:flex justify-between z-10 relative">
+                        {/* Title and subtitle */}
+                        <div className=' sm:ml-4 mb-6 sm:mb-0 sm:max-w-[65%] text-center sm:text-left'>
+                            <div className='mb-3 text-xl sm:text-2xl lg:text-4xl lg:leading-12 font-semibold text-white'>
+                                <h1>{blog.title}</h1>
                             </div>
-                            <div className="text-slate-500 pt-2 pr-96">
-                                {`${Math.ceil(blog.content.length / 1000)} minute(s) read`}
+                            <div className=''>
+                                <h2 className=' sm:max-w-[70%] text-sm lg:text-xl   text-white/60'>{blog.subtitle}</h2>
+
                             </div>
-                        </div>
-                        <div className="flex text-xl border py-1 border-x-0 gap-20 w-full items-center font-medium text-gray-500">
-                            <div className="hover:text-black hover:cursor-pointer" onClick={incrementClap}>
-                                {clapIcon} <span className="text-lg items-center">{claps}</span>
-                            </div>
-                            <div className="hover:text-black hover:cursor-pointer">
-                                {commentIcon} <span className="text-lg items-center">Nested comments Coming Soon</span>
-                            </div>
-                        </div>
-                        <div className="pt-8 text-2xl ">
-                            {blog.content}
-                        </div>
-                    </div>
-                    <div className="col-span-4 pl-12">
-                    <div className="text-slate-600 text-lg pb-5">
-                        Written By -
-                    </div>
-                    <div className="flex w-full items-center">
-                        <div className="pr-4 flex flex-col justify-center">
-                            <Avatar size="big" name={blog.author.name || "Anonymous"} />
-                        </div>
-                        <div>
-                            <div className="flex ">
-                                <div className="text-2xl font-bold">
-                                    {blog.author.name || "Anonymous    "}
+                            <div className='pt-4 hidden sm:block lg:hidden max-w-[10%] my-auto '>
+                                <div className=" flex items-center">
+                                    <div className='text-white' onClick={incrementClap}>
+                                        <ClickableClapIcon />
+                                    </div>
+                                    <div className='ml-2 text-white/90 text-2xl font-bold'>
+                                        {claps}
+                                    </div>
+
                                 </div>
-                                <span className="px-3">
-                                    {"."}
-                                </span>
-                                <div 
-                                    className="text-lg pt-1 text-gray-500 hover:text-black hover:cursor-pointer"
+                            </div>
+
+                        </div>
+
+                        <div className='hidden lg:block max-w-[10%] my-auto '>
+                            <div className=" flex items-center">
+                                <div className='text-white' onClick={incrementClap}>
+                                    <ClickableClapIcon />
+                                </div>
+                                <div className='ml-2 text-white/90 text-2xl font-bold'>
+                                    {claps}
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* author info */}
+                        <div className=' sm:max-w-[25%]  mr-5 text-center sm:text-left flex sm:block lg:flex  items-center gap-3 '>
+                            <div>
+                                <Link to={`/@${blog.author.email}`}>
+                                    <img src={profileImg} alt="author" className='w-15 h-15 sm:w-20 sm:h-20 rounded-full border-2 border-white/50' />
+                                </Link>
+                            </div>
+                            <div className=''>
+                                <Link to={`/@${blog.author.email}`} >
+                                    <div className='md:max-h-7 md:w-40 text-base sm:text-lg  overflow-auto no-scrollbar font-semibold text-white'>
+                                        {blog.author.name}
+                                    </div>
+                                </Link>
+                                <div className='text-xs sm:text-sm text-gray-300'>
+                                    <span className="font-semibold">{formatDate(blog.publishedDate)}</span> - {`${Math.ceil(blog.content.toString().length / 700)} minute(s) read`}
+                                </div>
+                                <button
+                                    type="button"
+                                    aria-label="Follow"
+                                    className={`
+                                        ${loggedInUserIsAuthor ? 'hidden' : ''}
+                                        rounded-full 
+                                    px-6 py-1 mt-1 
+                                    font-semibold text-black shadow transition-all duration-200
+                                    hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                                    hover:shadow-lg hover:scale-105 hover:text-red-800
+                                    active:scale-95 active:shadow
+                                    focus:outline-none  ring-offset-1 
+                                    ${isFollowing ? 'bg-white/40 text-black/80 ' : 'bg-gray-200'}`}
                                     onClick={handleFollowUnfollow}
                                 >
-                                    {loggedInUserIsAuthor ? "" : followState ? "Unfollow" : "Follow"}
-                                </div>
+                                    {followState ? "Unfollow" : "Follow"}
+                                </button>
                             </div>
-                            <div className="pt-2 text-slate-700">
-                                Coming soon - Random catch phrase about the author's ability to grab the user's attention
+                            <div className="pl-15 sm:hidden">
+                                <div className='text-white' onClick={incrementClap}>
+                                    <ClickableClapIcon />
+                                </div>
+                                <div className='ml-2 text-white/90 text-2xl font-bold'>
+                                    {claps}
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
-
+                {/* Blog section */}
+                <div className='px-4 sm:px-6 bg-gray-100 '>
+                    <BlogContentRenderer content={blog.content} />
+                </div>
             </div>
+
         </div>
     )
 }
+
+export default FullBlog;

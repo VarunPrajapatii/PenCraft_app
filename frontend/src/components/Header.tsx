@@ -15,6 +15,8 @@ const Header = () => {
       return <SigninButton />
     } else if(location.pathname === "/signin" || location.pathname === "/signup") {
       return null
+    }else if(location.pathname === "/blogs" || location.pathname === "/profile") {
+      return <PenTheCraftButton />
     } else {
       return access_token ? <PenTheCraftButton /> : <SigninButton />;
     }
@@ -89,7 +91,7 @@ const SigninButton = () => {
 }
 
 const PenTheCraftButton = () => {
-  const name = useSelector((store: RootState) => store.auth.name) || "User";
+  // const name = useSelector((store: RootState) => store.auth.name) || "User";
   
   return (
     <div className='flex items-center gap-4'>
@@ -117,12 +119,12 @@ const PenTheCraftButton = () => {
         <div className='flex items-center'>
           {/* Placeholder for user profile picture */}
           <ProfileDropdown />
-          <div className='hidden lg:block text-lg font-semibold text-gray-800'>
-            Welcome! &nbsp;
+          {/* <div className='pl-2 hidden lg:block text-lg font-semibold text-gray-800'>
+            Hey!&nbsp;
           </div>
           <div className='text-lg font-semibold text-gray-800'>
-            {name}
-          </div>
+            {name.split(" ")[0]}
+          </div> */}
         </div>
     </div>
   )
