@@ -35,7 +35,7 @@ export const generatePOSTPresignedUrl = async (
 // ----------- PUBLIC GET URL (profile & banner only) -----------
 export function getPublicS3Url(c: Context, key: string) {
     // For public folders (profile, banner), you can construct the URL directly
-    return `https://${c.env.S3_BUCKET}.s3.${c.env.AWS_REGION}.amazonaws.com/${key}`;
+    return `https://s3.${c.env.AWS_REGION}.amazonaws.com/${c.env.S3_BUCKET}/${key}`;
 }
 
 
