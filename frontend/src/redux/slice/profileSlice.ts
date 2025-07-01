@@ -1,3 +1,4 @@
+// not been used currently, but might be useful in the future
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {

@@ -2,7 +2,10 @@ import { UserProfileDetails } from "../hooks/hooks";
 
 export interface AuthState {
     access_token: string | null;
-    user: string;
+    user: string | null;
+    name: string | null;
+    username: string | null;
+    profileImageUrl: string | null;
 }
 
 
