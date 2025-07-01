@@ -4,6 +4,7 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign } from 'hono/jwt'
 import { signinInput, signupInput } from '@varuntd/pencraft-common';
 import { getPublicS3Url } from '../lib/s3';
+import bcrypt from 'bcryptjs';
 
 export const authRouter = new Hono<{
     Bindings: {
@@ -17,14 +18,14 @@ authRouter.post('/signup', async (c) => {
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    
     try {
       const body = await c.req.json();
 
-      if (!body || typeof body !== 'object' || !body.name || !body.email || !body.password) {
+      if (!body || typeof body !== 'object' || !body.name || !body.username || !body.password) {
         c.status(400);
         return c.json({ message: 'Invalid or missing inputs' });
       }
+
 
       const {success} = signupInput.safeParse(body);
       if(!success) {
@@ -33,12 +34,28 @@ authRouter.post('/signup', async (c) => {
           message: "Inputs not correct"
         });
       };
+
+      // Check if username already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { username: body.username }
+      });
+
+      if (existingUser) {
+        c.status(409);
+        return c.json({
+          message: "Username already taken",
+          field: "username"
+        });
+      }
+
+      // Hash the password using bcrypt
+      const hashedPassword = await bcrypt.hash(body.password, 10);
   
       const user = await prisma.user.create({
         data: {
           name: body.name,
-          email: body.email,
-          password: body.password,
+          username: body.username,
+          password: hashedPassword,
         },
       });
   
@@ -47,7 +64,7 @@ authRouter.post('/signup', async (c) => {
         jwt: token,
         userId: user.userId,
         name: user.name,
-        email: user.email,
+        username: user.username,
       });
     } catch (error) {
         c.status(500);
@@ -74,14 +91,20 @@ authRouter.post('/signin', async (c) => {
     };
   
     try {
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: {
-          email: body.email,
-          password: body.password
+          username: body.username
         }
       });
     
       if(!user) {
+        c.status(403);
+        return c.json({ message: "Incorrect Credentials" });
+      }
+
+      // Compare password hash
+      const isPasswordValid = await bcrypt.compare(body.password, user.password);
+      if (!isPasswordValid) {
         c.status(403);
         return c.json({ message: "Incorrect Credentials" });
       }
@@ -91,7 +114,7 @@ authRouter.post('/signin', async (c) => {
         jwt: token,
         userId: user.userId,
         name: user.name,
-        email: user.email,
+        username: user.username,
         profileImageUrl: user.profileImageKey ? getPublicS3Url(c, user.profileImageKey) : null
       });
     } catch (error) {
@@ -99,6 +122,37 @@ authRouter.post('/signin', async (c) => {
       const errorMessage = error && typeof error === 'object' && 'message' in error 
         ? "Something went wrong while processing your request" + String(error.message) 
         : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
+    }
+});
+
+authRouter.post('/check-username', async (c) => {
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    try {
+      const body = await c.req.json();
+      
+      if (!body || !body.username) {
+        c.status(400);
+        return c.json({ message: 'Username is required' });
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: { username: body.username }
+      });
+
+      return c.json({
+        available: !existingUser,
+        message: existingUser ? 'Username already taken' : 'Username is available'
+      });
+    } catch (error) {
+      c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while checking username: " + String(error.message) 
+        : "Something went wrong while checking username";
         
       return c.text(errorMessage);
     }

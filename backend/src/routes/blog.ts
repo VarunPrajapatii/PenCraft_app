@@ -3,13 +3,17 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { createPostInput, updatePostInput } from '@varuntd/pencraft-common';
 import { authMiddleware } from './middleware';
-import { generatePOSTPresignedUrl, getPublicS3Url } from '../lib/s3';
+import { generateGETPresignedUrl, generatePOSTPresignedUrl, getPublicS3Url } from '../lib/s3';
 
 
 export const blogRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string;
         JWT_SECRET: string;
+        AWS_REGION: string;
+        S3_BUCKET: string;
+        AWS_ACCESS_KEY_ID: string;
+        AWS_SECRET_ACCESS_KEY: string;
     },
     Variables: {
         userId: string
@@ -22,6 +26,7 @@ blogRouter.use("/*", authMiddleware);
 
 // this endpoint is used to create a new blog post, frontend will send blogId, title, subtitle, content, bannerImageKey, published
 blogRouter.post('/', async (c) => {
+    
     const body = await c.req.json();
     const loggedInUserId = c.get("userId");
     const { success } = createPostInput.safeParse(body);
@@ -36,8 +41,6 @@ blogRouter.post('/', async (c) => {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
-
-        const authorId = c.get("userId");
         
         const blog = await prisma.blog.create({
             data: {
@@ -71,12 +74,14 @@ blogRouter.put('/', async (c) => {
     const body = await c.req.json();
     const loggedInUserId = c.get("userId");
     const { success } = updatePostInput.safeParse(body);
+    
     if (!success) {
         c.status(411);
         return c.json({
             message: "Inputs not correct"
         });
     }
+
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
@@ -147,6 +152,7 @@ blogRouter.get("/bulk", async (c) => {
                         name: true,
                         profileImageKey: true,
                         userId: true,
+                        username: true,
                     }
                 }
             }
@@ -219,6 +225,7 @@ blogRouter.get('/:blogId', async (c) => {
                         name: true,
                         userId: true,
                         profileImageKey: true,
+                        username: true,
                     }
                 }
             }
@@ -265,12 +272,20 @@ blogRouter.post('/:blogId/clap', async (c) => {
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
 
-        const blogId = c.req.param("id");
+        const blogId = c.req.param("blogId");
+        
+
+        const blog = await prisma.blog.findUnique({
+            where: { blogId },
+            select: { authorId: true }
+        });
+
+        if (!blog) {
+            return c.json({ error: "Blog not found" }, 404);
+        }
 
         const updatedBlog = await prisma.blog.update({
-            where: {
-                blogId: blogId,
-            },
+            where: { blogId },
             data: {
                 claps: {
                     increment: 1,
@@ -284,7 +299,7 @@ blogRouter.post('/:blogId/clap', async (c) => {
 
         await prisma.user.update({
             where: {
-                userId: body.authorId,
+                userId: blog.authorId,
             },
             data: {
                 totalClaps: {
@@ -316,6 +331,7 @@ blogRouter.post("/blogBanner/upload/:blogId", async (c) => {
       filename: string;
       contentType: string;
     };
+    console.log("Received filename:", filename, "and contentType:", contentType);
     const blogId = c.req.param("blogId");
 
     const ext = filename.split(".").pop() ?? "";
@@ -337,11 +353,12 @@ blogRouter.post("/blogBanner/upload/:blogId", async (c) => {
 blogRouter.post("/images/batch-upload/:blogId", async (c) => {
     try {
         const blogId = c.req.param('blogId');
-        const { images} = await c.req.json();  // its array of { filename, contentType, fileId } objects
+        const { images } = await c.req.json();  // its array of { filename, contentType, fileId } objects
         
         if (!images || !Array.isArray(images)) {
             return c.json({ error: "Images array is required" }, 400);
         }
+        console.log("Received images for batch upload:", images);
 
         const uploadUrls = [];
         
@@ -360,10 +377,28 @@ blogRouter.post("/images/batch-upload/:blogId", async (c) => {
                 imageId,
             });
         }
+        console.log("Generated upload URLs:", uploadUrls);
         
         return c.json({ uploadUrls });
     } catch (error) {
         console.error("Batch upload error:", error);
         return c.json({ error: "Failed to generate upload URLs" }, 500);
+    }
+});
+
+
+// this endpoint is used to get the image by key, it will generate a presigned URL and return it
+blogRouter.get("/images/:key", async (c) => {
+    try {
+        const key = c.req.param("key");
+        if (!key) {
+            return c.json({ error: "Image key is required" }, 400);
+        }
+        
+        const signedUrl = await generateGETPresignedUrl(c, key);
+        return c.json({ signedUrl });
+    } catch (error) {
+        console.error("Error generating signed URL:", error);
+        return c.json({ error: "Failed to generate signed URL" }, 500);
     }
 });
