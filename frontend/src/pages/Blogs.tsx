@@ -1,11 +1,11 @@
-// import React from 'react'
-import { BlogCard } from '../components/blogsHomePage/BlogCard'
+import { BlogCard } from '../components/BlogCard'
 import { useBlogs } from '../hooks/hooks'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';
 import BlogCardShimmer from '../components/shimmers/BlogCardShimmer';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import home_bg from "/home_bg.jpg"
 
 const Blogs = () => {
     const {loading, blogs, hasMore, loadMore} = useBlogs();
@@ -14,25 +14,42 @@ const Blogs = () => {
 
     if(!access_token) return(<Navigate to="/signup" />)
 
-    if(loading) {
-        return <div className='flex justify-center '>
-            <div className='p-5 mx-72 w-full'>
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
-                <BlogCardShimmer size={"large"} />
+    if (loading) {
+        return (
+            <div
+                className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
+                style={{ backgroundImage: `url(${home_bg})` }}
+            >
+                {/* Semi-transparent overlay for better content readability */}
+                <div className="min-h-screen bg-white/30 backdrop-blur-sm">
+                    <div className='flex justify-center pt-25'>
+                        <div className='p-4 mx-72 w-full'>
+                            {
+                                [...Array(8)].map((_, index) => {
+                                    return (
+                                        <BlogCardShimmer 
+                                            key={index} 
+                                            size={"large"} 
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        )
     }
 
   return (
-    <div>
-        <div className='flex justify-center'>
-            <div className='p-5 mx-72 w-full'>
+    <div 
+        className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
+        style={{ backgroundImage: `url(${home_bg})` }}
+    >
+        {/* SemiTransparent background */}
+        <div className="min-h-screen bg-white/30 backdrop-blur-sm">
+            <div className='flex justify-center pt-25'>
+                <div className='p-4 mx-72 w-full'>
                 <InfiniteScroll
                     dataLength={blogs.length}
                     next={loadMore}
@@ -57,6 +74,7 @@ const Blogs = () => {
                             blogId={blog.blogId}
                             key={blog.blogId}
                             authorName={blog.author.name || "Anonymous"}
+                            authorUsername={blog.author.username}
                             title={blog.title}
                             subtitle={blog.subtitle}
                             content={blog.content}
@@ -64,8 +82,10 @@ const Blogs = () => {
                             claps={blog.claps}
                             size={"large"}
                         />
+                        
                     )}
                 </InfiniteScroll>
+            </div>
             </div>
         </div>
     </div>
