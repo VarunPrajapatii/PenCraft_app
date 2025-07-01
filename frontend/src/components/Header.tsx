@@ -31,7 +31,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Pencraft logo"
-              className="h-9 sm:h-10 md:h-12"
+              className="h-9 sm:h-10 md:h-12 cursor-pointer"
             />
           </Link>
           <img
@@ -60,7 +60,7 @@ const SigninButton = () => {
             navigate("/signin");
           }}
         aria-label="Sign in"
-        className="group relative inline-flex items-center rounded-full bg-gray-200
+        className=" group relative inline-flex items-center rounded-full cursor-pointer bg-gray-200
                       px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3 text-sm sm:text-base md:text-lg
                       font-semibold text-black shadow transition-all duration-200
                       hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
@@ -99,7 +99,7 @@ const PenTheCraftButton = () => {
           <button
             type="button"
             aria-label="Write new blog"
-            className="group relative inline-flex items-center rounded-full bg-gray-200
+            className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
                           px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
                           font-semibold text-black shadow transition-all duration-200
                           hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
