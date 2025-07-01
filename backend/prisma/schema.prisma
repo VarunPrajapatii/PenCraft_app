@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   userId                  String              @id @default(uuid())
-  email                   String              @unique
+  username                String              @unique
   name                    String
   password                String
   profileImageKey         String?             @default("")
@@ -46,7 +46,7 @@ model Blog {
 }
 
 model UserRelation {
-  relationId                      String              @id @default(uuid())
+  relationId              String              @id @default(uuid())
   followerId              String
   followingId             String
   createdAt               DateTime            @default(now())
