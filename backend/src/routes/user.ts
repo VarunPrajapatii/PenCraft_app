@@ -2,7 +2,9 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { authMiddleware } from "./middleware";
-import { generatePOSTPresignedUrl, getPublicS3Url } from "../lib/s3";
+import { generatePOSTPresignedUrl, getPublicS3Url, deleteS3Object } from "../lib/s3";
+import bcrypt from "bcryptjs";
+
 
 export const userRouter = new Hono<{
     Bindings: {
@@ -13,6 +15,7 @@ export const userRouter = new Hono<{
         userId: string;
     };
 }>();
+
 
 // Middleware to ensure that the user is logged in
 userRouter.use("/*", authMiddleware);
@@ -108,11 +111,25 @@ userRouter.post("/profileImage/upload", async (c) => {
     };
     const userId = c.get("userId");
 
-    // 1️⃣ Compute a unique S3 key
+    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL })
+      .$extends(withAccelerate());
+
+    // 1️⃣ Check if user already has a profile image and delete it from S3
+    const existingUser = await prisma.user.findUnique({
+      where: { userId },
+      select: { profileImageKey: true },
+    });
+
+    if (existingUser?.profileImageKey) {
+      console.log(`Deleting old profile image: ${existingUser.profileImageKey}`);
+      await deleteS3Object(c, existingUser.profileImageKey);
+    }
+
+    // 2️⃣ Compute a unique S3 key for the new image
     const ext = filename.split(".").pop() ?? "";
     const key = `profiles/${userId}_${new Date().toISOString().slice(0, 10)}.${ext}`;
 
-    // 2️⃣ Generate a presigned PUT URL
+    // 3️⃣ Generate a presigned PUT URL
     const uploadUrl = await generatePOSTPresignedUrl(c, key, contentType);
 
     // 3️⃣ Save the key in the user’s record
@@ -130,6 +147,119 @@ userRouter.post("/profileImage/upload", async (c) => {
     c.status(500);
     return c.text("Failed to generate upload URL");
   }
+});
+
+
+userRouter.post("/changeUsername", async (c) => {
+    const { newUsername } = await c.req.json();
+    console.log("Changing username to:", newUsername);
+    const userId = c.get("userId");
+
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+
+        // If userId valid
+        const existingUser = await prisma.user.findUnique({
+            where: { userId },
+            select: { usernameDatestamp: true }
+        })
+
+        if(!existingUser) {
+            return c.json({ canChangeUsername: false, success: false, message: "UserNotFound" }, 404);
+        }
+
+        // if user trying to change username within 60 days of last change
+        const diffTime = Math.abs(new Date().getTime() - existingUser.usernameDatestamp.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 60) {
+            return c.json({ canChangeUsername: false, success: false, message: "You can only change your username once every 60 days." }, 200);
+        }
+
+        // Check if the new username already exists
+        const existingUsername = await prisma.user.findUnique({
+            where: { username: newUsername }
+        });
+
+        if(existingUsername) {
+            return c.json({ canChangeUsername: true, success: false, message: "Username already exists" }, 200);
+        }
+
+        // update the username and datestamp into database
+        const done = await prisma.user.update({
+            where: { userId },
+            data: {
+                username: newUsername,
+                usernameDatestamp: new Date(),
+            },
+        });
+
+        if (done) {
+            return c.json({ canChangeUsername: true, success: true, message: "Username changed!" }, 200);
+        } else {
+            return c.json({ canChangeUsername: false, success: false, message: "Failed to change username" }, 500);
+        }
+
+    } catch (error) {
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+      return c.text(errorMessage);
+    }
+});
+
+
+userRouter.post("/changePassword", async (c) => {
+    const { currentPassword, newPassword } = await c.req.json();
+    const userId = c.get("userId");
+
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+
+        // check if username exists and password matches
+        const existingUser = await prisma.user.findUnique({
+            where: { userId },
+            select: { password: true }
+        })
+
+        if(!existingUser) {
+            return c.json({ isPasswordCorrect: false, success: false, message: "UserId not found"}, 404);
+        }
+
+        // check if current password is correct
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, existingUser.password);
+
+        if (!isCurrentPasswordValid) {
+            return c.json({ isPasswordCorrect: false, success: false, message: "Current password is incorrect" }, 200);
+        }
+
+        const newHashedPassword = await bcrypt.hash(newPassword, 10);
+        
+        const done = await prisma.user.update({
+            where: { userId },
+            data: {
+                password: newHashedPassword,
+            },
+        });
+
+        if (done) {
+            return c.json({ isPasswordCorrect: true, success: true, message: "Password changed successfully" }, 200);
+        } else {
+            return c.json({ isPasswordCorrect: true, success: false, message: "Failed to change password" }, 500);
+        }
+
+    } catch (error) {
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+      return c.text(errorMessage);
+    }
 });
 
 
