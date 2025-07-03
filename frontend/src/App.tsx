@@ -29,6 +29,8 @@ function App() {
             <Route path='/blogs' element={<Blogs />} />
             <Route path='/blog/:id' element={<Blog />} />
             <Route path='/publish' element={<Publish />} />
+            <Route path='/draftBlog/:blogId' element={<Blog />} />
+            <Route path='/draftEdit/:blogId' element={<Publish />} />
             <Route element={<ProfileLayout/>}>
               <Route path='/:username' element={<UserPublished />} />
               <Route path='/:username/followers' element={<UserFollowers />} />

@@ -1,7 +1,7 @@
 import Quotes from '../components/Quotes'
 import Auth from '../components/Auth'
 import bg_img from "/images/BG_homepage.webp";
-import pencraft_logo from "/images/pencraftIcon.png";
+import pencraft_logo from "/images/PC_logo_light.png";
 
 const Signup = () => {
   return (
@@ -17,7 +17,7 @@ const Signup = () => {
         alt="bg-img"
         className="-z-50 fixed top-0 left-0 w-full h-full object-cover object-center brightness-50 border-none opacity-70 blur-[2px]"
       />
-      <div className='grid grid-cols-1 lg:grid-cols-2 min-h-screen pt-16'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 min-h-screen'>
         <div className='flex justify-center items-center flex-col px-4 sm:px-6 lg:px-8 py-8 lg:py-0'>
           <Auth type='signup' />
         </div>

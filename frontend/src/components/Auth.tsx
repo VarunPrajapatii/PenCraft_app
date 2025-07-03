@@ -18,6 +18,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   const [showUsernameTooltip, setShowUsernameTooltip] = useState<boolean>(false);
   const [nameError, setNameError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
     setUsernameError("");
     setNameError("");
     setPasswordError("");
+    setLoading(true);
     try {
       // Validate inputs using Zod
       if (type === "signup") {
@@ -44,6 +46,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
             if (issue.path[0] === "name") setNameError(issue.message);
             if (issue.path[0] === "password") setPasswordError(issue.message);
           }
+          setLoading(false);
           return;
         }
       } else {
@@ -55,6 +58,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
           for (const issue of result.error.issues) {
             if (issue.path[0] === "username") setUsernameError(issue.message);
             if (issue.path[0] === "password") setPasswordError(issue.message);
+            setLoading(false);
           }
           return;
         }
@@ -90,6 +94,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       }
       
       dispatch(authenticate(authdata));
+      setLoading(false);
       navigate("/blogs")
     } catch (error) {
       console.error("Auth error:", error);
@@ -106,8 +111,8 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   return access_token ? (
     <Navigate to={"/blogs"} />
   ) : (
-    <div className='h-screen flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
-      <div className='flex  justify-center'>
+    <div className='h-screen max-w-lg flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
+      <div className='flex  justify-center text-center'>
         <div className='rounded-2xl p-10 sm:p-16 bg-white/10 backdrop-blur-xl shadow-lg'>
           <div className='px-3 sm:px-10'>
             <div className='text-3xl text-center text-white font-extrabold'>
@@ -153,13 +158,32 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
             }} error={passwordError} />
           </div>
           <div className=''>
-            <button 
+            <button
               onClick={sendRequest}
               ref={submitButtonRef}
-              type="button" 
-              className="mt-8 w-full bg-gray-800 text-white border border-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+              type="button"
+              aria-label={type === 'signup' ? 'Sign up' : 'Sign in'}
+              disabled={loading}
+              className={` mt-8 w-full md:w-[50%] group relative inline-flex items-center justify-center cursor-pointer rounded-full bg-gray-200
+                px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
+                font-semibold text-black shadow transition-all duration-200
+                hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                hover:shadow-lg hover:scale-105
+                active:scale-95 active:shadow
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400
+                ${loading ? "opacity-60 cursor-not-allowed" : ""}`}
             >
-              {type === 'signup' ? 'Sign up' : 'Sign in'}
+              {loading ? (
+                <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-blue-700 lg:mr-2"></div>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" 
+                  className="md:inline-block size-4 sm:size-6 mr-1 lg:mr-2 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                </svg>
+              )}
+              <span className="block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+                {type === 'signup' ? 'Sign up' : 'Sign in'}
+              </span>
             </button>
           </div>
         </div>

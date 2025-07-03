@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import profileImg from '/img2.jpg';
+import defaultProfilePicture from '/images/default_profile_picture.jpg';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { useDispatch } from 'react-redux';
@@ -57,7 +57,7 @@ const ProfileDropdown = () => {
                     {/* Avatar Image */}
                     <div className="relative h-13 w-13 rounded-full overflow-hidden border-2 border-white/20 backdrop-blur-sm">
                         <img
-                            src={profileImageUrl || profileImg}
+                            src={profileImageUrl || defaultProfilePicture}
                             alt="Profile"
                             className="h-full w-full cursor-pointer object-cover transition-transform duration-300 group-hover:scale-110"
                         />
@@ -76,7 +76,7 @@ const ProfileDropdown = () => {
 
                     <div className="relative">
                         {/* Header Section */}
-                        <div className="relative p-4 bg-gradient-to-r from-gray-900 via-gray-600 to-black/50 backdrop-blur-xl border-b border-gray-700/30">
+                        <div className="relative p-4 bg-gradient-to-r from-gray-700 via-gray-500 to-black/30 backdrop-blur-xl border-b border-gray-700/30">
                             {/* Header glass overlay */}
                             <div className="relative flex items-center space-x-3">
                                 <div className="text-white">
@@ -89,7 +89,7 @@ const ProfileDropdown = () => {
                         {/* Menu Items */}
                         <div className="relative p-1  backdrop-blur-sm">
                             {/* Menu items background glass effect */}
-                            <div className="absolute inset-0 bg-gray-800/20 backdrop-blur-sm"></div>
+                            <div className="absolute inset-0 bg-gray-200 backdrop-blur-sm"></div>
 
                             <div className="relative space-y-1">
                                 {/* View Profile */}
@@ -129,7 +129,7 @@ const ProfileDropdown = () => {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                             )}
                                         </svg>
-                                        <span className="font-medium text-black hover:text-white">{isDarkMode ? 'Light' : 'Dark-Coming'}</span>
+                                        <span className="font-medium text-black group-hover:text-gray-100">{isDarkMode ? 'Light' : 'Dark-Coming'}</span>
                                     </div>
                                     {/* Enhanced glass toggle switch */}
                                     <div className={`relative w-10 h-5.5 rounded-full transition-all duration-300 ${isDarkMode ? 'bg-gray-600/80' : 'bg-gray-500/80'} backdrop-blur-sm border border-gray-600/30`}>
@@ -145,8 +145,8 @@ const ProfileDropdown = () => {
                                 {/* Sign Out with enhanced glass */}
                                 <button 
                                 onClick={signOut}
-                                className="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-900/30 hover:text-red-100 hover:backdrop-blur-2xl rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-800/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                                className="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-600/80 hover:text-red-100 hover:backdrop-blur-2xl rounded-xl rounded-b-2xl transition-all duration-200 group relative overflow-hidden cursor-pointer">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-800/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                                     <svg className="relative h-5 w-5 mr-3 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>

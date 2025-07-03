@@ -1,5 +1,5 @@
-import logo from "/images/Pencraft_Logo.png";
-import subtitleLogo from "/images/Pencraft_subtitle_logo.png"
+import logo from "/images/PenCraft_logo_light.png";
+import subtitleLogo from "/images/PenCraft_subtitle_light.png"
 
 
 const Footer = () => {

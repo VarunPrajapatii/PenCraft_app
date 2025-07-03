@@ -1,7 +1,7 @@
 import Auth from "../components/Auth";
 import Quotes from "../components/Quotes";
 import bg_img from "/images/BG_homepage.webp";
-import pencraft_logo from "/images/pencraftIcon.png";
+import pencraft_logo from "/images/PC_logo_light.png";
 
 
 const Signin = () => {
