@@ -1,7 +1,7 @@
 import { useIsFollowing, useUserFollowers } from "../../hooks/hooks";
 import { formatDate, handleFollowUnfollow } from "../../utils/generalUtils";
 import { Link, useParams } from "react-router-dom";
-import profileImg from "/img2.jpg"; // fallback image
+import defaultProfilePicture from "/images/default_profile_picture.jpg"; // fallback image
 
 const UserFollowers = () => {
   const { username } = useParams();
@@ -84,7 +84,7 @@ export const UserCardFollower = ({ user }: UserCardProps) => {
             src={
               user.profileImageKey
                 ? user.profileImageKey
-                : profileImg
+                : defaultProfilePicture
             }
             alt={user.name}
             className="w-16 h-16 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full border-2 border-gray-300 object-cover hover:border-blue-400 transition-colors"
@@ -145,7 +145,7 @@ export const UserCardFollowing = ({ user }: UserCardProps) => {
             src={
               user.profileImageKey
                 ? user.profileImageKey
-                : profileImg
+                : defaultProfilePicture
             }
             alt={user.name}
             className="w-16 h-16 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full border-2 border-gray-300 object-cover hover:border-blue-400 transition-colors"

@@ -16,6 +16,7 @@ datasource db {
 model User {
   userId                  String              @id @default(uuid())
   username                String              @unique
+  usernameDatestamp       DateTime            @default(now())
   name                    String
   password                String
   profileImageKey         String?             @default("")

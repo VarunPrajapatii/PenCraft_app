@@ -12,9 +12,11 @@ const UserPublished = () => {
   if(loading) {
     return (
       <div className="flex flex-col max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto">
-        {[...Array(5)].map((_, index) => (
-          <BlogCardShimmer size={"small"} key={index} />
-        ))}
+        <div>
+          {[...Array(3)].map((_, index) => (
+            <BlogCardShimmer size={"small"} key={index} />
+          ))}
+        </div>
       </div>
     );
   }
