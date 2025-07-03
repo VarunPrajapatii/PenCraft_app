@@ -4,21 +4,28 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../redux/types"
 import BlogContentRenderer from "./BlogContentRenderer"
 import { ClickableClapIcon } from "../Icons/ClapIcon"
-import profileImg from "/img2.jpg"
-import bannerDark from "/img1.jpeg"
-import { Link } from "react-router-dom"
+import defaultProfilePicture from "/images/default_profile_picture.jpg"
+import bannerDark from "/images/default_banner_dark.jpeg"
+import { Link, useNavigate } from "react-router-dom"
 import { formatDate, handleFollowUnfollow } from "../../utils/generalUtils"
 import axios from "axios"
 import { BACKEND_URL } from "../../config"
+import { useDispatch } from "react-redux"
+import { setDraftData } from "../../redux/slice/draftSlice"
 
 
-const FullBlog = ({blog}: {blog: Blog}) => {
+const FullBlog = ({ blog }: { blog: Blog }) => {
     const [claps, setClaps] = useState(blog.claps);
-    const { loading, isFollowing, updateFollowStatus } = useIsFollowing( {authorId : blog.author.userId || ""} );
+    const { loading, isFollowing, updateFollowStatus } = useIsFollowing({ authorId: blog.author.userId || "" });
     const loggedInUser = useSelector((store: RootState) => store.auth.user);
     const loggedInUserIsAuthor = loggedInUser === blog.author.userId;
+    const navigate = useNavigate();
+    const dispatch = useDispatch()
+    // for UI conditional rendering
+    const isDraft = !blog.publishedDate;
 
-    
+
+
     const incrementClap = async () => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/blog/${blog.blogId}/clap`, {}, {
@@ -28,11 +35,11 @@ const FullBlog = ({blog}: {blog: Blog}) => {
             });
 
             if (response.status === 200) {
-                setClaps(prevClaps => prevClaps + 1); // Update state to reflect the increment
+                setClaps(prevClaps => prevClaps + 1);
             }
         } catch (error) {
             console.error("Failed to increment claps", error);
-            
+
         }
     }
 
@@ -42,6 +49,35 @@ const FullBlog = ({blog}: {blog: Blog}) => {
             isFollowing,
             updateFollowStatus
         );
+    }
+
+    const handleClickEdit = async () => {
+        try {
+            let bannerFile: File | null = null;
+            if(blog.bannerImageUrl) {
+                try {
+                    const response = await fetch(blog.bannerImageUrl);
+                    const blob = await response.blob();
+                    bannerFile = new File([blob], 'banner-image.jpg', { type: blob.type }); 
+                } catch (error) {
+                    console.warn("Could not convert banner URL to file:", error);
+                }
+            }
+            dispatch(setDraftData({
+                title: blog.title,
+                subtitle: blog.subtitle,
+                content: blog.content,
+                bannerImageUrl: blog.bannerImageUrl || "",
+                bannerFile: bannerFile,
+                isEditingDraft: true,
+                editingBlogId: blog.blogId
+            }))
+            
+            navigate(`/draftEdit/${blog.blogId}`);
+        } catch (error) {
+            console.error("Failed to prepare draft for editing:", error);
+            alert("Failed to load draft for editing. Please try again.");
+        }
     }
 
     return (
@@ -66,23 +102,49 @@ const FullBlog = ({blog}: {blog: Blog}) => {
                             </div>
                             <div className=''>
                                 <h2 className=' sm:max-w-[70%] text-sm lg:text-xl   text-white/60'>{blog.subtitle}</h2>
-
                             </div>
-                            <div className='pt-4 hidden sm:block lg:hidden max-w-[10%] my-auto '>
-                                <div className=" flex items-center">
-                                    <div className='text-white' onClick={incrementClap}>
-                                        <ClickableClapIcon />
-                                    </div>
-                                    <div className='ml-2 text-white/90 text-2xl font-bold'>
-                                        {claps}
-                                    </div>
-
+                            {/* If draft, show Publish and Edit buttons, else show claps */}
+                            {blog.publishedDate === null ? (
+                                <div className="pt-4 flex gap-4 justify-center lg:justify-start">
+                                    <button
+                                        type="button"
+                                        aria-label="Edit"
+                                        onClick={() => {
+                                            handleClickEdit();
+                                        }}
+                                        className={`group relative inline-flex items-center rounded-full bg-gray-200
+                                    px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
+                                    font-semibold text-black shadow transition-all duration-200 cursor-pointer
+                                    hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                                    hover:shadow-lg hover:scale-105
+                                    active:scale-95 active:shadow
+                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400
+                                  `}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="md:inline-block size-6 lg:mr-2 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-700">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.25 2.25 0 1 1 3.182 3.182L6.75 19.963l-4.5 1.318 1.318-4.5 13.294-13.294Z" />
+                                        </svg>
+                                        <span className={`hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group_hover:text-blue-700`}>
+                                            Edit Draft
+                                        </span>
+                                    </button>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className={`${isDraft && "sm:hidden"}  pt-4 hidden sm:block lg:hidden max-w-[10%] my-auto`}>
+                                    <div className=" flex items-center">
+                                        <div className='text-white' onClick={incrementClap}>
+                                            <ClickableClapIcon />
+                                        </div>
+                                        <div className='ml-2 text-white/90 text-2xl font-bold'>
+                                            {claps}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                         </div>
 
-                        <div className='hidden lg:block max-w-[10%] my-auto '>
+                        <div className={`${isDraft ? "hidden lg:hidden" : "hidden lg:block"}  max-w-[10%] my-auto`}>
                             <div className=" flex items-center">
                                 <div className='text-white' onClick={incrementClap}>
                                     <ClickableClapIcon />
@@ -95,20 +157,23 @@ const FullBlog = ({blog}: {blog: Blog}) => {
                         </div>
 
                         {/* author info */}
-                        <div className=' sm:max-w-[25%]  mr-5 text-center sm:text-left flex sm:block lg:flex  items-center gap-3 '>
+                        <div className={` ${isDraft && "hidden sm:hidden lg:hidden"} sm:max-w-[25%]  mr-5 text-center sm:text-left flex sm:block lg:flex  items-center gap-1 sm:gap-2 lg:gap-3`}>
                             <div>
                                 <Link to={`/@${blog.author.username}`}>
-                                    <img src={profileImg} alt="author" className='w-15 h-15 sm:w-20 sm:h-20 rounded-full border-2 border-white/50' />
+                                    <img src={blog.author.profileImageUrl || defaultProfilePicture} alt="Profile" className='w-12 h-12 sm:w-20 sm:h-20 rounded-full border-2 border-white/50' />
                                 </Link>
                             </div>
                             <div className=''>
                                 <Link to={`/@${blog.author.username}`} >
-                                    <div className='md:max-h-7 md:w-40 text-base sm:text-lg  overflow-auto no-scrollbar font-semibold text-white'>
+                                    <div className='md:max-h-7 md:w-40 text-sm sm:text-lg  overflow-auto no-scrollbar font-semibold text-white'>
                                         {blog.author.name}
                                     </div>
                                 </Link>
-                                <div className='text-xs sm:text-sm text-gray-300'>
-                                    <span className="font-semibold">{formatDate(blog.publishedDate)}</span> - {`${Math.ceil(blog.content.toString().length / 700)} minute(s) read`}
+                                <div className='hidden sm:block text-xs sm:text-sm text-gray-300'>
+                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} minute(s) read`}
+                                </div>
+                                <div className='block sm:hidden text-xs sm:text-sm text-gray-300'>
+                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} min read`}
                                 </div>
                                 <button
                                     type="button"
@@ -128,8 +193,8 @@ const FullBlog = ({blog}: {blog: Blog}) => {
                                     {isFollowing ? "Unfollow" : "Follow"}
                                 </button>
                             </div>
-                            <div className="pl-15 sm:hidden">
-                                <div className='text-white' onClick={incrementClap}>
+                            <div className={`${isDraft && "hidden"} pl-15 sm:hidden`}>
+                                <div className='text-white ' onClick={incrementClap}>
                                     <ClickableClapIcon />
                                 </div>
                                 <div className='ml-2 text-white/90 text-2xl font-bold'>

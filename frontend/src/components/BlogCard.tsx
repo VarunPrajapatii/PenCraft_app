@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { ClapIcon } from "./Icons/ClapIcon";
 import { CommentsIcon } from "./Icons/CommentsIcon";
-import img2 from '/img2.jpg'; // Adjust the path as needed
+import defaultProfilePicture from '/images/default_profile_picture.jpg';
 import { blogImageSrcs } from "../blogss"
 import { OutputData } from "@editorjs/editorjs";
-
+import { useState } from "react";
+import { useDeleteBlog } from "../hooks/hooks";
 
 
 interface BlogCardProps {
@@ -34,14 +35,114 @@ export const BlogCard = ({
   claps,
   size
 }: BlogCardProps) => {
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const { deleteLoading, deleteBlog } = useDeleteBlog();
+  
   const formatDate = (dateString: string): string => {
+    if (!dateString) return "";
     const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long", year: "numeric" };
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-GB", options).format(date);
   };
 
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowDeletePopup(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeletePopup(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteBlog(blogId);
+      setShowDeletePopup(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to delete blog:", error);
+      alert("Failed to delete blog. Please try again.");
+    }
+  };
+
   return (
-    <div>
+    <div className="relative">
+      {/* Delete Button */}
+      {!publishedDate && (
+        <button
+          onClick={handleDeleteClick}
+          className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-red-500/80 hover:bg-red-600/90 text-white transition-all duration-200 hover:scale-105"
+          aria-label="Delete blog"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+          </svg>
+        </button>
+      )}
+
+      {/* Delete Confirmation Popup */}
+      {showDeletePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+            onClick={handleCancelDelete}
+          />
+          
+          {/* Popup */}
+          <div className="relative bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 w-full max-w-sm mx-auto">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+              Delete Blog
+            </h3>
+            <p className="text-gray-700 mb-6 text-center">
+              Are you sure you want to delete this blog? This action cannot be undone.
+            </p>
+            
+            <div className="flex items-center gap-4">
+              {/* Cancel Button */}
+              <button
+                onClick={handleCancelDelete}
+                disabled={deleteLoading}
+                className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
+                          px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
+                          font-semibold text-black shadow transition-all duration-200
+                          hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                          hover:shadow-lg hover:scale-105
+                          active:scale-95 active:shadow
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400
+                          disabled:opacity-50 disabled:cursor-not-allowed w-full justify-center"
+              >
+                <span className="transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+                  Cancel
+                </span>
+              </button>
+
+              {/* Confirm Delete Button */}
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deleteLoading}
+                className="group relative inline-flex items-center cursor-pointer rounded-full bg-red-500
+                          px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
+                          font-semibold text-white shadow transition-all duration-200
+                          hover:bg-red-600 hover:shadow-lg hover:scale-105
+                          active:scale-95 active:shadow
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400
+                          disabled:opacity-50 disabled:cursor-not-allowed w-full justify-center"
+              >
+                {deleteLoading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <span className="transition-transform duration-200 group-hover:translate-x-1">
+                    Delete
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Link to={`/blog/${blogId}`}>
         <div className={`
                 sm:pr-2 mt-1 sm:mb-1.5 group
@@ -76,7 +177,7 @@ export const BlogCard = ({
               <div className={`${size == "small" ? "hidden" : ""} flex items-center mb-2`}>
                 <Link to={`/@${authorUsername}`} className="flex items-center group/author">
                   <img
-                    src={profileImageUrl ? profileImageUrl : img2}
+                    src={profileImageUrl ? profileImageUrl : defaultProfilePicture}
                     className="w-9 h-9 rounded-full object-cover mr-2 transition-transform duration-200 group-hover/author:scale-105"
                     alt="author"
                   />
@@ -131,7 +232,7 @@ export const BlogCard = ({
                 <Link to={`/@${authorUsername}`} className="flex items-center group/author">
                   <div className="">
                     <img
-                      src={profileImageUrl ? profileImageUrl : img2}
+                      src={profileImageUrl ? profileImageUrl : defaultProfilePicture}
                       className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full object-cover m-1 transition-transform duration-200 group-hover/author:scale-105"
                       alt="varun's img"
                       width={48}
@@ -147,11 +248,11 @@ export const BlogCard = ({
               </div>  
 
               {/* Readtime info */}
-              <div className='flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm'>
+              <div className='flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600'>
                 <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
-                <div className="text-lg sm:text-2xl p-1">•</div>
-                <div className="hidden sm:block"><span className="hidden lg:block">Published on</span> {formatDate(publishedDate)}</div>
-                <div className="sm:hidden">{formatDate(publishedDate)}</div>
+                <div className="text-lg sm:text-2xl p-1">{publishedDate? "•" : ""}</div>
+                <span className="hidden sm:block"><span className="hidden lg:block">{publishedDate? "Published on " : ""}</span> {formatDate(publishedDate)}</span>
+                <span className="sm:hidden">{formatDate(publishedDate)}</span>
               </div>
 
               {/* claps and comments */}

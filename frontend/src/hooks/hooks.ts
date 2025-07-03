@@ -9,7 +9,7 @@ export interface Blog {
     title: string;
     content: OutputData;
     subtitle: string;
-    publishedDate: string;
+    publishedDate: string | null;
     claps: number;
     bannerImageKey: string | null;
     bannerImageUrl: string | null;
@@ -65,7 +65,7 @@ export const useFullBlog = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
 
     const [fullBlogDetails, setFullBlogDetails] = useState<Blog>(); // Note: It was [] as default value before
-
+    
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/blog/${id}`, {
@@ -376,5 +376,88 @@ export const useUserFollowings = ({ username }: { username: string }) => {
     return {
         loading,
         followings,
+    };
+}
+
+
+export const useChangeUsername = () => {
+    const [usernameChangeLoading, setUsernameChangeLoading] = useState(false);
+
+    const changeUsername = async (newUsername: string) => {
+        setUsernameChangeLoading(true);
+        
+        try {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/changeUsername`, { newUsername }, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error changing username:", error);
+            throw error;
+        } finally {
+            setUsernameChangeLoading(false);
+        }
+    };
+
+    return {
+        usernameChangeLoading,
+        changeUsername,
+    };
+}
+
+
+export const useChangePassword = () => {
+    const [passwordChangeLoading, setPasswordChangeLoading] = useState(false);
+
+    const changePassword = async (currentPassword: string, newPassword: string) => {
+        setPasswordChangeLoading(true);
+        try {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/changePassword`, { currentPassword, newPassword }, {
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error changing password:", error);
+            throw error;
+        } finally {
+            setPasswordChangeLoading(false);
+        }
+    };
+
+    return {
+        passwordChangeLoading,
+        changePassword,
+    };
+}
+
+
+export const useDeleteBlog = () => {
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const deleteBlog = async (blogId: string) => {
+        setDeleteLoading(true);
+        try {
+            const response = await axios.delete(`${BACKEND_URL}/api/v1/blog`, {
+                data: { blogId }, // Send blogId in request body
+                headers: {
+                    Authorization: localStorage.getItem("pencraft_token"),
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting blog:", error);
+            throw error;
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
+    return {
+        deleteLoading,
+        deleteBlog,
     };
 }

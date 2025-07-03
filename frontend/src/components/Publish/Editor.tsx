@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useRef } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import Prism from "prismjs";
-import { getEditorTools } from "./editorTools";
+import { getEditorTools } from "../../utils/editorTools";
 
 type Props = {
-  data?: OutputData
-  onChange?: (data: OutputData) => void
+  contentData?: OutputData
+  changeInEditor?: (data: OutputData) => void
 }
 
-const Editor = ({ data, onChange }: Props) => {
+const Editor = ({ contentData, changeInEditor }: Props) => {
+    console.log("Editor component rendered with contentData:", contentData);
     const holderRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<EditorJS | null>(null);
 
@@ -23,17 +24,17 @@ const Editor = ({ data, onChange }: Props) => {
         if (holderRef.current && !editorRef.current) {
             const editor = new EditorJS({
                 holder: holderRef.current,
-                data,
+                data: contentData,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 tools: getEditorTools() as any,
-                placeholder: "Pen up your craft or thoughts or anything...",
+                placeholder: "Pen up your craft here!! Can add headings, images, code list...",
                 onReady: () => {
                     highlight();
                 },
                 onChange: async () => {
                     try {
                         const saved = await editor.save();
-                        onChange?.(saved);
+                        changeInEditor?.(saved);
                         highlight();
                     } catch (error) {
                         console.error("Error saving editor data:", error);
@@ -44,7 +45,7 @@ const Editor = ({ data, onChange }: Props) => {
         }
 
         return () => {
-            if (editorRef.current) {
+            if (editorRef.current && typeof editorRef.current.destroy === "function") {
                 editorRef.current.destroy();
                 editorRef.current = null;
             }
@@ -54,7 +55,7 @@ const Editor = ({ data, onChange }: Props) => {
     return (
         <div
             ref={holderRef}
-            className="editorjs-wrapper, prose max-w-none border border-gray-300 rounded p-4"
+            className="editorjs-wrapper prose border-gray-300 rounded"
         ></div>
     );
 };

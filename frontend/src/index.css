@@ -36,7 +36,9 @@
   background: #7c3aed; /* thumb color on hover */
 }
 
-
+.editorjs-wrapper {
+  width: 100%;
+}
 
 /* EditorJS Code Block Styling */
 .editorjs-wrapper .ce-code {
@@ -54,7 +56,7 @@
   font-family: 'Fira Code', 'Courier New', monospace;
   font-size: 0.875rem;
   line-height: 1.6;
-  padding: 1rem;
+  padding: 0;
   resize: none;
   width: 100%;
   min-height: 100px;
@@ -66,40 +68,20 @@
 }
 
 /* EditorJS header styles */
-.editorjs-wrapper h1.ce-header {
+h1.ce-header {
   font-size: 2.25rem; /* Tailwind text-4xl */
   font-weight: 700;
 }
 
-.editorjs-wrapper h2.ce-header {
+h2.ce-header {
   font-size: 1.875rem; /* text-3xl */
   font-weight: 600;
 }
 
-.editorjs-wrapper h3.ce-header {
+h3.ce-header {
   font-size: 1.5rem; /* text-2xl */
   font-weight: 600;
 }
-
-.editorjs-wrapper h4.ce-header {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 500;
-}
-
-.editorjs-wrapper h5.ce-header {
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 500;
-}
-
-.editorjs-wrapper h6.ce-header {
-  font-size: 1rem; /* text-base */
-  font-weight: 500;
-}
-
-
-
-
-
 
 
 /* Prose content styling for EditorJS-HTML output */
@@ -196,3 +178,8 @@
 
 
 
+
+
+/* Prism css fort code block rendering */
+
+code[class*=language-],pre[class*=language-]{color:#ccc;background:0 0;font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*=language-],pre[class*=language-]{background:#2d2d2d}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.block-comment,.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#999}.token.punctuation{color:#ccc}.token.attr-name,.token.deleted,.token.namespace,.token.tag{color:#e2777a}.token.function-name{color:#6196cc}.token.boolean,.token.function,.token.number{color:#f08d49}.token.class-name,.token.constant,.token.property,.token.symbol{color:#f8c555}.token.atrule,.token.builtin,.token.important,.token.keyword,.token.selector{color:#cc99cd}.token.attr-value,.token.char,.token.regex,.token.string,.token.variable{color:#7ec699}.token.entity,.token.operator,.token.url{color:#67cdcc}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}.token.inserted{color:green}

@@ -8,13 +8,16 @@ const UserDrafts = () => {
 
   const { username } = useParams();
   const { loading, userDrafts } = useUserDrafts( username ? { username: username } : { username: "" });
+  console.log("User Drafts coming in component: ", userDrafts);
 
   if(loading) {
     return (
       <div className="flex flex-col max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto">
-        {[...Array(5)].map((_, index) => (
-          <BlogCardShimmer size={"small"} key={index} />
-        ))}
+        <div>
+          {[...Array(4)].map((_, index) => (
+            <BlogCardShimmer size={"small"} key={index} />
+          ))}
+        </div>
       </div>
     );
   }
