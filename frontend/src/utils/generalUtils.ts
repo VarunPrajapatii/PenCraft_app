@@ -7,6 +7,7 @@ export const formatDate = (dateString: string): string => {
     return new Intl.DateTimeFormat("en-GB", options).format(date);
 };
 
+
 /**
  * Utility function to handle follow/unfollow operations
  * @param targetUserId - The ID of the user to follow/unfollow

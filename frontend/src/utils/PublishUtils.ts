@@ -55,6 +55,8 @@ export const uploadBlogImages = async ({
     if (!content) return null;
 
     const pendingImages = window.pendingBlogImages || new Map();
+    // TODO: Remove logs
+    console.log("Pending images:", pendingImages);
     const imagesToUpload: Array<{
         filename: string;
         contentType: string;
@@ -112,7 +114,7 @@ export const uploadBlogImages = async ({
             })
         );
 
-        // Update content with actual S3 URLs
+        // Update content with actual S3 keys
         const updatedContent = { ...content };
         updatedContent.blocks = content.blocks.map((block) => {
             if (block.type === "image" && block.data.file?.fileId) {
@@ -135,7 +137,7 @@ export const uploadBlogImages = async ({
             return block;
         });
         // TODO: Remove logs
-        console.log(updatedContent);
+        console.log("Updated content with removed blobs to s3 keys:", updatedContent);
         return updatedContent;
     } catch (error) {
         console.error("Failed to upload blog images:", error);
@@ -143,3 +145,104 @@ export const uploadBlogImages = async ({
     }
 };
 
+export const convertS3ImagesToBlobs = async (content: OutputData): Promise<OutputData> => {
+  if (!content || !content.blocks) return content;
+
+  const imagesToDelete: string[] = []; // Track S3 keys to delete
+
+  const updatedBlocks = await Promise.all(
+    content.blocks.map(async (block) => {
+      if (block.type === 'image' && block.data.file?.url) {
+        const s3Key = block.data.file.url;
+        
+        // Check if it's an S3 key (not already a blob URL)
+        if (!s3Key.startsWith('blob:') && !s3Key.startsWith('http://') && !s3Key.startsWith('https://')) {
+          try {
+            console.log('Converting S3 key to blob:', s3Key);
+            
+            // Fetch the image using your backend endpoint
+            const response = await axios.get(
+              `${BACKEND_URL}/api/v1/blog/images/${encodeURIComponent(s3Key)}`,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("pencraft_token")
+                }
+              }
+            );
+            
+            // Get the presigned URL and fetch the actual image
+            const presignedUrl = response.data.signedUrl;
+            const imageResponse = await fetch(presignedUrl);
+            const blob = await imageResponse.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            
+            // Generate a new fileId for tracking
+            const fileId = crypto.randomUUID();
+            
+            // Store in pendingBlogImages (same as new uploads)
+            window.pendingBlogImages = window.pendingBlogImages || new Map();
+            window.pendingBlogImages.set(fileId, {
+              file: new File([blob], block.data.file.name || 'existing-image.jpg', { 
+                type: blob.type || 'image/jpeg' 
+              }),
+              blobUrl,
+              uploaded: false // Mark as already uploaded since it came from S3
+            });
+
+            // Track this S3 key for deletion
+            imagesToDelete.push(s3Key);
+
+            return {
+              ...block,
+              data: {
+                ...block.data,
+                file: {
+                  ...block.data.file,
+                  url: blobUrl,
+                  fileId: fileId
+                }
+              }
+            };
+          } catch (error) {
+            console.error('Failed to convert S3 image to blob:', s3Key, error);
+            // Return original block if conversion fails
+            return block;
+          }
+        }
+      }
+      return block;
+    })
+  );
+
+  // Delete the original S3 images after successful conversion
+  if (imagesToDelete.length > 0) {
+    try {
+      await deleteS3Images(imagesToDelete);
+      console.log('Deleted original S3 images:', imagesToDelete);
+    } catch (error) {
+      console.error('Failed to delete some S3 images:', error);
+      // Continue anyway - the conversion worked
+    }
+  }
+
+  return {
+    ...content,
+    blocks: updatedBlocks
+  };
+};
+
+// Helper function to delete S3 images
+const deleteS3Images = async (s3Keys: string[]): Promise<void> => {
+  try {
+    // You'll need to create this endpoint in your backend
+    await axios.delete(`${BACKEND_URL}/api/v1/blog/images/batch-delete`, {
+      data: { keys: s3Keys },
+      headers: {
+        Authorization: localStorage.getItem("pencraft_token")
+      }
+    });
+  } catch (error) {
+    console.error('Failed to delete S3 images:', error);
+    throw error;
+  }
+};

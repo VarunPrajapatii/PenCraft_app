@@ -1,3 +1,4 @@
+import { OutputData } from "@editorjs/editorjs";
 import { UserProfileDetails } from "../hooks/hooks";
 
 export interface AuthState {
@@ -8,8 +9,18 @@ export interface AuthState {
     profileImageUrl: string | null;
 }
 
+export interface DraftState {
+    title: string;
+    subtitle: string;
+    content: OutputData;
+    bannerImageUrl: string;
+    bannerFile: File | null;
+    isEditingDraft: boolean;
+    editingBlogId: string | null;
+}
 
 export interface RootState {
     auth: AuthState;
     loggedInUserDetails: UserProfileDetails;
+    draftPostEdit: DraftState;
 }
