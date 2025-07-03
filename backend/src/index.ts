@@ -13,7 +13,12 @@ const app = new Hono<{
   }
 }>();
 
-app.use("/*", cors());
+console.log("Backend server is running...");
+
+app.use("/*", cors({
+  origin: ['http://localhost:5173', 'http://192.168.29.175:5173']
+}));
+
 app.route("/api/v1/auth", authRouter);
 app.route("/api/v1/user", userRouter);
 app.route("/api/v1/blog", blogRouter);

@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { createPostInput, updatePostInput } from '@varuntd/pencraft-common';
 import { authMiddleware } from './middleware';
-import { generateGETPresignedUrl, generatePOSTPresignedUrl, getPublicS3Url } from '../lib/s3';
+import { deleteS3Object, generateGETPresignedUrl, generatePOSTPresignedUrl, getPublicS3Url } from '../lib/s3';
 
 
 export const blogRouter = new Hono<{
@@ -25,7 +25,7 @@ blogRouter.use("/*", authMiddleware);
 
 
 // this endpoint is used to create a new blog post, frontend will send blogId, title, subtitle, content, bannerImageKey, published
-blogRouter.post('/', async (c) => {
+blogRouter.post("/", async (c) => {
     
     const body = await c.req.json();
     const loggedInUserId = c.get("userId");
@@ -60,59 +60,71 @@ blogRouter.post('/', async (c) => {
         });
     } catch (error) {
         c.status(500);
-      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        const errorMessage = error && typeof error === 'object' && 'message' in error 
         ? "Something went wrong while processing your request" + String(error.message) 
         : "Something went wrong while processing your request";
         
-      return c.text(errorMessage);
+        return c.text(errorMessage);
     }
 });
 
-
-// this endpoint is used to update a blog post, frontend will send blogId, title, subtitle, content, bannerImageKey, published
-blogRouter.put('/', async (c) => {
-    const body = await c.req.json();
+// this endpoint is used to delete a blog post, frontend will send blogId
+blogRouter.delete("/", async (c) => {
+    const { blogId } = await c.req.json();
     const loggedInUserId = c.get("userId");
-    const { success } = updatePostInput.safeParse(body);
-    
-    if (!success) {
-        c.status(411);
-        return c.json({
-            message: "Inputs not correct"
-        });
-    }
 
     try {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate());
 
-        // Only allow updating blogs owned by the logged-in user
-        const blog = await prisma.blog.update({
+        const blog = await prisma.blog.findUnique({
             where: {
-                blogId: body.blogId,
+                blogId: blogId,
                 authorId: loggedInUserId,
-            },
-            data: {
-                title: body.title,
-                subtitle: body.subtitle,
-                content: body.content,
-                bannerImageKey: body.bannerImageKey || "",
-                published: body.published,
-                publishedDate: body.published ? new Date() : null,
+                published: false
             }
         });
 
-        return c.json({
-            blogId: blog.blogId
+        if (!blog) {
+            return c.json({ error: "Blog not found or you are not the author" }, 404);
+        }
+
+        // delete the banner image from S3 if it exists
+        if (blog.bannerImageKey) {
+            await deleteS3Object(c, blog.bannerImageKey);
+        }
+
+        let imageKeys: any[] = [];
+        if (blog.content) {
+            let contentObj: any = blog.content;
+            if (contentObj && Array.isArray(contentObj.blocks)) {
+                contentObj.blocks.forEach((block: any) => {
+                    if (block.type === "image" && block.data?.file?.url) {
+                        imageKeys.push(block.data.file.url);
+                    }
+                });
+            }
+        }
+
+        await Promise.all(imageKeys.map(imageKey => deleteS3Object(c, imageKey)));
+
+        await prisma.blog.delete({
+            where: {
+                blogId: blogId
+            }
         });
+
+        return c.json({ message: "Blog deleted successfully" }, 200);
+
     } catch (error) {
         c.status(500);
         const errorMessage = error && typeof error === 'object' && 'message' in error 
             ? "Something went wrong while processing your request" + String(error.message) 
             : "Something went wrong while processing your request";
+            
         return c.text(errorMessage);
-    }
+    }    
 });
 
 
@@ -400,5 +412,79 @@ blogRouter.get("/images/:key", async (c) => {
     } catch (error) {
         console.error("Error generating signed URL:", error);
         return c.json({ error: "Failed to generate signed URL" }, 500);
+    }
+});
+
+
+// Delete multiple images from S3
+blogRouter.delete("/images/batch-delete", async (c) => {
+    try {
+        const { keys } = await c.req.json();
+        
+        if (!keys || !Array.isArray(keys)) {
+            return c.json({ error: "Keys array is required" }, 400);
+        }
+
+        console.log("Received images for batch deletion:", keys);
+
+        const deletionResults = await Promise.all(
+            keys.map(async (key: string) => await deleteS3Object(c, key))
+        );
+
+        console.log("Deletion results:", deletionResults);
+        // const deletePromises = keys.map(key => s3.deleteObject({ Bucket: c.env.S3_BUCKET, Key: key }).promise());
+        // await Promise.all(deletePromises);
+        
+        return c.json({ deleted: keys.length });
+    } catch (error) {
+        console.error("Error deleting images:", error);
+        return c.json({ error: "Failed to delete images" }, 500);
+    }
+});
+
+
+// this endpoint is used to update a blog post, frontend will send blogId, title, subtitle, content, bannerImageKey, published
+blogRouter.put('/', async (c) => {
+    const body = await c.req.json();
+    const loggedInUserId = c.get("userId");
+    const { success } = updatePostInput.safeParse(body);
+    
+    if (!success) {
+        c.status(411);
+        return c.json({
+            message: "Inputs not correct"
+        });
+    }
+
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+
+        // Only allow updating blogs owned by the logged-in user
+        const blog = await prisma.blog.update({
+            where: {
+                blogId: body.blogId,
+                authorId: loggedInUserId,
+            },
+            data: {
+                title: body.title,
+                subtitle: body.subtitle,
+                content: body.content,
+                bannerImageKey: body.bannerImageKey || "",
+                published: body.published,
+                publishedDate: body.published ? new Date() : null,
+            }
+        });
+
+        return c.json({
+            blogId: blog.blogId
+        });
+    } catch (error) {
+        c.status(500);
+        const errorMessage = error && typeof error === 'object' && 'message' in error 
+            ? "Something went wrong while processing your request" + String(error.message) 
+            : "Something went wrong while processing your request";
+        return c.text(errorMessage);
     }
 });

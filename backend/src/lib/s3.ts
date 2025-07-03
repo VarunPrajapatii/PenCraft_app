@@ -1,4 +1,4 @@
-import { PutObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { Context } from "hono"
 
@@ -53,4 +53,26 @@ export const generateGETPresignedUrl = async (
 
     const url = await getSignedUrl(s3Client, command, { expiresIn: 300 });
     return url;
+}
+
+// ----------- DELETE OBJECT FROM S3 -----------
+export const deleteS3Object = async (
+    c: Context,
+    key: string
+) => {
+    const s3Client = getS3Client(c);
+
+    const command = new DeleteObjectCommand({
+        Bucket: c.env.S3_BUCKET,
+        Key: key,
+    });
+
+    try {
+        await s3Client.send(command);
+        console.log(`Successfully deleted object: ${key}`);
+        return true;
+    } catch (error) {
+        console.error(`Failed to delete object ${key}:`, error);
+        return false;
+    }
 }
