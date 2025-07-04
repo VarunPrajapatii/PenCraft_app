@@ -6,14 +6,14 @@ import { RootState } from '../redux/types';
 import FullBlogShimmer from '../components/shimmers/FullBlogShimmer';
 
 const Blog = () => {
-  const access_token = useSelector((store: RootState) => store.auth.access_token);
+  const user = useSelector((store: RootState) => store.auth.user);
   const { id } = useParams();
   const { loading, fullBlogDetails } = useFullBlog({
     id: id || ""
   });
 
   
-  if (!access_token) return (<Navigate to="/signin" replace />)
+  if (!user) return (<Navigate to="/signin" replace />)
 
   if (loading || !fullBlogDetails) {
     return <div>

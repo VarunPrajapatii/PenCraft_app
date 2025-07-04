@@ -343,7 +343,6 @@ blogRouter.post("/blogBanner/upload/:blogId", async (c) => {
       filename: string;
       contentType: string;
     };
-    console.log("Received filename:", filename, "and contentType:", contentType);
     const blogId = c.req.param("blogId");
 
     const ext = filename.split(".").pop() ?? "";
@@ -370,7 +369,6 @@ blogRouter.post("/images/batch-upload/:blogId", async (c) => {
         if (!images || !Array.isArray(images)) {
             return c.json({ error: "Images array is required" }, 400);
         }
-        console.log("Received images for batch upload:", images);
 
         const uploadUrls = [];
         
@@ -389,7 +387,6 @@ blogRouter.post("/images/batch-upload/:blogId", async (c) => {
                 imageId,
             });
         }
-        console.log("Generated upload URLs:", uploadUrls);
         
         return c.json({ uploadUrls });
     } catch (error) {
@@ -425,13 +422,11 @@ blogRouter.delete("/images/batch-delete", async (c) => {
             return c.json({ error: "Keys array is required" }, 400);
         }
 
-        console.log("Received images for batch deletion:", keys);
 
         const deletionResults = await Promise.all(
             keys.map(async (key: string) => await deleteS3Object(c, key))
         );
 
-        console.log("Deletion results:", deletionResults);
         // const deletePromises = keys.map(key => s3.deleteObject({ Bucket: c.env.S3_BUCKET, Key: key }).promise());
         // await Promise.all(deletePromises);
         

@@ -121,7 +121,6 @@ userRouter.post("/profileImage/upload", async (c) => {
     });
 
     if (existingUser?.profileImageKey) {
-      console.log(`Deleting old profile image: ${existingUser.profileImageKey}`);
       await deleteS3Object(c, existingUser.profileImageKey);
     }
 
@@ -152,7 +151,6 @@ userRouter.post("/profileImage/upload", async (c) => {
 
 userRouter.post("/changeUsername", async (c) => {
     const { newUsername } = await c.req.json();
-    console.log("Changing username to:", newUsername);
     const userId = c.get("userId");
 
     try {

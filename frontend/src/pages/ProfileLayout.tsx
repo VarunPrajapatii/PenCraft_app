@@ -101,7 +101,6 @@ const ProfileLayout = () => {
             }, 5000);
             
             dispatch(authenticate({
-                jwt: localStorage.getItem("pencraft_token"),
                 user: localStorage.getItem("pencraft_user"),
                 name: localStorage.getItem("pencraft_name"),
                 username: localStorage.getItem("pencraft_username"),
@@ -289,7 +288,7 @@ const ProfileLayout = () => {
                                     >
                                         {isFollowing ? "Unfollow" : "Follow"}
                                     </button>
-                                    <Link to={`${routeUsername}/editProfile`}>
+                                    {/* <Link to={`${routeUsername}/editProfile`}>
                                         <button
                                             type="button"
                                             className={`
@@ -305,7 +304,7 @@ const ProfileLayout = () => {
                                         >
                                             Edit Profile
                                         </button>
-                                    </Link>
+                                    </Link> */}
                                 </div>
 
                                 {/* Left part (content) - moves to bottom on mobile */}

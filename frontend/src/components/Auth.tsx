@@ -22,7 +22,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const access_token = useSelector((store: RootState) => store.auth.access_token);
+  const user = useSelector((store: RootState) => store.auth.user);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if(event.key === "Enter" && submitButtonRef.current) {
@@ -77,16 +77,17 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       
       const postInputsSignup = {name: postInputs.name, username: postInputs.username, password: postInputs.password};
       const postInputsSignin = {username: postInputs.username, password: postInputs.password};
-      const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, type === "signup" ? postInputsSignup : postInputsSignin);
+      const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, 
+        type === "signup" ? postInputsSignup : postInputsSignin,
+        { withCredentials: true }
+      );
       
       
-      const jwt = response.data.jwt;
       const userId = response.data.userId;
       const name = response.data.name;
       const profileImageUrl = response.data.profileImageUrl || null;
       const username = response.data.username;
       const authdata = {
-          jwt,
           userId,
           name,
           username,
@@ -95,7 +96,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       
       dispatch(authenticate(authdata));
       setLoading(false);
-      navigate("/blogs")
+      
     } catch (error) {
       console.error("Auth error:", error);
       if (axios.isAxiosError(error) && error.response?.status === 409) {
@@ -108,7 +109,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   }
 
 
-  return access_token ? (
+  return user ? (
     <Navigate to={"/blogs"} />
   ) : (
     <div className='h-screen max-w-lg flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>

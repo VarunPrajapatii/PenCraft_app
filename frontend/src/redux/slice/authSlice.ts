@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { clearUser } from "./profileSlice";
 
 const initialState = {
-    access_token: localStorage.getItem("pencraft_token") || null,
     user: (() => {
         const user = localStorage.getItem("pencraft_user");
         try {
@@ -22,15 +21,13 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         authenticate: (state, { payload }) => {
+            console.log("Authenticating user:", payload);
             state.user = payload.userId;
-            state.access_token = payload.jwt;
             state.name = payload.name;
             state.username = payload.username;
             state.profileImageUrl = payload.profileImageUrl || null;
-            
-            
+                        
             // Store all data in localStorage
-            localStorage.setItem("pencraft_token", payload.jwt);
             localStorage.setItem("pencraft_user", JSON.stringify(payload.userId));
             localStorage.setItem("pencraft_name", payload.name);
             localStorage.setItem("pencraft_username", payload.username);
@@ -41,13 +38,11 @@ const authSlice = createSlice({
         logout: (state) => {
             clearUser();
             state.user = null;
-            state.access_token = null;
             state.name = null;
             state.username = null;
             state.profileImageUrl = null;
             
             // Clear all localStorage items
-            localStorage.removeItem("pencraft_token");
             localStorage.removeItem("pencraft_user");
             localStorage.removeItem("pencraft_name");
             localStorage.removeItem("pencraft_username");

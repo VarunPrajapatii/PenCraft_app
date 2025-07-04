@@ -5,16 +5,22 @@ import { sign } from 'hono/jwt'
 import { signinInput, signupInput } from '@varuntd/pencraft-common';
 import { getPublicS3Url } from '../lib/s3';
 import bcrypt from 'bcryptjs';
+import { authMiddleware } from './middleware';
 
 export const authRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string;
         JWT_SECRET: string;
-    }
+    };
+    Variables: {
+        userId: string;
+    };
 }>();
 
-const cookieOptions = `HttpOnly; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 2}`; // 2 days
-// HttpOnly; Secure; SameSite=None; Path=/; Domain=.pencraft.varuntd.com
+
+// replace when hosting: HttpOnly; Secure; SameSite=None; Path=/; Domain=.pencraft.varuntd.com
+const cookieOptions = `HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${60 * 60 * 24 * 2}`;
+const clearDomainCookie = `HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0;`;
 
 
 authRouter.post('/signup', async (c) => {
@@ -137,6 +143,46 @@ authRouter.post('/signin', async (c) => {
     }
 });
 
+authRouter.get('/me', authMiddleware, async (c) => {
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const userId = c.get("userId");
+
+    try {
+      if (!userId) {
+        c.status(401);
+        return c.json({ message: 'Unauthorized access' });
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { userId }
+      });
+
+      if (!user) {
+        c.status(404);
+        return c.json({ message: 'User not found' });
+      }
+
+      return c.json({
+        userId: user.userId,
+        name: user.name,
+        username: user.username,
+        profileImageUrl: user.profileImageKey ? getPublicS3Url(c, user.profileImageKey) : null
+      });
+    } catch (error) {
+      c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+        
+      return c.text(errorMessage);
+    }
+    
+    
+});
+
 authRouter.post('/check-username', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -163,6 +209,21 @@ authRouter.post('/check-username', async (c) => {
       const errorMessage = error && typeof error === 'object' && 'message' in error 
         ? "Something went wrong while checking username: " + String(error.message) 
         : "Something went wrong while checking username";
+        
+      return c.text(errorMessage);
+    }
+});
+
+authRouter.get('/logout', authMiddleware, async (c) => {
+    try {
+      c.header('Set-Cookie', `token=; ${clearDomainCookie}`);
+      console.log(`token=; ${clearDomainCookie}`);
+      return c.json({ success: true });
+    } catch (error) {
+      c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
         
       return c.text(errorMessage);
     }

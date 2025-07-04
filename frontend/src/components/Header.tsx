@@ -8,7 +8,7 @@ import ProfileDropdown from "./ProfileDropDown";
 // Main Header for all routes except /publish
 const Header = () => {
   const location = useLocation();
-  const access_token = useSelector((store: RootState) => store.auth.access_token);
+  const user = useSelector((store: RootState) => store.auth.user);
 
   const renderRightContent = () => {
     if(location.pathname === "/") {
@@ -18,7 +18,7 @@ const Header = () => {
     }else if(location.pathname === "/blogs" || location.pathname === "/profile") {
       return <PenTheCraftButton />
     } else {
-      return access_token ? <PenTheCraftButton /> : <SigninButton />;
+      return user ? <PenTheCraftButton /> : <SigninButton />;
     }
   }
 

@@ -33,7 +33,7 @@ export const Publish = () => {
   const [imageCount, setImageCount] = useState(0); // Track image count
   const [isEditingDraft, setIsEditingDraft] = useState(false);
   const [isLoadingDraft, setIsLoadingDraft] = useState(false); // Add this state
-  const access_token = useSelector((store: RootState) => store.auth.access_token)
+  const user = useSelector((store: RootState) => store.auth.user)
   const { blogId: draftBlogId } = useParams();
   const draftData = useSelector((store: RootState) => store.draftPostEdit);
   const dispatch = useDispatch();
@@ -180,7 +180,7 @@ export const Publish = () => {
     }
   }
 
-  if (!access_token) return (<Navigate to="/signin" />)
+  if (!user) return (<Navigate to="/signin" />)
 
   return (
     <div>

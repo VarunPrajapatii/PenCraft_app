@@ -8,10 +8,10 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Blogs = () => {
     const {loading, blogs, hasMore, loadMore} = useBlogs();
-    const access_token = useSelector((store: RootState) => store.auth.access_token)
+    const user = useSelector((store: RootState) => store.auth.user)
 
 
-    if(!access_token) return(<Navigate to="/signup" />)
+    if(!user) return(<Navigate to="/signup" />)
 
     if (loading) {
         return (

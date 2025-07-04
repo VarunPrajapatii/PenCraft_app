@@ -69,7 +69,6 @@ export const deleteS3Object = async (
 
     try {
         await s3Client.send(command);
-        console.log(`Successfully deleted object: ${key}`);
         return true;
     } catch (error) {
         console.error(`Failed to delete object ${key}:`, error);
