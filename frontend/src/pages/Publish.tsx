@@ -154,9 +154,7 @@ export const Publish = () => {
         bannerImageKey,
         published: !isDraft
       }, {
-        headers: {
-          Authorization: localStorage.getItem("pencraft_token")
-        }
+        withCredentials: true,
       });
 
       // cleanup blob urls and pending images

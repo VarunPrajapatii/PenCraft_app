@@ -74,9 +74,7 @@ const ProfileLayout = () => {
                     contentType: file.type
                 },
                 {
-                    headers: {
-                        Authorization: localStorage.getItem("pencraft_token")
-                    }
+                    withCredentials: true,
                 }
             );
 

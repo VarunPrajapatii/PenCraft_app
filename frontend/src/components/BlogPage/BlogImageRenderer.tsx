@@ -25,14 +25,9 @@ const BlogImageRenderer = ({ data, id }: { data: BlogImageData; id: string }) =>
   const fetchPresignedUrl = async (key: string): Promise<string> => {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/blog/images/${encodeURIComponent(key)}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("pencraft_token")
-          }
-        }
-      );
-      
+        `${BACKEND_URL}/api/v1/blog/images/${encodeURIComponent(key)}`, {
+          withCredentials: true,
+        });
       return response.data.signedUrl;
     } catch (error) {
       console.error('Failed to fetch presigned URL:', error);

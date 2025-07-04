@@ -20,9 +20,7 @@ export const uploadBannerIfExists = async ({
                 contentType: bannerFile.type,
             },
             {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             }
         );
 
@@ -91,9 +89,7 @@ export const uploadBlogImages = async ({
                 images: imagesToUpload,
             },
             {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             }
         );
 
@@ -164,9 +160,7 @@ export const convertS3ImagesToBlobs = async (content: OutputData): Promise<Outpu
             const response = await axios.get(
               `${BACKEND_URL}/api/v1/blog/images/${encodeURIComponent(s3Key)}`,
               {
-                headers: {
-                  Authorization: localStorage.getItem("pencraft_token")
-                }
+                withCredentials: true,
               }
             );
             
@@ -237,9 +231,7 @@ const deleteS3Images = async (s3Keys: string[]): Promise<void> => {
     // You'll need to create this endpoint in your backend
     await axios.delete(`${BACKEND_URL}/api/v1/blog/images/batch-delete`, {
       data: { keys: s3Keys },
-      headers: {
-        Authorization: localStorage.getItem("pencraft_token")
-      }
+      withCredentials: true,
     });
   } catch (error) {
     console.error('Failed to delete S3 images:', error);

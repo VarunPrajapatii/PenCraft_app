@@ -13,6 +13,10 @@ export const authRouter = new Hono<{
     }
 }>();
 
+const cookieOptions = `HttpOnly; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 2}`; // 2 days
+// HttpOnly; Secure; SameSite=None; Path=/; Domain=.pencraft.varuntd.com
+
+
 authRouter.post('/signup', async (c) => {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -60,8 +64,11 @@ authRouter.post('/signup', async (c) => {
       });
   
       const token = await sign({userId: user.userId }, c.env.JWT_SECRET);
+
+      c.header('Set-Cookie', `token=${token}; ${cookieOptions}`);
+
       return c.json({
-        jwt: token,
+        message: 'Signed up',
         userId: user.userId,
         name: user.name,
         username: user.username,
@@ -110,8 +117,11 @@ authRouter.post('/signin', async (c) => {
       }
     
       const token = await sign({userId: user.userId}, c.env.JWT_SECRET);
+
+      c.header('Set-Cookie', `token=${token}; ${cookieOptions}`);
+      
       return c.json({
-        jwt: token,
+        message: 'Signed in',
         userId: user.userId,
         name: user.name,
         username: user.username,

@@ -69,9 +69,7 @@ export const useFullBlog = ({ id }: { id: string }) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/blog/${id}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setFullBlogDetails(response.data.blog);
@@ -97,9 +95,7 @@ export const useBlogs = (limit: number = 8) => {
         setLoading(true);
         axios
             .get(`${BACKEND_URL}/api/v1/blog/bulk?page=1&limit=${limit}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setBlogs(response.data.blogs);
@@ -121,9 +117,7 @@ export const useBlogs = (limit: number = 8) => {
         
         axios
             .get(`${BACKEND_URL}/api/v1/blog/bulk?page=${nextPage}&limit=${limit}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setBlogs(prevBlogs => [...prevBlogs, ...response.data.blogs]);
@@ -155,9 +149,7 @@ export const useAuthorBasicInfo = ({ id }: { id: string }) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/authorBasicInfo/${id}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setAuthorBasicInfo(response.data.author);
@@ -182,9 +174,7 @@ export const useLoggedInUserDetails = () => {
         const fetchUserProfile = async () => {
             try {
               const response = await axios.get(`${BACKEND_URL}/api/v1/user/profile`, {
-                headers: {
-                  Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
               });
               setUserProfileDetails(response.data.user);
             } catch (error) {
@@ -211,9 +201,7 @@ export const useUserProfileInfo = ({ username }: { username: string }) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/profile/${username.split("@")[1]}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setUserProfileDetails(response.data.user);
@@ -235,9 +223,7 @@ export const useUserBlogs = ({username}: {username: string}) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/${username.split("@")[1]}/userPublishedBlogs`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setUserPublishedBlogs(response.data.blogs);
@@ -259,9 +245,7 @@ export const useUserDrafts = ({username}: {username: string}) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/${username.split("@")[1]}/userDrafts`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setUserDrafts(response.data.blogs);
@@ -289,9 +273,7 @@ export const useIsFollowing = ({ authorId }: { authorId: string }) => {
 
             try {
                 const response = await axios.get(`${BACKEND_URL}/api/v1/user/checkIsFollowing/${authorId}`, {
-                    headers: {
-                        Authorization: localStorage.getItem("pencraft_token"),
-                    },
+                    withCredentials: true,
                 });
                 setIsFollowing(response.data.isFollowing);
             } catch (error) {
@@ -331,9 +313,7 @@ export const useUserFollowers = ({ username }: { username: string }) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/followersList/${username}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setFollowers(response.data.followers);
@@ -359,9 +339,7 @@ export const useUserFollowings = ({ username }: { username: string }) => {
     useEffect(() => {
         axios
             .get(`${BACKEND_URL}/api/v1/user/followingsList/${username}`, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             })
             .then((response) => {
                 setFollowings(response.data.followings);
@@ -388,9 +366,7 @@ export const useChangeUsername = () => {
         
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/changeUsername`, { newUsername }, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             });
             return response.data;
         } catch (error) {
@@ -415,9 +391,7 @@ export const useChangePassword = () => {
         setPasswordChangeLoading(true);
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/changePassword`, { currentPassword, newPassword }, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             });
             return response.data;
         } catch (error) {
@@ -443,9 +417,7 @@ export const useDeleteBlog = () => {
         try {
             const response = await axios.delete(`${BACKEND_URL}/api/v1/blog`, {
                 data: { blogId }, // Send blogId in request body
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token"),
-                },
+                withCredentials: true,
             });
             return response.data;
         } catch (error) {

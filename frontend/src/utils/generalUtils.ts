@@ -30,9 +30,7 @@ export const handleFollowUnfollow = async (
             `${BACKEND_URL}/api/v1/user/${endpoint}/${targetUserId}`,
             {},
             {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token")
-                }
+                withCredentials: true,
             }
         );
 

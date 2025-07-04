@@ -29,9 +29,7 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
     const incrementClap = async () => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/blog/${blog.blogId}/clap`, {}, {
-                headers: {
-                    Authorization: localStorage.getItem("pencraft_token")
-                }
+                withCredentials: true
             });
 
             if (response.status === 200) {
