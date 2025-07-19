@@ -24,7 +24,7 @@ const Header = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white/20 backdrop-blur-lg shadow-lg">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1">
         {/* Logo Area */}
         <div className="flex items-center space-x-3">
           <Link to={"/blogs"}>
@@ -60,8 +60,8 @@ const SigninButton = () => {
             navigate("/signin");
           }}
         aria-label="Sign in"
-        className=" group relative inline-flex items-center rounded-full cursor-pointer bg-gray-200
-                      px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3 text-sm sm:text-base md:text-lg
+        className="font-subtitle group relative inline-flex items-center rounded-full cursor-pointer bg-gray-200
+                      px-4 py-1.5 sm:px-6 md:px-6 md:py-2 text-sm sm:text-base md:text-lg
                       font-semibold text-black shadow transition-all duration-200
                       hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
                       hover:shadow-lg hover:scale-105
@@ -99,7 +99,7 @@ const PenTheCraftButton = () => {
           <button
             type="button"
             aria-label="Write new blog"
-            className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
+            className="font-subtitle group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
                           px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
                           font-semibold text-black shadow transition-all duration-200
                           hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30

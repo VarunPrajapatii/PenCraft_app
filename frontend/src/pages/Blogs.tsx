@@ -3,6 +3,8 @@ import { useBlogs } from '../hooks/hooks'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';
+import bg_img from "/images/BG_homepage.jpg";
+
 import BlogCardShimmer from '../components/shimmers/BlogCardShimmer';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -16,13 +18,18 @@ const Blogs = () => {
     if (loading) {
         return (
             <div
-                className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
+                className="min-h-screen "
                 
             >
-                <div className="fixed top-0 -z-10 h-full w-full bg-white"><div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-50 blur-[80px]"></div></div>
+                <img
+                    src={bg_img}
+                    alt="bg-img"
+                    className="-z-50 fixed top-0 left-0 w-full h-full object-cover object-center brightness-20 border-none opacity-70 blur-[5px]"
+                />
+                
                 {/* Semi-transparent overlay for better content readability */}
                 
-                <div className="min-h-screen bg-white/30 backdrop-blur-sm">
+                <div className="min-h-screen ">
                     <div className='flex justify-center pt-25'>
                         <div className='p-4 mx-72 w-full'>
                             {
@@ -44,11 +51,16 @@ const Blogs = () => {
 
   return (
     <div 
-        className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat"
+        className="min-h-screen "
         >
-        <div className="fixed top-0 -z-10 h-full w-full bg-blue-50"><div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(159,104,221,0.64)] opacity-50 blur-[80px]"></div></div>
+        <img
+            src={bg_img}
+            alt="bg-img"
+            className="-z-50 fixed top-0 left-0 w-full h-full object-cover object-center brightness-20 border-none opacity-70 blur-[5px]"
+        />
+                
         {/* SemiTransparent background */}
-        <div className="min-h-screen bg-white/30 backdrop-blur-sm">
+        <div className="min-h-screen ">
             <div className='flex justify-center pt-25'>
                 <div className='p-4 mx-72 w-full'>
                 <InfiniteScroll

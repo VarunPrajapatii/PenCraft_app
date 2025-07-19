@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import  { useRef, Children, isValidElement, cloneElement } from "react";
 import type { ReactNode } from "react";
 import { useInView } from "motion/react";
 
@@ -35,9 +35,9 @@ export const FlyUpSection: React.FC<FlyUpSectionProps> = ({
       className={`relative w-full overflow-hidden ${className} ${containerHeight}`}
     >
       {/* Pass isInView to each child */}
-      {React.Children.map(children, (child) =>
-        React.isValidElement(child)
-          ? React.cloneElement(child as React.ReactElement<{ isInView?: boolean }>, { isInView })
+      {Children.map(children, (child) =>
+        isValidElement(child)
+          ? cloneElement(child as React.ReactElement<{ isInView?: boolean }>, { isInView })
           : child
       )}
     </div>

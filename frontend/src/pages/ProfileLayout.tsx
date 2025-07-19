@@ -234,25 +234,25 @@ const ProfileLayout = () => {
 
                                     {/* Bio - responsive padding */}
                                     <div className=" mt-4 sm:mt-5 md:mt-6 text-center max-w-xs">
-                                        <p className="text-sm sm:text-base text-gray-700">
+                                        <p className="font-body text-sm sm:text-base text-gray-700">
                                             {userProfileDetails?.bio || "Passionate writer, avid reader, and lifelong learner. Sharing stories, insights, and inspiration one post at a time."}
                                         </p>
                                         
                                         {/* Upload status indicator */}
                                         {uploadStatus === 'success' && (
-                                            <div className="mt-2 text-xs text-green-600 font-medium">
+                                            <div className="font-body mt-2 text-xs text-green-600 font-medium">
                                                 ✅ Profile image updated successfully!
                                             </div>
                                         )}
                                         {uploadStatus === 'error' && (
-                                            <div className="mt-2 text-xs text-red-600 font-medium">
+                                            <div className="font-body mt-2 text-xs text-red-600 font-medium">
                                                 ❌ Failed to upload image
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Stats - responsive layout */}
-                                    <div className="w-full mt-4 sm:mt-5 text-base sm:text-lg md:text-xl flex sm:block lg:flex justify-around">
+                                    <div className="font-subtitle w-full mt-4 sm:mt-5 text-base sm:text-lg md:text-xl flex sm:block lg:flex justify-around">
                                         <Link to={`${routeUsername}/followers`}>
                                             <div className="flex flex-col items-center">
                                                 <div className="font-medium">Followers</div>
@@ -274,7 +274,7 @@ const ProfileLayout = () => {
                                     {/* Follow button - responsive spacing */}
                                     <button
                                         type="button"
-                                        className={`
+                                        className={`font-subtitle
                                     ${(isOwnProfile || followLoading) ? 'hidden' : ''}
                                     rounded-full 
                                     px-6 py-1 mt-1 
@@ -311,7 +311,7 @@ const ProfileLayout = () => {
                                 <div className="md:col-span-8 md:order-1">
                                     {/* Profile Name - responsive text size */}
                                     <div className="  text-center sm:-m-20 lg:-m-15">
-                                        <h1 className="md:pl-30 text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800">
+                                        <h1 className="font-title md:pl-30 text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800">
                                             {userProfileDetails?.name || "Anonymous"}
                                         </h1>
                                     </div>
@@ -320,7 +320,7 @@ const ProfileLayout = () => {
                                     <div className="mt-6 sm:mt-23 lg:mt-13 border-b border-gray-200">
                                         <div className="flex">
                                             <button
-                                                className={`flex-1 md:flex-none md:mr-8 p-2 sm:p-3 text-center border-b-2 transition-colors
+                                                className={`font-subtitle flex-1 md:flex-none md:mr-8 p-2 sm:p-3 text-center border-b-2 transition-colors
                                                 ${isOwnProfile ? '' : 'hidden'}
                                                 ${(!isDrafts && !(
                                                     location.pathname === `/${routeUsername}/editProfile` ||
@@ -334,7 +334,7 @@ const ProfileLayout = () => {
                                                 Published
                                             </button>
                                             <button
-                                                className={`flex-1 md:flex-none p-2 sm:p-3 text-center border-b-2 transition-colors
+                                                className={`font-subtitle flex-1 md:flex-none p-2 sm:p-3 text-center border-b-2 transition-colors
                                                 ${isDrafts 
                                                         ? 'border-purple-600 text-purple-600'
                                                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}

@@ -92,10 +92,10 @@ export const BlogCard = ({
           
           {/* Popup */}
           <div className="relative bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 w-full max-w-sm mx-auto">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+            <h3 className="font-title text-lg font-semibold text-gray-900 mb-4 text-center">
               Delete Blog
             </h3>
-            <p className="text-gray-700 mb-6 text-center">
+            <p className="font-body text-gray-700 mb-6 text-center">
               Are you sure you want to delete this blog? This action cannot be undone.
             </p>
             
@@ -106,7 +106,7 @@ export const BlogCard = ({
                 disabled={deleteLoading}
                 className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
                           px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
-                          font-semibold text-black shadow transition-all duration-200
+                          font-subtitle font-semibold text-black shadow transition-all duration-200
                           hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
                           hover:shadow-lg hover:scale-105
                           active:scale-95 active:shadow
@@ -124,7 +124,7 @@ export const BlogCard = ({
                 disabled={deleteLoading}
                 className="group relative inline-flex items-center cursor-pointer rounded-full bg-red-500
                           px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
-                          font-semibold text-white shadow transition-all duration-200
+                          font-subtitle font-semibold text-white shadow transition-all duration-200
                           hover:bg-red-600 hover:shadow-lg hover:scale-105
                           active:scale-95 active:shadow
                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400
@@ -156,8 +156,8 @@ export const BlogCard = ({
         >
           {/* Mobile: Upper part - Title and Subtitle */}
           <div className="sm:hidden p-3 pb-2">
-            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} text-center font-semibold leading-[1.2] mb-2 line-clamp-3 overflow-hidden text-ellipsis`}>{title}</h2>
-            <p className={`${size == "small" ? "text-sm" : "text-sm"} text-center leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis text-gray-600`}>{subtitle}</p>
+            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} font-title text-center font-semibold leading-[1.2] mb-2 line-clamp-3 overflow-hidden text-ellipsis`}>{title}</h2>
+            <p className={`${size == "small" ? "text-sm" : "text-sm"} font-subtitle text-center leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis text-gray-600`}>{subtitle}</p>
           </div>
 
           {/* Mobile: Lower part - Image and Info */}
@@ -181,7 +181,7 @@ export const BlogCard = ({
                     className="w-9 h-9 rounded-full object-cover mr-2 transition-transform duration-200 group-hover/author:scale-105"
                     alt="author"
                   />
-                  <div className='text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
+                  <div className='font-body text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
                     {authorName}
                   </div>
                 </Link>
@@ -189,10 +189,10 @@ export const BlogCard = ({
 
               {/* Bottom: Read time, Date, and Claps */}
               <div className="flex flex-col gap-1">
-                <div className='text-xs text-gray-600'>
+                <div className='font-body text-xs text-gray-600'>
                   {`${Math.ceil(content.toString().length / 1000)} min read ${publishedDate ? "•" : ""} ${publishedDate ? formatDate(publishedDate) : ""}`}
                 </div>
-                <div className='flex text-sm gap-3'>
+                <div className='font-body flex text-sm gap-3'>
                   <div className='flex items-center gap-1'>
                     <ClapIcon />
                     <span>{claps}</span>
@@ -219,14 +219,14 @@ export const BlogCard = ({
           <div className="hidden sm:flex pl-2 sm:pl-3 pr-1 w-[75%] sm:w-[78%] md:w-[70%] flex-col justify-between">
             {/* title and subtitle */}
             <div className=''>
-              <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-semibold leading-[1.2] py-2 sm:py-3 line-clamp-2 overflow-hidden text-ellipsis`}>{title}</h2>
-              <p className={`${size == "small" ? "text-sm lg:text-base" : "text-base lg:text-lg "} leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis`}>{subtitle}</p>
+              <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-title font-bold leading-[1.2] py-2 sm:py-3 line-clamp-2 overflow-hidden text-ellipsis`}>{title}</h2>
+              <p className={`${size == "small" ? "text-sm lg:text-sm" : "text-base lg:text-base "} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis`}>{subtitle}</p>
             </div>
 
             <div className=" h-[1px] w-py bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
             {/* Author info and article info*/}
-            <div className='flex flex-col sm:flex-row justify-between gap-2 sm:gap-0'>
+            <div className='font-body flex flex-col sm:flex-row justify-between gap-2 sm:gap-0'>
               {/* author info */}
               <div className={`${size == "small" ? "hidden" : ""} flex items-center `}>
                 <Link to={`/@${authorUsername}`} className="flex items-center group/author">
@@ -240,7 +240,7 @@ export const BlogCard = ({
                     />
                   </div>
                   <div>
-                    <div className='ml-2 text-sm sm:text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
+                    <div className='font-body ml-2 text-sm sm:text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
                       {authorName}
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export const BlogCard = ({
               </div>  
 
               {/* Readtime info */}
-              <div className='flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600'>
+              <div className='font-subtitle flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600'>
                 <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
                 <div className="text-lg sm:text-2xl p-1">{publishedDate? "•" : ""}</div>
                 <span className="hidden sm:block"><span className="hidden lg:block">{publishedDate? "Published on " : ""}</span> {formatDate(publishedDate)}</span>
@@ -256,7 +256,7 @@ export const BlogCard = ({
               </div>
 
               {/* claps and comments */}
-              <div className='flex text-sm sm:text-lg gap-1.5 sm:gap-2.5'>
+              <div className='font-subtitle flex text-sm sm:text-lg gap-1.5 sm:gap-2.5'>
                 <div className='flex items-center'>
                   <div><ClapIcon /></div>
                   <div>{claps}</div>

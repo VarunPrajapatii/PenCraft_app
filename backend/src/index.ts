@@ -16,7 +16,7 @@ const app = new Hono<{
 console.log("Backend server is running...");
 
 app.use('*', cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
   credentials: true,
 }));
 

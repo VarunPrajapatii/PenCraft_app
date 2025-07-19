@@ -199,7 +199,7 @@ export const Publish = () => {
             {/* Editing indicator */}
             {isEditingDraft && (
               <div className=" mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg w-full max-w-2xl">
-                <p className="text-sm text-blue-700 font-medium">
+                <p className="font-body text-sm text-blue-700 font-medium">
                   ✏️ You are editing a draft
                 </p>
               </div>
@@ -207,7 +207,7 @@ export const Publish = () => {
             {/* Warning message for unsaved changes */}
             {(title.trim() || subtitle.trim() || (content && content.blocks.length > 0) || bannerFile) && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg w-full max-w-2xl">
-                <p className="text-sm text-red-700 font-medium">
+                <p className="font-body text-sm text-red-700 font-medium">
                   ⚠️ Warning: If you change page or press back button or close the tab then all the images of this blog will be deleted. Save your blog as draft to prevent this.
                 </p>
               </div>
@@ -215,11 +215,11 @@ export const Publish = () => {
             {/* image uploaded count indicator */}
             <div className="lg:hidden mb-4 p-3 w-full max-w-2xl mx-auto fixed top-16 left-1/2 transform -translate-x-1/2 z-50">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-blue-700">
+                <span className="font-body text-xs font-medium text-blue-700">
                   📸 Images in blog: {imageCount}/15
                 </span>
                 {imageCount >= 12 && (
-                  <span className="text-xs text-orange-600 font-medium">
+                  <span className="font-body text-xs text-orange-600 font-medium">
                     {imageCount >= 15 ? "⚠️ Limit reached!" : "⚠️ Approaching limit"}
                   </span>
                 )}
@@ -236,7 +236,7 @@ export const Publish = () => {
             </div>
             {/* Banner Upload Section */}
             <div className="mb-4 my-2 mt-10 mx-5 w-full max-w-2xl ">
-              <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Banner Image (Optional)</label>
+              <label className="font-body block text-sm font-medium text-gray-700 mb-2 text-center">Banner Image (Optional)</label>
               <input 
                 type="file"
                 accept="image/*" 
@@ -244,7 +244,7 @@ export const Publish = () => {
                   const file = e.target.files?.[0];
                   if (file) handleBannerSelect(file);
                 }}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="font-body block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
               {bannerImageUrl && (
               <div className="mt-2 w-full flex justify-center">
@@ -261,7 +261,7 @@ export const Publish = () => {
               <input
                 onChange={(e) => setTitle(e.target.value)}
                 type="text"
-                className="w-full pt-2.5 mb-4 pl-3 lg:pl-0 text-3xl font-semibold sm:text-4xl md:text-5xl text-center lg:text-left
+                className="font-title w-full pt-2.5 mb-4 pl-3 lg:pl-0 text-3xl font-semibold sm:text-4xl md:text-5xl text-center lg:text-left
                   bg-transparent border-none outline-none cursor-pointer text-gray-800
                   focus:ring-0 focus:border-none focus:outline-none focus:cursor-text focus:placeholder:text-gray-300
                   caret-black"
@@ -278,7 +278,7 @@ export const Publish = () => {
               <input
                 onChange={(e) => setSubtitle(e.target.value)}
                 type="text"
-                className=" w-full pb-2.5 mb-4  pl-3 lg:pl-0  text-base  sm:text-lg md:text-xl text-center lg:text-left
+                className="font-subtitle w-full pb-2.5 mb-4  pl-3 lg:pl-0  text-base  sm:text-lg md:text-xl text-center lg:text-left
                   bg-transparent border-none outline-none cursor-pointer text-gray-800
                   focus:ring-0 focus:border-none focus:outline-none focus:cursor-text focus:placeholder:text-gray-300
                   caret-black"

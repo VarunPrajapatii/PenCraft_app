@@ -4,7 +4,7 @@ import subtitleLogo from "/images/PenCraft_subtitle_light.png"
 
 const Footer = () => {
   return (
-    <footer className="absolute z-10  w-full h-[35vh] bg-[#455b78] backdrop-blur-2xl  shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
+    <footer className="absolute z-10  w-full h-[35vh] bg-gradient-to-b from-emerald-500/80 via-emerald-700/90 to-emerald-900/90  shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
       <div className="flex w-full items-center justify-between mb-6">
         <div className="flex items-center">
           <img src={logo} alt="Pencraft Logo" className="h-[6vh] mr-4" />
@@ -55,15 +55,15 @@ const Footer = () => {
       <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400/30 to-transparent mb-6"></div>
       {/* Links Row */}
       <div className="flex flex-wrap justify-center gap-8 mb-4">
-        <a href="#" className="text-gray-400 hover:text-white transition text-lg font-medium">About</a>
-        <a href="#" className="text-gray-400 hover:text-white transition text-lg font-medium">Blog</a>
-        <a href="#" className="text-gray-400 hover:text-white transition text-lg font-medium">Contact</a>
-        <a href="#" className="text-gray-400 hover:text-white transition text-lg font-medium">Privacy</a>
-        <a href="#" className="text-gray-400 hover:text-white transition text-lg font-medium">Terms</a>
+        <a href="#" className="font-subtitle text-gray-300 hover:text-white transition text-lg font-medium">About</a>
+        <a href="#" className="font-subtitle text-gray-300 hover:text-white transition text-lg font-medium">Blog</a>
+        <a href="#" className="font-subtitle text-gray-300 hover:text-white transition text-lg font-medium">Contact</a>
+        <a href="#" className="font-subtitle text-gray-300 hover:text-white transition text-lg font-medium">Privacy</a>
+        <a href="#" className="font-subtitle text-gray-300 hover:text-white transition text-lg font-medium">Terms</a>
       </div>
       {/* Bottom Row: Copyright */}
-      <div className="w-full text-center text-gray-400 text-sm sm:text-lg ">
-        © {new Date().getFullYear()} Pencraft. Made by 😎 <a className="hover:text-white transition" href="http://portfolio.varuntd.com" >Varun Prajapati</a>.
+      <div className="w-full text-center text-gray-200 text-sm sm:text-lg">
+        © {new Date().getFullYear()} Pencraft. Made by 😎 <a className="font-body hover:text-white transition" href="http://portfolio.varuntd.com" >Varun Prajapati</a>.
       </div>
     </footer>
   );

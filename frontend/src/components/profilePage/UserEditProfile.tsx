@@ -101,11 +101,11 @@ const UserEditProfile = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Edit Profile</h1>
+      <h1 className="font-title text-2xl font-bold text-gray-900 mb-8">Edit Profile</h1>
       
       {/* Username Change Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Change Username</h2>
+        <h2 className="font-subtitle text-xl font-semibold text-gray-900 mb-4">Change Username</h2>
         
         <div className="space-y-4">
           <div className="relative mb-4">
@@ -119,12 +119,12 @@ const UserEditProfile = () => {
               required
             />
             <span
-              className={`pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${usernameError ? 'text-red-600' : 'text-gray-900'}`}
+              className={`font-body pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${usernameError ? 'text-red-600' : 'text-gray-900'}`}
             >
               New Username
             </span>
             {usernameError && (
-              <div className="text-red-700 text-sm font-semibold mt-1">{usernameError}</div>
+              <div className="font-body text-red-700 text-sm font-semibold mt-1">{usernameError}</div>
             )}
           </div>
 
@@ -149,7 +149,7 @@ const UserEditProfile = () => {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
               </svg>
             )}
-            <span className="hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+            <span className="font-subtitle hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
               {usernameChangeLoading ? 'Changing...' : 'Change Username'}
             </span>
           </button>
@@ -158,7 +158,7 @@ const UserEditProfile = () => {
 
       {/* Password Change Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Change Password</h2>
+        <h2 className="font-subtitle text-xl font-semibold text-gray-900 mb-4">Change Password</h2>
         
         <div className="space-y-4">
           {/* Current Password */}
@@ -173,7 +173,7 @@ const UserEditProfile = () => {
               required
             />
             <span
-              className={`pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${currentPasswordError ? 'text-red-600' : 'text-gray-900'}`}
+              className={`font-body pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${currentPasswordError ? 'text-red-600' : 'text-gray-900'}`}
             >
               Current Password
             </span>
@@ -194,7 +194,7 @@ const UserEditProfile = () => {
               )}
             </button>
             {currentPasswordError && (
-              <div className="text-red-700 text-sm font-semibold mt-1">{currentPasswordError}</div>
+              <div className="font-body text-red-700 text-sm font-semibold mt-1">{currentPasswordError}</div>
             )}
           </div>
 
@@ -210,7 +210,7 @@ const UserEditProfile = () => {
               required
             />
             <span
-              className={`pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${newPasswordError ? 'text-red-600' : 'text-gray-900'}`}
+              className={`font-body pointer-events-none absolute start-2.5 top-2.5 bg-gray-100 rounded-lg px-1 text-sm font-medium transition-all peer-focus:-translate-y-4 peer-focus:scale-90 peer-placeholder-shown:top-2.5 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:bg-white ${newPasswordError ? 'text-red-600' : 'text-gray-900'}`}
             >
               New Password
             </span>
@@ -231,7 +231,7 @@ const UserEditProfile = () => {
               )}
             </button>
             {newPasswordError && (
-              <div className="text-red-700 text-sm font-semibold mt-1">{newPasswordError}</div>
+              <div className="font-body text-red-700 text-sm font-semibold mt-1">{newPasswordError}</div>
             )}
           </div>
 
@@ -257,7 +257,7 @@ const UserEditProfile = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
               </svg>
             )}
-            <span className="hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+            <span className="font-subtitle hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
               {passwordChangeLoading ? 'Changing...' : 'Change Password'}
             </span>
           </button>

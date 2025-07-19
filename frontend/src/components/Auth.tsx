@@ -112,14 +112,14 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   return user ? (
     <Navigate to={"/blogs"} />
   ) : (
-    <div className='h-screen max-w-lg flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
+    <div className='font-subtitle h-screen max-w-lg flex justify-center flex-col ' onKeyDown={handleKeyPress} tabIndex={0}>
       <div className='flex  justify-center text-center'>
         <div className='rounded-2xl p-10 sm:p-16 bg-white/10 backdrop-blur-xl shadow-lg'>
           <div className='px-3 sm:px-10'>
-            <div className='text-3xl text-center text-white font-extrabold'>
+            <div className='font-title text-3xl text-center text-white font-extrabold'>
               {type === 'signup' ? "Create an account" : "Signin to PenCraft"}
             </div>
-            <div className='text-black font-semibold py-2 text-center'>
+            <div className='font-body text-black font-semibold py-2 text-center'>
               {type === 'signin' ? "Don't have an account?" : "Already have an account?" }
               <Link className='pl-2 underline' to={type === "signin" ? "/signup" : "/signin" }>
                 {type === "signin" ? "Sign up" : "Sign in" }
@@ -158,14 +158,14 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
               setPasswordError("");
             }} error={passwordError} />
           </div>
-          <div className=''>
+          <div className='font-subtitle '>
             <button
               onClick={sendRequest}
               ref={submitButtonRef}
               type="button"
               aria-label={type === 'signup' ? 'Sign up' : 'Sign in'}
               disabled={loading}
-              className={` mt-8 w-full md:w-[50%] group relative inline-flex items-center justify-center cursor-pointer rounded-full bg-gray-200
+              className={`mt-8 w-full md:w-[50%] group relative inline-flex items-center justify-center cursor-pointer rounded-full bg-gray-200
                 px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
                 font-semibold text-black shadow transition-all duration-200
                 hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
@@ -214,7 +214,7 @@ interface UsernameInputProps {
 
 const LabelledInput: React.FC<LabelledInputProps> = ({ label, onChange, type, error }) => {
   return (
-    <div className="relative mb-4">
+    <div className="font-subtitle relative mb-4">
       <input
         onChange={onChange}
         id={label.toLowerCase().replace(/\s+/g, '_')}
@@ -238,7 +238,7 @@ const LabelledInput: React.FC<LabelledInputProps> = ({ label, onChange, type, er
 
 const UsernameInput: React.FC<UsernameInputProps> = ({ label, onChange, error, showTooltip, setShowTooltip }) => {
   return (
-    <div className="relative mb-4">
+    <div className="font-subtitle relative mb-4">
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <input

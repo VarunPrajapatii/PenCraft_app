@@ -8,7 +8,7 @@ import BlogImageRenderer from './BlogImageRenderer'
 
 
 const renderList = (items: any[]): JSX.Element => (
-  <ul className="list-disc pl-6 space-y-1">
+  <ul className="list-disc pl-6 space-y-1 font-body">
     {items.map((item, idx) => (
       <li key={item.id || item.content || idx}>
         <span dangerouslySetInnerHTML={{ __html: item.content }} />
@@ -19,7 +19,7 @@ const renderList = (items: any[]): JSX.Element => (
 )
 
 const renderOrderedList = (items: any[]): JSX.Element => (
-  <ol className="list-decimal pl-6 space-y-1">
+  <ol className="list-decimal pl-6 space-y-1 font-body">
     {items.map((item, idx) => (
       <li key={item.id || item.content || idx}>
         <span dangerouslySetInnerHTML={{ __html: item.content }} />
@@ -49,12 +49,11 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
         switch (type) {
           case 'header': {
             const Tag = `h${data.level}` as keyof JSX.IntrinsicElements
-            const className = `font-bold mb-4 ${
-              data.level === 1 ? 'text-4xl' : 
-              data.level === 2 ? 'text-3xl' : 
-              data.level === 3 ? 'text-2xl' : 
-              data.level === 4 ? 'text-xl' : 
-              data.level === 5 ? 'text-lg' : 'text-base'
+            const className = `font-title font-bold mb-4 ${
+              data.level === 1 ? 'text-3xl lg:text-4xl ' : 
+              data.level === 2 ? 'text-2xl lg:text-3xl' : 
+              data.level === 3 ? 'text-xl lg:text-2xl' : 
+              'text-base'
             }`
             return <Tag key={id} className={className}>{data.text}</Tag>
           }
@@ -63,7 +62,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
             return (
               <p
                 key={id}
-                className="mb-4 leading-relaxed"
+                className="font-body mb-4 leading-relaxed text-lg"
                 dangerouslySetInnerHTML={{ __html: data.text }}
               />
             )
@@ -92,7 +91,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
             return (
               <figure key={id} className={`my-8 flex flex-col items-${alignment} w-full`}>
                 <blockquote
-                  className={`relative px-6 py-4 bg-gray-50 border-l-4 border-blue-400 rounded-md shadow-sm text-lg sm:text-xl md:text-2xl font-serif italic text-gray-800 text-${alignment}`}
+                  className={`font-quote relative px-6 py-4 bg-gray-50 border-l-4 border-blue-400 rounded-md shadow-sm text-lg sm:text-xl md:text-2xl italic text-gray-800 text-${alignment}`}
                   style={{
                     marginLeft: alignment === 'left' ? 0 : 'auto',
                     marginRight: alignment === 'right' ? 0 : 'auto',
@@ -101,7 +100,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
                   <span className="block">{data.text}</span>
                 </blockquote>
                 {data.caption && (
-                  <figcaption className="mt-2 text-sm text-gray-500 text-left pl-2">{data.caption}</figcaption>
+                  <figcaption className="font-body mt-2 text-sm text-gray-500 text-left pl-2">{data.caption}</figcaption>
                 )}
               </figure>
             );

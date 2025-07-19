@@ -95,11 +95,11 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                     <div className="pb-2 sm:pb-5  w-full sm:flex justify-between z-10 relative">
                         {/* Title and subtitle */}
                         <div className=' sm:ml-4 mb-6 sm:mb-0 sm:max-w-[65%] text-center sm:text-left'>
-                            <div className='mb-3 text-xl sm:text-2xl lg:text-4xl lg:leading-12 font-semibold text-white'>
+                            <div className='mb-3 text-xl sm:text-2xl lg:text-4xl lg:leading-12 font-title font-semibold text-white'>
                                 <h1>{blog.title}</h1>
                             </div>
                             <div className=''>
-                                <h2 className=' sm:max-w-[70%] text-sm lg:text-xl   text-white/60'>{blog.subtitle}</h2>
+                                <h2 className='font-subtitle sm:max-w-[70%] text-sm lg:text-xl text-white/60'>{blog.subtitle}</h2>
                             </div>
                             {/* If draft, show Publish and Edit buttons, else show claps */}
                             {blog.publishedDate === null ? (
@@ -110,7 +110,7 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                                         onClick={() => {
                                             handleClickEdit();
                                         }}
-                                        className={`group relative inline-flex items-center rounded-full bg-gray-200
+                                        className={`font-subtitle group relative inline-flex items-center rounded-full bg-gray-200
                                     px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
                                     font-semibold text-black shadow transition-all duration-200 cursor-pointer
                                     hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
@@ -163,20 +163,20 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                             </div>
                             <div className=''>
                                 <Link to={`/@${blog.author.username}`} >
-                                    <div className='md:max-h-7 md:w-40 text-sm sm:text-lg  overflow-auto no-scrollbar font-semibold text-white'>
+                                    <div className='font-body md:max-h-7 md:w-40 text-sm sm:text-lg overflow-auto no-scrollbar font-semibold text-white'>
                                         {blog.author.name}
                                     </div>
                                 </Link>
-                                <div className='hidden sm:block text-xs sm:text-sm text-gray-300'>
+                                <div className='font-body hidden sm:block text-xs sm:text-sm text-gray-300'>
                                     <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} minute(s) read`}
                                 </div>
-                                <div className='block sm:hidden text-xs sm:text-sm text-gray-300'>
+                                <div className='font-body block sm:hidden text-xs sm:text-sm text-gray-300'>
                                     <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} min read`}
                                 </div>
                                 <button
                                     type="button"
                                     aria-label="Follow"
-                                    className={`
+                                    className={`font-subtitle
                                         ${(loggedInUserIsAuthor || loading) ? 'hidden' : ''}
                                         rounded-full 
                                         px-6 py-1 mt-1 
