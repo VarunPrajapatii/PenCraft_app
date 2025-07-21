@@ -5,13 +5,11 @@ import { authMiddleware } from "./middleware";
 import { generatePOSTPresignedUrl, getPublicS3Url, deleteS3Object } from "../lib/s3";
 import bcrypt from "bcryptjs";
 
-// Helper function to create Prisma client with Accelerate
 function createPrismaClient(databaseUrl: string) {
   const prisma = new PrismaClient({
     datasourceUrl: databaseUrl,
   });
   
-  // Always use Accelerate since we're using prisma:// URLs for both dev and prod
   return prisma.$extends(withAccelerate()) as any;
 }
 
