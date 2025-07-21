@@ -63,7 +63,7 @@ const Footer = () => {
       </div>
       {/* Bottom Row: Copyright */}
       <div className="w-full text-center text-gray-200 text-sm sm:text-lg">
-        © {new Date().getFullYear()} Pencraft. Made by 😎 <a className="font-body hover:text-white transition" href="http://portfolio.varuntd.com" >Varun Prajapati</a>.
+        © {new Date().getFullYear()} Pencraft. Made by <a className="font-body hover:text-white transition" href="http://portfolio.varuntd.com" >Varun Prajapati</a>.
       </div>
     </footer>
   );
