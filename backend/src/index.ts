@@ -16,7 +16,7 @@ const app = new Hono<{
 console.log("Backend server is running...");
 
 app.use('*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://pencraft-app.pages.dev', 'https://*.workers.dev', 'https://pencraft.varuntd.com'],
   credentials: true,
 }));
 

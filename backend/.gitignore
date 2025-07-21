@@ -16,7 +16,6 @@ node_modules/
 .wrangler
 
 # env
-wrangler.toml
 .env
 .env.production
 .dev.vars
@@ -33,5 +32,4 @@ lerna-debug.log*
 # misc
 .DS_Store
 
-
-*.toml
+wrangler.toml

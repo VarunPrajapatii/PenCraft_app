@@ -7,6 +7,16 @@ import { getPublicS3Url } from '../lib/s3';
 import bcrypt from 'bcryptjs';
 import { authMiddleware } from './middleware';
 
+// Helper function to create Prisma client with Accelerate
+function createPrismaClient(databaseUrl: string) {
+  const prisma = new PrismaClient({
+    datasourceUrl: databaseUrl,
+  });
+  
+  // Always use Accelerate since we're using prisma:// URLs for both dev and prod
+  return prisma.$extends(withAccelerate()) as any;
+}
+
 export const authRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string;
@@ -24,9 +34,7 @@ const clearDomainCookie = `HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0;`;
 
 
 authRouter.post('/signup', async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    const prisma = createPrismaClient(c.env.DATABASE_URL);
 
     try {
       const body = await c.req.json();
@@ -90,9 +98,7 @@ authRouter.post('/signup', async (c) => {
 });
   
 authRouter.post('/signin', async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    const prisma = createPrismaClient(c.env.DATABASE_URL);
   
     const body = await c.req.json();
     const {success} = signinInput.safeParse(body);
@@ -144,9 +150,7 @@ authRouter.post('/signin', async (c) => {
 });
 
 authRouter.get('/me', authMiddleware, async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    const prisma = createPrismaClient(c.env.DATABASE_URL);
 
     const userId = c.get("userId");
 
@@ -184,9 +188,7 @@ authRouter.get('/me', authMiddleware, async (c) => {
 });
 
 authRouter.post('/check-username', async (c) => {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    const prisma = createPrismaClient(c.env.DATABASE_URL);
 
     try {
       const body = await c.req.json();

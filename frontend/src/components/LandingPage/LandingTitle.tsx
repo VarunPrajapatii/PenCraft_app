@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import logo from "/images/PC_logo_light.png";
+// import logo from "/images/PC_logo_light.png";
 
 interface LandingTitleProps {
   title: string;

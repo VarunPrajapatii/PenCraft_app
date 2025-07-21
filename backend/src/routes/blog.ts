@@ -5,6 +5,16 @@ import { createPostInput, updatePostInput } from '@varuntd/pencraft-common';
 import { authMiddleware } from './middleware';
 import { deleteS3Object, generateGETPresignedUrl, generatePOSTPresignedUrl, getPublicS3Url } from '../lib/s3';
 
+// Helper function to create Prisma client with Accelerate
+function createPrismaClient(databaseUrl: string) {
+  const prisma = new PrismaClient({
+    datasourceUrl: databaseUrl,
+  });
+  
+  // Always use Accelerate since we're using prisma:// URLs for both dev and prod
+  return prisma.$extends(withAccelerate()) as any;
+}
+
 
 export const blogRouter = new Hono<{
     Bindings: {
@@ -38,9 +48,7 @@ blogRouter.post("/", async (c) => {
     };
 
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
         
         const blog = await prisma.blog.create({
             data: {
@@ -74,9 +82,7 @@ blogRouter.delete("/", async (c) => {
     const loggedInUserId = c.get("userId");
 
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const blog = await prisma.blog.findUnique({
             where: {
@@ -136,9 +142,7 @@ blogRouter.get("/bulk", async (c) => {
         const limit = Number(c.req.query('limit')) || 8;
         const skip = (page - 1) * limit;
 
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const totalBlogs = await prisma.blog.count({
             where: { published: true }
@@ -214,9 +218,7 @@ blogRouter.get("/bulk", async (c) => {
 // this endpoint is used to get blog by blogId
 blogRouter.get('/:blogId', async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const blogId = c.req.param("blogId");
 
@@ -280,9 +282,7 @@ blogRouter.get('/:blogId', async (c) => {
 blogRouter.post('/:blogId/clap', async (c) => {
     const body = await c.req.json();
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const blogId = c.req.param("blogId");
         
@@ -452,9 +452,7 @@ blogRouter.put('/', async (c) => {
     }
 
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         // Only allow updating blogs owned by the logged-in user
         const blog = await prisma.blog.update({

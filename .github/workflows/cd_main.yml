@@ -1,0 +1,158 @@
+# this automatically deploys changes to production, when main branch is updated and found change
+name: Pencraft Production Deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  detect-changes:
+    name: Detect changes on what to deploy
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      common: ${{ steps.filter.outputs.common }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            common:
+              - 'common/**'
+
+  deploy-common:
+    name: Publish common package
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.common == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: 'common/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: common
+        run: npm ci
+
+      - name: Build package
+        working-directory: common
+        run: npm run build
+
+      - name: Publish to npm
+        working-directory: common
+        run: |
+          npm publish --access=public
+          echo "Common package published successfully!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PENCRAFT_NPM_TOKEN }}
+
+  deploy-backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    needs: [detect-changes, deploy-common]
+    if: needs.detect-changes.outputs.backend == 'true' || needs.deploy-common.result == 'success'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Update to latest common package
+        if: needs.deploy-common.result == 'success'
+        working-directory: backend
+        run: |
+          echo "Updating to latest common package..."
+          sleep 30
+          npm update @varuntd/pencraft-common
+
+      - name: Deploy database migrations
+        working-directory: backend
+        run: |
+          npx prisma migrate deploy
+          npx prisma generate --no-engine
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Deploy to Cloudflare Workers
+        working-directory: backend
+        run: |
+          npx wrangler deploy --minify
+          echo "Backend deployed successfully!"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: [detect-changes, deploy-common]
+    if: needs.detect-changes.outputs.frontend == 'true' || needs.deploy-common.result == 'success'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Update to latest common package
+        if: needs.deploy-common.result == 'success'
+        working-directory: frontend
+        run: |
+          echo "Updating to latest common package..."
+          sleep 30
+          npm ci
+          npm update @varuntd/pencraft-common
+
+      - name: Install dependencies
+        if: needs.deploy-common.result != 'success'
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build application
+        working-directory: frontend
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'ap-south-1' }}
+
+      - name: Deploy to S3
+        working-directory: frontend
+        run: aws s3 sync dist/ s3://pencraft.varuntd.com --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+          echo "Frontend deployed successfully!"
