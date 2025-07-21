@@ -25,10 +25,8 @@ export const userRouter = new Hono<{
 }>();
 
 
-// Middleware to ensure that the user is logged in
 userRouter.use("/*", authMiddleware);
 
-// make a url to upload user profile image
 
 userRouter.get("/profile/:username", async (c) => {
     try {
