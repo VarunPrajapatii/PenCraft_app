@@ -59,6 +59,8 @@ export const createPostInput = z.object({
   published: z.boolean().optional(),
 });
 
+
+
 export const updatePostInput = z.object({
   blogId: z.string(),
   title: z.string().optional(),
