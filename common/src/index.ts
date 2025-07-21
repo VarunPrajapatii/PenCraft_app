@@ -8,7 +8,7 @@ const editorJsBlock = z.object({
 const editorJsContent = z.object({
   time: z.number(),
   blocks: z.array(editorJsBlock),
-  version: z.string(),
+  version: z.string()
 });
 
 export const signupInput = z.object({

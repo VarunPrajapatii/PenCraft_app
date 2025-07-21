@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { ChangeEvent, useRef, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { BACKEND_URL } from '../config'
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from '../redux/types'
@@ -20,7 +20,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
   const [passwordError, setPasswordError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store: RootState) => store.auth.user);
 

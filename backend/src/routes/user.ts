@@ -5,6 +5,16 @@ import { authMiddleware } from "./middleware";
 import { generatePOSTPresignedUrl, getPublicS3Url, deleteS3Object } from "../lib/s3";
 import bcrypt from "bcryptjs";
 
+// Helper function to create Prisma client with Accelerate
+function createPrismaClient(databaseUrl: string) {
+  const prisma = new PrismaClient({
+    datasourceUrl: databaseUrl,
+  });
+  
+  // Always use Accelerate since we're using prisma:// URLs for both dev and prod
+  return prisma.$extends(withAccelerate()) as any;
+}
+
 
 export const userRouter = new Hono<{
     Bindings: {
@@ -24,9 +34,7 @@ userRouter.use("/*", authMiddleware);
 
 userRouter.get("/profile/:username", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const username = c.req.param("username");
 
@@ -111,8 +119,8 @@ userRouter.post("/profileImage/upload", async (c) => {
     };
     const userId = c.get("userId");
 
-    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL })
-      .$extends(withAccelerate());
+    const prisma = createPrismaClient(c.env.DATABASE_URL);
+
 
     // 1️⃣ Check if user already has a profile image and delete it from S3
     const existingUser = await prisma.user.findUnique({
@@ -132,12 +140,10 @@ userRouter.post("/profileImage/upload", async (c) => {
     const uploadUrl = await generatePOSTPresignedUrl(c, key, contentType);
 
     // 3️⃣ Save the key in the user’s record
-    await new PrismaClient({ datasourceUrl: c.env.DATABASE_URL })
-      .$extends(withAccelerate())
-      .user.update({
-        where: { userId },
-        data: { profileImageKey: key },
-      });
+    await prisma.user.update({
+      where: { userId },
+      data: { profileImageKey: key },
+    });
 
     // 4️⃣ Return the presigned URL and the key
     return c.json({ uploadUrl, key });
@@ -154,9 +160,7 @@ userRouter.post("/changeUsername", async (c) => {
     const userId = c.get("userId");
 
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         // If userId valid
         const existingUser = await prisma.user.findUnique({
@@ -215,9 +219,7 @@ userRouter.post("/changePassword", async (c) => {
     const userId = c.get("userId");
 
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         // check if username exists and password matches
         const existingUser = await prisma.user.findUnique({
@@ -263,9 +265,7 @@ userRouter.post("/changePassword", async (c) => {
 
 userRouter.post("/follow/:targetUserId", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const targetUserId = c.req.param("targetUserId");
         const loggedInUserId = c.get("userId");
@@ -324,9 +324,7 @@ userRouter.post("/follow/:targetUserId", async (c) => {
 
 userRouter.post("/unfollow/:targetUserId", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
         const targetUserId = c.req.param("targetUserId");
         const loggedInUserId = c.get("userId");
 
@@ -383,9 +381,7 @@ userRouter.post("/unfollow/:targetUserId", async (c) => {
 
 userRouter.get("/checkIsFollowing/:targetUserId", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const loggedInUserId = c.get("userId");
         const targetUserId = c.req.param("targetUserId");
@@ -421,9 +417,7 @@ userRouter.get("/checkIsFollowing/:targetUserId", async (c) => {
 
 userRouter.get("/:username/userPublishedBlogs", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const userId = c.req.param("username");
 
@@ -475,9 +469,7 @@ userRouter.get("/:username/userPublishedBlogs", async (c) => {
 
 userRouter.get("/:username/userDrafts", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const userId = c.req.param("username");
 
@@ -528,9 +520,7 @@ userRouter.get("/:username/userDrafts", async (c) => {
 
 userRouter.get("/followersList/:username", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const targetUsername = c.req.param("username");
         const user = await prisma.user.findUnique({
@@ -585,9 +575,7 @@ userRouter.get("/followersList/:username", async (c) => {
 
 userRouter.get("/followingsList/:username", async (c) => {
     try {
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate());
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         const targetUsername = c.req.param("username");
         const user = await prisma.user.findUnique({
