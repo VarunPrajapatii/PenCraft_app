@@ -12,7 +12,7 @@ const editorJsBlock = zod_1.default.object({
 const editorJsContent = zod_1.default.object({
     time: zod_1.default.number(),
     blocks: zod_1.default.array(editorJsBlock),
-    version: zod_1.default.string(),
+    version: zod_1.default.string()
 });
 exports.signupInput = zod_1.default.object({
     username: zod_1.default
