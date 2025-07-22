@@ -146,18 +146,18 @@ export const BlogCard = ({
       <Link to={`/blog/${blogId}`}>
         <div className={`
                 sm:pr-2 mt-1 sm:mb-1.5 group
-                ${size == "small" ? "w-full" : "w-[86vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
+                ${size == "small" ? "w-full" : "w-[90vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
                 ${size == "small" ? "h-auto sm:h-28 md:h-32 lg:h-35" : "h-auto sm:h-36 md:h-40 lg:h-44"} 
                 flex flex-col sm:flex-row overflow-hidden
                 rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 shadow-xs 
-                bg-white/50 sm:bg-white/70 backdrop-blur-sm
+                bg-white/75 backdrop-blur-sm
                 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:bg-white/90
                 `}
         >
           {/* Mobile: Upper part - Title and Subtitle */}
           <div className="sm:hidden p-3 pb-2">
-            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} font-title text-center font-semibold leading-[1.2] mb-2 line-clamp-3 overflow-hidden text-ellipsis`}>{title}</h2>
-            <p className={`${size == "small" ? "text-sm" : "text-sm"} font-subtitle text-center leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis text-gray-600`}>{subtitle}</p>
+            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} font-title font-semibold leading-[1.2] mb-2 line-clamp-2 overflow-hidden text-ellipsis`}>{title}</h2>
+            <p className={`${size == "small" ? "text-sm" : "text-sm"} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis text-gray-600`}>{subtitle}</p>
           </div>
 
           {/* Mobile: Lower part - Image and Info */}
@@ -215,17 +215,15 @@ export const BlogCard = ({
             />
           </div>
 
-          {/* Desktop: Right - Content (hidden on mobile) */}
-          <div className="hidden sm:flex pl-2 sm:pl-3 pr-1 w-[75%] sm:w-[78%] md:w-[70%] flex-col justify-between">
-            {/* title and subtitle */}
-            <div className=''>
-              <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-title font-bold leading-[1.2] py-2 sm:py-3 line-clamp-2 overflow-hidden text-ellipsis`}>{title}</h2>
-              <p className={`${size == "small" ? "text-sm lg:text-sm" : "text-base lg:text-base "} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis`}>{subtitle}</p>
-            </div>
+            {/* Desktop: Right - Content (hidden on mobile) */}
+            <div className="hidden sm:flex pl-2 sm:pl-3 pr-1 w-[75%] sm:w-[78%] md:w-[70%] flex-col justify-between">
+              {/* title and subtitle */}
+              <div className='py-2 sm:py-3'>
+                <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-title font-bold leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis mb-3`}>{title}</h2>
+                <p className={`${size == "small" ? "text-sm lg:text-sm" : "text-base lg:text-base "} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis`}>{subtitle}</p>
+              </div>
 
-            <div className=" h-[1px] w-py bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-
-            {/* Author info and article info*/}
+              <div className=" h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>            {/* Author info and article info*/}
             <div className='font-body flex flex-col sm:flex-row justify-between gap-2 sm:gap-0'>
               {/* author info */}
               <div className={`${size == "small" ? "hidden" : ""} flex items-center `}>

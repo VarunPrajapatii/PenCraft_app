@@ -39,11 +39,11 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
       <div
         className={`
           sm:pr-2 mt-1 sm:mb-1.5
-          ${size == "small" ? "w-full" : "w-[100vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
+          ${size == "small" ? "w-full" : "w-[90vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
           ${size == "small" ? "h-auto sm:h-28 md:h-32 lg:h-35" : "h-auto sm:h-36 md:h-40 lg:h-44"} 
           flex flex-col sm:flex-row overflow-hidden
           rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 shadow-xs 
-          bg-white/90  backdrop-blur-sm
+          bg-white/75  backdrop-blur-sm
         `}
       >
         {/* Mobile: Upper part - Title and Subtitle */}
