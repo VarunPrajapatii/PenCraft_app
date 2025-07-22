@@ -220,7 +220,7 @@ const LabelledInput: React.FC<LabelledInputProps> = ({ label, onChange, type, er
         id={label.toLowerCase().replace(/\s+/g, '_')}
         type={type || "text"}
         placeholder=""
-        className={`peer w-full rounded-lg border bg-gray-100 p-2.5 text-sm text-gray-900 ${error ? 'border-red-500' : ''}`}
+        className={`peer w-full rounded-lg border bg-gray-100 p-2.5 text-sm focus:outline-none text-gray-900 ${error ? 'border-red-500' : ''}`}
         required
       />
       <span
@@ -246,7 +246,7 @@ const UsernameInput: React.FC<UsernameInputProps> = ({ label, onChange, error, s
             id={label.toLowerCase().replace(/\s+/g, '_')}
             type="text"
             placeholder=""
-            className={`peer w-full rounded-lg border bg-gray-100 p-2.5 text-sm text-gray-900 ${error ? 'border-red-500' : ''}`}
+            className={`peer w-full rounded-lg border bg-gray-100 p-2.5 text-sm text-gray-900 focus:outline-none ${error ? 'border-red-500' : ''}`}
             required
           />
           <span

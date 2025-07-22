@@ -95,7 +95,7 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                     <div className="pb-2 sm:pb-5  w-full sm:flex justify-between z-10 relative">
                         {/* Title and subtitle */}
                         <div className=' sm:ml-4 mb-6 sm:mb-0 sm:max-w-[65%] text-center sm:text-left'>
-                            <div className='mb-3 text-xl sm:text-2xl lg:text-4xl lg:leading-12 font-title font-semibold text-white'>
+                            <div className='mb-3 text-xl sm:text-2xl lg:text-4xl lg:leading-12 font-title font-bold text-white'>
                                 <h1>{blog.title}</h1>
                             </div>
                             <div className=''>

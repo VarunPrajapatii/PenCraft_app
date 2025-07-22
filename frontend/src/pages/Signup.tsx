@@ -13,10 +13,11 @@ const Signup = () => {
         onClick={() => window.location.href = '/'}
       />
       <img
-        src={bg_img}
-        alt="bg-img"
-        className="-z-50 fixed top-0 left-0 w-full h-full object-cover object-center brightness-20 border-none opacity-70 blur-[5px]"
+          src={bg_img}
+          alt="bg-img"
+          className="-z-50 fixed top-0 left-0 w-screen h-screen object-cover object-center brightness-90 opacity-75  m-0 p-0"
       />
+      <div className='-z-40 fixed top-0 left-0 w-screen backdrop-blur-xs h-screen'></div>
       <div className="fixed top-0 -z-10 h-full w-full bg-black/20"><div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(93,95,194,0.5)] opacity-50 blur-[80px]"></div></div>
       <div className="fixed top-0 -z-10 h-full w-full "><div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[170%] translate-y-[20%] rounded-full bg-[rgba(93,95,194,0.5)] opacity-50 blur-[80px]"></div></div>
       <div className='grid grid-cols-1 lg:grid-cols-2 min-h-screen'>

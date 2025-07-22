@@ -1,6 +1,8 @@
 import { useIsFollowing, useUserFollowers } from "../../hooks/hooks";
 import { formatDate, handleFollowUnfollow } from "../../utils/generalUtils";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/types";
 import defaultProfilePicture from "/images/default_profile_picture.jpg"; // fallback image
 
 const UserFollowers = () => {
@@ -33,7 +35,7 @@ const UserFollowers = () => {
           </div>
         ) : (
           followers.map(follower => (
-            <UserCardFollower 
+            <UserCardFollower
               key={follower.userId}
               user={{
                 userId: follower.userId,
@@ -41,7 +43,7 @@ const UserFollowers = () => {
                 username: follower.username,
                 profileImageKey: follower.profileImageUrl || follower.profileImageKey,
                 createdAt: formatDate(follower.createdAt),
-              }} 
+              }}
             />
           ))
         )}
@@ -66,6 +68,8 @@ export const UserCardFollower = ({ user }: UserCardProps) => {
   const { loading, isFollowing, updateFollowStatus } = useIsFollowing({
     authorId: user.userId,
   });
+  const currentLoggedInUserId = useSelector((store: RootState) => store.auth.user);
+  const isCurrentUser = currentLoggedInUserId === user.userId;
 
   const handleFollowUnfollowClick = async () => {
     await handleFollowUnfollow(
@@ -107,28 +111,30 @@ export const UserCardFollower = ({ user }: UserCardProps) => {
         </div>
       </div>
 
-      {/* Follow/Unfollow Button */}
+      {/* hide if current user */}
       <div className="flex-shrink-0">
-        <button
-          type="button"
-          aria-label={isFollowing ? "Unfollow" : "Follow"}
-          className={`
-            rounded-full px-4 py-2 sm:px-6 sm:py-1 font-semibold text-sm shadow transition-all duration-200
-            hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-            hover:shadow-lg hover:scale-105 hover:text-red-800
-            active:scale-95 active:shadow
-            focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
-            ${isFollowing
-              ? "bg-gray-100 text-gray-700 border border-gray-300"
-              : "bg-blue-500 text-white border border-blue-500"
-            }
-            ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-          `}
-          onClick={handleFollowUnfollowClick}
-          disabled={loading}
-        >
-          {loading ? "..." : isFollowing ? "Unfollow" : "Follow"}
-        </button>
+        {!isCurrentUser && (
+          <button
+            type="button"
+            aria-label={isFollowing ? "Unfollow" : "Follow"}
+            className={`
+              rounded-full px-4 py-2 sm:px-6 sm:py-1 font-semibold text-sm shadow transition-all duration-200
+              hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+              hover:shadow-lg hover:scale-105 hover:text-red-800
+              active:scale-95 active:shadow
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
+              ${isFollowing
+                ? "bg-gray-100 text-gray-700 border border-gray-300"
+                : "bg-blue-500 text-white border border-blue-500"
+              }
+              ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+            `}
+            onClick={handleFollowUnfollowClick}
+            disabled={loading}
+          >
+            {loading ? "..." : isFollowing ? "Unfollow" : "Follow"}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -184,13 +190,13 @@ export const UserCardShimmer = () => {
       <div className="flex-shrink-0">
         <div className="w-16 h-16 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gray-300"></div>
       </div>
-      
+
       {/* Name and meta Shimmer */}
       <div className="flex-1 flex flex-col justify-center text-center sm:text-left sm:ml-4">
         <div className="h-5 bg-gray-300 rounded mb-2 w-32 sm:w-24 lg:w-32 mx-auto sm:mx-0"></div>
         <div className="h-4 bg-gray-200 rounded w-48 sm:w-36 lg:w-48 mx-auto sm:mx-0"></div>
       </div>
-      
+
       {/* Button Shimmer */}
       <div className="flex-shrink-0">
         <div className="h-8 w-20 bg-gray-300 rounded-full"></div>

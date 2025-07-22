@@ -251,7 +251,7 @@ export const BlogCard = ({
               <div className='font-subtitle flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600'>
                 <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
                 <div className="text-lg sm:text-2xl p-1">{publishedDate? "•" : ""}</div>
-                <span className="hidden sm:block"><span className="hidden lg:block">{publishedDate? "Published on " : ""}</span> {formatDate(publishedDate)}</span>
+                <span className="hidden sm:block">{publishedDate? "Published on " : ""}{formatDate(publishedDate)}</span>
                 <span className="sm:hidden">{formatDate(publishedDate)}</span>
               </div>
 

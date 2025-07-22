@@ -97,7 +97,7 @@ const ProfileDropdown = () => {
 
                             <div className="relative space-y-1">
                                 {/* View Profile */}
-                                <Link to={`/@${username}`} >
+                                <Link to={`/@${username}`} onClick={() => setIsOpen(false)}>
                                     <button className="w-full flex items-center px-2 py-2 text-black hover:bg-gray-700/50 hover:text-gray-100 hover:backdrop-blur-xl rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer">
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent  to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                                         <svg className="relative h-4.5 w-4.5  mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +108,7 @@ const ProfileDropdown = () => {
                                 </Link>
 
                                 {/* Settings */}
-                                <Link to={`/@${username}/editProfile`}>
+                                <Link to={`/@${username}/editProfile`} onClick={() => setIsOpen(false)}>
                                     <button className="w-full flex items-center px-2 py-2  text-black hover:bg-gray-700/50 hover:text-gray-100 hover:backdrop-blur-2xl rounded-xl transition-all duration-200 group relative overflow-hidden cursor-pointer">
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                                         <svg className="relative h-5 w-5 mr-3 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { authenticate } from "../redux/slice/authSlice";
 
 
+
 const ProfileLayout = () => {
     // Profile image upload states
     const [uploadingImage, setUploadingImage] = useState(false);
@@ -66,7 +67,6 @@ const ProfileLayout = () => {
             setUploadingImage(true);
             setUploadStatus('idle');
 
-            // Step 1: Get presigned upload URL from backend
             const uploadResponse = await axios.post(
                 `${BACKEND_URL}/api/v1/user/profileImage/upload`,
                 {
@@ -77,35 +77,36 @@ const ProfileLayout = () => {
                     withCredentials: true,
                 }
             );
-
             const { uploadUrl } = uploadResponse.data;
 
-            // Step 2: Upload file directly to S3 using presigned URL
             await axios.put(uploadUrl, file, {
                 headers: {
                     'Content-Type': file.type
                 }
             });
 
-            // Step 3: Show preview of uploaded image immediately
             const previewUrl = URL.createObjectURL(file);
-            setUploadStatus('success');
             setProfileImageUrl(previewUrl);
+            setUploadStatus('success');
             
-            // Show success message
-            console.log('✅ Profile image uploaded successfully!');
-            
-            // Refresh to get the updated profile image from backend
-            setTimeout(() => {
-                window.location.reload();
-            }, 5000);
-            
-            dispatch(authenticate({
-                user: localStorage.getItem("pencraft_user"),
-                name: localStorage.getItem("pencraft_name"),
-                username: localStorage.getItem("pencraft_username"),
-                profileImageUrl: previewUrl
-            }));
+            setTimeout(async () => {
+                try {
+                    const userResponse = await axios.get(`${BACKEND_URL}/api/v1/auth/me`, {
+                        withCredentials: true,
+                    });
+                    
+                    dispatch(authenticate(userResponse.data));
+                    
+                    URL.revokeObjectURL(previewUrl);
+                    window.location.reload();
+
+                    
+                } catch (error) {
+                    console.error('Failed to refresh profile data:', error);
+                    //if API call fails
+                    window.location.reload();
+                }
+            }, 1500);
 
         } catch (error) {
             console.error('Failed to upload profile image:', error);
@@ -267,7 +268,7 @@ const ProfileLayout = () => {
                                         </Link>
                                         <div className="flex flex-col items-center">
                                             <div className="font-medium">Claps</div>
-                                            <div className="mt-0.5">2000</div>
+                                            <div className="mt-0.5">{userProfileDetails?.totalClaps ? userProfileDetails.totalClaps : 0}</div>
                                         </div>
                                     </div>
 
@@ -284,7 +285,10 @@ const ProfileLayout = () => {
                                     active:scale-95 active:shadow
                                     focus:outline-none  ring-offset-1 
                                     ${isFollowing ? 'bg-white/40 text-black/80 ' : 'bg-gray-200'}`}
-                                        onClick={handleFollowUnfollowClick}
+                                        onClick={async () => {
+                                            await handleFollowUnfollowClick()
+                                            window.location.reload()
+                                        }}
                                     >
                                         {isFollowing ? "Unfollow" : "Follow"}
                                     </button>
@@ -321,7 +325,7 @@ const ProfileLayout = () => {
                                         <div className="flex">
                                             <button
                                                 className={`font-subtitle flex-1 md:flex-none md:mr-8 p-2 sm:p-3 text-center border-b-2 transition-colors
-                                                ${isOwnProfile ? '' : 'hidden'}
+                                                
                                                 ${(!isDrafts && !(
                                                     location.pathname === `/${routeUsername}/editProfile` ||
                                                     location.pathname === `/${routeUsername}/followers` ||
@@ -334,7 +338,7 @@ const ProfileLayout = () => {
                                                 Published
                                             </button>
                                             <button
-                                                className={`font-subtitle flex-1 md:flex-none p-2 sm:p-3 text-center border-b-2 transition-colors
+                                                className={`font-subtitle flex-1 md:flex-none p-2 sm:p-3 text-center border-b-2 transition-colors ${isOwnProfile ? '' : 'hidden'}
                                                 ${isDrafts 
                                                         ? 'border-purple-600 text-purple-600'
                                                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
