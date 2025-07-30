@@ -1,5 +1,6 @@
 import { OutputData } from "@editorjs/editorjs";
 import { UserProfileDetails } from "../hooks/hooks";
+import { DarkModeState } from "./slice/darkModeSlice";
 
 export interface AuthState {
     user: string | null;
@@ -22,4 +23,5 @@ export interface RootState {
     auth: AuthState;
     loggedInUserDetails: UserProfileDetails;
     draftPostEdit: DraftState;
+    darkMode: DarkModeState;
 }

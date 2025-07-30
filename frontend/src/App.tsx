@@ -21,6 +21,7 @@ import { authenticate, logout } from './redux/slice/authSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/types';
 import FullScreenLoading from './components/shimmers/FullScreenLoading';
+import ThemeProvider from './components/ThemeProvider';
 
 function App() {
   function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -62,7 +63,7 @@ function App() {
 
 
   return (
-    <>
+    <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -92,7 +93,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </>
+    </ThemeProvider>
   )
 }
 

@@ -10,6 +10,9 @@
   --font-quote:   "Winky Rough", cursive;
 }
 
+/* Configure Tailwind v4 dark mode to use class-based instead of media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Scrollbar hide style for Tailwind CSS */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
