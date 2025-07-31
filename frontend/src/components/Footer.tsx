@@ -1,19 +1,14 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/types";
-import logolight from "/images/PenCraft_logo_light.png";
 import logodark from "/images/PenCraft_logo_dark.png";
-import subtitleLogolight from "/images/PenCraft_subtitle_dark.png"
 import subtitleLogodark from "/images/PenCraft_subtitle_dark.png"
 
 
 const Footer = () => {
-  const { isDarkMode } = useSelector((store: RootState) => store.darkMode);
   return (
-    <footer className="absolute z-10  w-full h-[35vh] bg-emerald-950 dark:to-emerald-950/80 shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
+    <footer className="absolute z-10  w-full h-[35vh] bg-emerald-950 shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
       <div className="flex w-full items-center justify-between mb-6">
         <div className="flex items-center">
-          <img src={isDarkMode ? logodark : logolight} alt="Pencraft Logo" className="h-[6vh] mr-4" />
-          <img src={isDarkMode ? subtitleLogodark : subtitleLogolight} className="hidden lg:block  h-[5vh]" />
+          <img src={logodark} alt="Pencraft Logo" className="h-[6vh] mr-4" />
+          <img src={subtitleLogodark} className="hidden lg:block  h-[5vh]" />
         </div>
         <div className="flex gap-4">
           <button className="group rounded-full bg-white/20 hover:bg-white/40 p-2 transition"
