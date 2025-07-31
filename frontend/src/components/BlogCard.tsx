@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useDeleteBlog } from "../hooks/hooks";
 import { getConsistentGradient } from "../utils/gradientUtils";
 import { calculateReadingTime } from "../utils/generalUtils";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/types";
 
 
 interface BlogCardProps {
@@ -21,6 +23,7 @@ interface BlogCardProps {
   publishedDate: string;
   claps: number;
   size: "small" | "large";
+  showDeleteButton?: boolean; // New prop to control delete button visibility
 }
 
 export const BlogCard = ({
@@ -34,11 +37,16 @@ export const BlogCard = ({
   content,
   publishedDate,
   claps,
-  size
+  size,
+  showDeleteButton = false // Default to false
 }: BlogCardProps) => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { deleteLoading, deleteBlog } = useDeleteBlog();
+  
+  // Get current user from Redux store
+  const currentUser = useSelector((store: RootState) => store.auth.username);
+  const isAuthor = currentUser && authorUsername && currentUser.toLowerCase() === authorUsername.toLowerCase();
   
   const formatDate = (dateString: string): string => {
     if (!dateString) return "";
@@ -70,8 +78,8 @@ export const BlogCard = ({
 
   return (
     <div className="relative">
-      {/* Delete Button */}
-      {!publishedDate && (
+      {/* Delete Button - Show only when showDeleteButton is true and user is the author */}
+      {showDeleteButton && isAuthor && (
         <button
           onClick={handleDeleteClick}
           className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-red-500/80 hover:bg-red-600/90 text-white transition-all duration-200 hover:scale-105"
@@ -95,10 +103,11 @@ export const BlogCard = ({
           {/* Popup */}
           <div className="relative bg-white/20 dark:bg-gray-800/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 w-full max-w-sm mx-auto">
             <h3 className="font-title text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 text-center">
-              Delete Blog
+              Delete {publishedDate ? "Published " : "Draft "}Blog
             </h3>
             <p className="font-body text-gray-700 dark:text-gray-300 mb-6 text-center">
-              Are you sure you want to delete this blog? This action cannot be undone.
+              Are you sure you want to delete this {publishedDate ? "published " : "draft "}blog? 
+              {publishedDate && " This will remove it from public view and"} This action cannot be undone.
             </p>
             
             <div className="flex items-center gap-4">

@@ -78,49 +78,85 @@ blogCrudRouter.delete("/", async (c) => {
     try {
         const prisma = createPrismaClient(c.env.DATABASE_URL);
 
+        // Find the blog post to verify ownership and get details
         const blog = await prisma.blog.findUnique({
-            where: {
-                blogId: blogId,
-                authorId: loggedInUserId,
-                published: false
-            }
+            where: { blogId: blogId },
         });
 
-        if (!blog) {
+        if (!blog || blog.authorId !== loggedInUserId) {
             return c.json({ error: "Blog not found or you are not the author" }, 404);
         }
 
-        // delete the banner image from S3 if it exists
-        if (blog.bannerImageKey) {
-            await deleteS3Object(c, blog.bannerImageKey);
-        }
-
-        let imageKeys: any[] = [];
-        if (blog.content) {
-            let contentObj: any = blog.content;
-            if (contentObj && Array.isArray(contentObj.blocks)) {
-                contentObj.blocks.forEach((block: any) => {
-                    if (block.type === "image" && block.data?.file?.url) {
-                        imageKeys.push(block.data.file.url);
-                    }
-                });
+        // Delete the banner image from S3 if it exists
+        if (blog.bannerImageKey && blog.bannerImageKey.trim() !== "") {
+            try {
+                await deleteS3Object(c, blog.bannerImageKey);
+                console.log(`Successfully deleted banner image: ${blog.bannerImageKey}`);
+            } catch (error) {
+                console.error(`Failed to delete banner image ${blog.bannerImageKey}:`, error);
+                // Continue with deletion even if banner image deletion fails
             }
         }
 
-        await Promise.all(imageKeys.map(imageKey => deleteS3Object(c, imageKey)));
+        // Extract and delete all content images from S3
+        let imageKeys: string[] = [];
+        if (blog.content) {
+            try {
+                let contentObj: any = blog.content;
+                if (contentObj && Array.isArray(contentObj.blocks)) {
+                    contentObj.blocks.forEach((block: any) => {
+                        if (block.type === "image" && block.data?.file?.url) {
+                            const imageKey = block.data.file.url;
+                            imageKeys.push(imageKey);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error parsing blog content for image extraction:", error);
+            }
+        }
 
+        // Delete all content images from S3
+        if (imageKeys.length > 0) {
+            try {
+                const deletionResults = await Promise.allSettled(
+                    imageKeys.map(imageKey => deleteS3Object(c, imageKey))
+                );
+                
+                deletionResults.forEach((result, index) => {
+                    if (result.status === 'fulfilled') {
+                        console.log(`Successfully deleted content image: ${imageKeys[index]}`);
+                    } else {
+                        console.error(`Failed to delete content image ${imageKeys[index]}:`, result.reason);
+                    }
+                });
+            } catch (error) {
+                console.error("Error deleting content images:", error);
+                // Continue with blog deletion even if some images fail to delete
+            }
+        }
+
+        // Finally, delete the blog from database
         await prisma.blog.delete({
             where: {
                 blogId: blogId
             }
         });
 
-        return c.json({ message: "Blog deleted successfully" }, 200);
+        console.log(`Successfully deleted blog: ${blogId}`);
+        return c.json({ 
+            message: "Blog deleted successfully",
+            deletedImages: {
+                banner: blog.bannerImageKey ? 1 : 0,
+                content: imageKeys.length
+            }
+        }, 200);
 
     } catch (error) {
+        console.error("Error in blog deletion:", error);
         c.status(500);
         const errorMessage = error && typeof error === 'object' && 'message' in error 
-            ? "Something went wrong while processing your request" + String(error.message) 
+            ? "Something went wrong while processing your request: " + String(error.message) 
             : "Something went wrong while processing your request";
             
         return c.text(errorMessage);
@@ -168,7 +204,7 @@ blogCrudRouter.get("/bulk", async (c) => {
             }
         });
         
-        const blogsWithUrls = blogs.map(blog => {
+        const blogsWithUrls = blogs.map((blog: any) => {
             let bannerImageUrl = null;
             if (blog.bannerImageKey) {
                 bannerImageUrl = getPublicS3Url(c, blog.bannerImageKey);
@@ -288,10 +324,20 @@ blogCrudRouter.put('/', async (c) => {
         const prisma = createPrismaClient(c.env.DATABASE_URL);
 
         // Only allow updating blogs owned by the logged-in user
+        // First find the blog to verify ownership
+        const existingBlog = await prisma.blog.findUnique({
+            where: { blogId: body.blogId },
+            select: { authorId: true }
+        });
+
+        if (!existingBlog || existingBlog.authorId !== loggedInUserId) {
+            c.status(404);
+            return c.json({ error: "Blog not found or you are not the author" });
+        }
+
         const blog = await prisma.blog.update({
             where: {
                 blogId: body.blogId,
-                authorId: loggedInUserId,
             },
             data: {
                 title: body.title,
