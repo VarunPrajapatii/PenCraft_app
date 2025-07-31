@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { OutputData } from "@editorjs/editorjs";
 
 export const formatDate = (dateString: string): string => {
     const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long", year: "numeric" };
@@ -66,4 +67,96 @@ export const createFollowHandler = (
             updateFollowStatus
         );
     };
+};
+
+/**
+ * Calculates estimated reading time for blog content
+ * @param content - The blog content object (Editor.js OutputData format)
+ * @param wordsPerMinute - Average reading speed (default: 200 words per minute)
+ * @returns String representation of reading time (e.g., "1 minute read", "5 minutes read")
+ */
+export const calculateReadingTime = (content: OutputData, wordsPerMinute: number = 200): string => {
+    if (!content || !content.blocks || !Array.isArray(content.blocks)) {
+        return "1 minute read";
+    }
+
+    let totalText = "";
+
+    // Extract text from different block types
+    content.blocks.forEach((block) => {
+        try {
+            switch (block.type) {
+                case "paragraph":
+                case "header":
+                    if (block.data && block.data.text) {
+                        // Remove HTML tags and get plain text
+                        const plainText = String(block.data.text).replace(/<[^>]*>/g, '');
+                        totalText += plainText + " ";
+                    }
+                    break;
+                case "list":
+                    if (block.data && block.data.items && Array.isArray(block.data.items)) {
+                        block.data.items.forEach((item: unknown) => {
+                            // Handle different item types (string, object, etc.)
+                            let itemText = "";
+                            if (typeof item === 'string') {
+                                itemText = item;
+                            } else if (typeof item === 'object' && item !== null) {
+                                // If item is an object, try to extract text from common properties
+                                const itemObj = item as Record<string, unknown>;
+                                itemText = String(itemObj.text || itemObj.content || JSON.stringify(item));
+                            } else {
+                                itemText = String(item);
+                            }
+                            const plainText = itemText.replace(/<[^>]*>/g, '');
+                            totalText += plainText + " ";
+                        });
+                    }
+                    break;
+                case "quote":
+                    if (block.data && block.data.text) {
+                        const plainText = String(block.data.text).replace(/<[^>]*>/g, '');
+                        totalText += plainText + " ";
+                    }
+                    break;
+                case "code":
+                    if (block.data && block.data.code) {
+                        // Code blocks count as text too
+                        totalText += String(block.data.code) + " ";
+                    }
+                    break;
+                case "table":
+                    if (block.data && block.data.content && Array.isArray(block.data.content)) {
+                        block.data.content.forEach((row: unknown) => {
+                            if (Array.isArray(row)) {
+                                row.forEach((cell: unknown) => {
+                                    const plainText = String(cell).replace(/<[^>]*>/g, '');
+                                    totalText += plainText + " ";
+                                });
+                            }
+                        });
+                    }
+                    break;
+                default:
+                    // For other block types, try to extract any text content
+                    if (block.data && typeof block.data === 'object') {
+                        const blockText = JSON.stringify(block.data).replace(/<[^>]*>/g, '');
+                        totalText += blockText + " ";
+                    }
+                    break;
+            }
+        } catch (error) {
+            // If there's an error processing a block, skip it and continue
+            console.warn('Error processing block for reading time calculation:', error);
+        }
+    });
+
+    // Count words (split by whitespace and filter out empty strings)
+    const wordCount = totalText.trim().split(/\s+/).filter(word => word.length > 0).length;
+    
+    // Calculate reading time in minutes
+    const readingTimeMinutes = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+    
+    // Return formatted string
+    return readingTimeMinutes === 1 ? "1 minute read" : `${readingTimeMinutes} minutes read`;
 };

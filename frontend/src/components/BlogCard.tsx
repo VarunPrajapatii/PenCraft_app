@@ -6,6 +6,7 @@ import { OutputData } from "@editorjs/editorjs";
 import { useState } from "react";
 import { useDeleteBlog } from "../hooks/hooks";
 import { getConsistentGradient } from "../utils/gradientUtils";
+import { calculateReadingTime } from "../utils/generalUtils";
 
 
 interface BlogCardProps {
@@ -202,7 +203,7 @@ export const BlogCard = ({
               {/* Bottom: Read time, Date, and Claps */}
               <div className="flex flex-col gap-1">
                 <div className='font-body text-xs text-gray-600 dark:text-gray-400'>
-                  {`${Math.ceil(content.toString().length / 1000)} min read ${publishedDate ? "•" : ""} ${publishedDate ? formatDate(publishedDate) : ""}`}
+                  {`${calculateReadingTime(content)} ${publishedDate ? "•" : ""} ${publishedDate ? formatDate(publishedDate) : ""}`}
                 </div>
                 <div className='font-body flex text-sm gap-3 text-gray-800 dark:text-gray-200'>
                   <div className='flex items-center gap-1'>
@@ -265,7 +266,7 @@ export const BlogCard = ({
 
               {/* Readtime info */}
               <div className='font-subtitle flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600 dark:text-gray-400'>
-                <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
+                <div className="">{calculateReadingTime(content)}</div>
                 <div className="text-lg sm:text-2xl p-1">{publishedDate? "•" : ""}</div>
                 <span className="hidden sm:block">{publishedDate? "Published on " : ""}{formatDate(publishedDate)}</span>
                 <span className="sm:hidden">{formatDate(publishedDate)}</span>

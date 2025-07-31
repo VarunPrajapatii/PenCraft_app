@@ -7,7 +7,7 @@ import { ClickableClapIcon } from "../Icons/ClapIcon"
 import defaultProfilePicture from "/images/default_profile_picture.jpg"
 import bannerDark from "/images/default_banner_dark.jpeg"
 import { Link, useNavigate } from "react-router-dom"
-import { formatDate, handleFollowUnfollow } from "../../utils/generalUtils"
+import { formatDate, handleFollowUnfollow, calculateReadingTime } from "../../utils/generalUtils"
 import axios from "axios"
 import { BACKEND_URL } from "../../config"
 import { useDispatch } from "react-redux"
@@ -169,10 +169,10 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                                     </div>
                                 </Link>
                                 <div className='font-body hidden sm:block text-xs sm:text-sm text-gray-300'>
-                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} minute(s) read`}
+                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {calculateReadingTime(blog.content)}
                                 </div>
                                 <div className='font-body block sm:hidden text-xs sm:text-sm text-gray-300'>
-                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {`${Math.ceil(blog.content.toString().length / 700)} min read`}
+                                    <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {calculateReadingTime(blog.content)}
                                 </div>
                                 <button
                                     type="button"
