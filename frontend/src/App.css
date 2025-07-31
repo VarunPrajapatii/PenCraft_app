@@ -13,13 +13,11 @@
 /* Configure Tailwind v4 dark mode to use class-based instead of media query */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Scrollbar hide style for Tailwind CSS */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa transparent;
 }
 
 
@@ -27,23 +25,14 @@
 /* Custom styles for the scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: #a78bfa #ffffff;   /* thumb color, track color */
+  scrollbar-color: #a78bfa transparent;   /* thumb color, track color (transparent) */
 }
 
 
-/* Chrome, Edge, Safari */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-  background: #ffffff; /* track color */
-}
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #a78bfa; /* thumb color */
-  border-radius: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed; /* thumb color on hover */
+/* Remove scrollbar buttons (up/down arrows) */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
 }
 
 .editorjs-wrapper {
@@ -184,6 +173,40 @@ h3.ce-header {
 
 #blog-content li:last-child {
   margin-bottom: 0;
+}
+
+/* EditorJS Dark Mode - Minimal styles */
+.dark .editorjs-wrapper {
+  color: #ffffff;
+}
+
+.dark .editorjs-wrapper .ce-paragraph,
+.dark .editorjs-wrapper .ce-block__content,
+.dark .editorjs-wrapper .ce-header,
+.dark .editorjs-wrapper [contenteditable="true"] {
+  color: #ffffff !important;
+  caret-color: #ffffff !important;
+}
+
+.dark .editorjs-wrapper .ce-paragraph[data-placeholder]:empty::before,
+.dark .editorjs-wrapper .ce-header[data-placeholder]:empty::before,
+.dark .editorjs-wrapper [contenteditable="true"]:empty::before {
+  color: #9ca3af !important;
+}
+
+/* Only the main toolbar SVG icons - plus and settings */
+.dark .editorjs-wrapper .ce-toolbar__plus svg,
+.dark .editorjs-wrapper .ce-toolbar__settings-btn svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* EditorJS selected block text - make it black for visibility */
+.dark .editorjs-wrapper .ce-block--selected,
+.dark .editorjs-wrapper .ce-block--selected .ce-paragraph,
+.dark .editorjs-wrapper .ce-block--selected .ce-header,
+.dark .editorjs-wrapper .ce-block--selected [contenteditable="true"] {
+  color: #000000 !important;
 }
 
 

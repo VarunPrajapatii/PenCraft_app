@@ -139,7 +139,7 @@ const ProfileLayout = () => {
     return (
         <>
             <div>
-                <div className="relative min-h-screen mt-4 sm:mt-0">
+                <div className="relative min-h-screen mt-4 sm:mt-0 dark:bg-black/85">
                     <div>
                         {/* Background - responsive height */}
                         <div className="absolute w-full h-50 top-0 -z-10">
@@ -148,7 +148,7 @@ const ProfileLayout = () => {
                                 src={profleInfo_top_bg}
                                 alt="Background"
                             />
-                            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+                            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent"></div>
                         </div>
 
                         {/* Main content with responsive layout */}
@@ -235,7 +235,7 @@ const ProfileLayout = () => {
 
                                     {/* Bio - responsive padding */}
                                     <div className=" mt-4 sm:mt-5 md:mt-6 text-center max-w-xs">
-                                        <p className="font-body text-sm sm:text-base text-gray-700">
+                                        <p className="font-body text-sm sm:text-base text-gray-700 dark:text-gray-300">
                                             {userProfileDetails?.bio || "Passionate writer, avid reader, and lifelong learner. Sharing stories, insights, and inspiration one post at a time."}
                                         </p>
                                         
@@ -253,7 +253,7 @@ const ProfileLayout = () => {
                                     </div>
 
                                     {/* Stats - responsive layout */}
-                                    <div className="font-subtitle w-full mt-4 sm:mt-5 text-base sm:text-lg md:text-xl flex sm:block lg:flex justify-around">
+                                    <div className="font-subtitle w-full mt-4 sm:mt-5 text-base sm:text-lg md:text-xl flex sm:block lg:flex justify-around text-gray-800 dark:text-gray-200">
                                         <Link to={`${routeUsername}/followers`}>
                                             <div className="flex flex-col items-center">
                                                 <div className="font-medium">Followers</div>
@@ -279,12 +279,13 @@ const ProfileLayout = () => {
                                     ${(isOwnProfile || followLoading) ? 'hidden' : ''}
                                     rounded-full 
                                     px-6 py-1 mt-1 
-                                    font-semibold text-black shadow transition-all duration-200
+                                    font-semibold text-black dark:text-white shadow transition-all duration-200
                                     hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-                                    hover:shadow-lg hover:scale-105 hover:text-red-800
+                                    dark:hover:from-blue-500/30 dark:hover:to-red-500/30
+                                    hover:shadow-lg hover:scale-105 hover:text-red-800 dark:hover:text-red-300
                                     active:scale-95 active:shadow
                                     focus:outline-none  ring-offset-1 
-                                    ${isFollowing ? 'bg-white/40 text-black/80 ' : 'bg-gray-200'}`}
+                                    ${isFollowing ? 'bg-white/40 dark:bg-gray-700/60 text-black/80 dark:text-white/90' : 'bg-gray-200 dark:bg-gray-700'}`}
                                         onClick={async () => {
                                             await handleFollowUnfollowClick()
                                             window.location.reload()
@@ -315,13 +316,13 @@ const ProfileLayout = () => {
                                 <div className="md:col-span-8 md:order-1">
                                     {/* Profile Name - responsive text size */}
                                     <div className="  text-center sm:-m-20 lg:-m-15">
-                                        <h1 className="font-title md:pl-30 text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800">
+                                        <h1 className="font-title md:pl-30 text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800 dark:text-gray-100">
                                             {userProfileDetails?.name || "Anonymous"}
                                         </h1>
                                     </div>
 
                                     {/* Tabs - responsive spacing and width */}
-                                    <div className="mt-6 sm:mt-23 lg:mt-13 border-b border-gray-200">
+                                    <div className="mt-6 sm:mt-23 lg:mt-13 border-b border-gray-200 dark:border-gray-600">
                                         <div className="flex">
                                             <button
                                                 className={`font-subtitle flex-1 md:flex-none md:mr-8 p-2 sm:p-3 text-center border-b-2 transition-colors
@@ -331,8 +332,8 @@ const ProfileLayout = () => {
                                                     location.pathname === `/${routeUsername}/followers` ||
                                                     location.pathname === `/${routeUsername}/following`
                                                 ))
-                                                    ? 'border-purple-600 text-purple-600'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                                    ? 'border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400'
+                                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'}`}
                                                 onClick={() => navigate(`/${routeUsername}`)}
                                             >
                                                 Published
@@ -340,8 +341,8 @@ const ProfileLayout = () => {
                                             <button
                                                 className={`font-subtitle flex-1 md:flex-none p-2 sm:p-3 text-center border-b-2 transition-colors ${isOwnProfile ? '' : 'hidden'}
                                                 ${isDrafts 
-                                                        ? 'border-purple-600 text-purple-600'
-                                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+                                                        ? 'border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400'
+                                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'}`}
                                                 onClick={() => navigate(`/${routeUsername}/drafts`)}
                                             >
                                                 Drafts

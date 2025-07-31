@@ -85,7 +85,7 @@ const BlogImageRenderer = ({ data, id }: { data: BlogImageData; id: string }) =>
         key={retryCount}
         src={imageUrl}
         alt={data.caption || 'Blog image'}
-        className={`w-full h-auto rounded-lg shadow-lg transition-all duration-300 ${
+        className={`w-full h-auto rounded-lg shadow-lg transition-all duration-300 dark:brightness-75 ${
           loading ? 'opacity-0 absolute' : 'opacity-100'
         } ${error ? 'hidden' : ''}`}
         loading="lazy"
@@ -102,11 +102,11 @@ const BlogImageRenderer = ({ data, id }: { data: BlogImageData; id: string }) =>
       
       {/* Enhanced error state with retry option */}
       {error && (
-        <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
-          <div className="text-center text-gray-500 p-4">
+        <div className="w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600">
+          <div className="text-center text-gray-500 dark:text-gray-400 p-4">
             <div className="text-4xl mb-3">📷</div>
             <div className="text-lg font-medium mb-2">Image failed to load</div>
-            <div className="text-sm text-gray-400 mb-4">
+            <div className="text-sm text-gray-400 dark:text-gray-500 mb-4">
               {retryCount > 0 ? `Attempt ${retryCount + 1} failed` : 'Network or server error'}
             </div>
             {retryCount < 2 && (
@@ -118,7 +118,7 @@ const BlogImageRenderer = ({ data, id }: { data: BlogImageData; id: string }) =>
               </button>
             )}
             {retryCount >= 2 && (
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-gray-400 dark:text-gray-500">
                 Unable to load after multiple attempts
               </div>
             )}
@@ -129,7 +129,7 @@ const BlogImageRenderer = ({ data, id }: { data: BlogImageData; id: string }) =>
       {/* Caption with enhanced styling */}
       {data.caption && !error && !loading && (
         <div className="mt-3 text-center">
-          <p className="text-sm text-gray-600 italic bg-gray-50 rounded px-3 py-2 inline-block">
+          <p className="text-sm text-gray-600 dark:text-gray-300 italic bg-gray-50 dark:bg-gray-800/50 rounded px-3 py-2 inline-block">
             {data.caption}
           </p>
         </div>

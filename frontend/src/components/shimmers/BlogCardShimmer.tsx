@@ -11,6 +11,10 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
             overflow: hidden;
           }
 
+          .dark .shimmer-item {
+            background: #4b5563;
+          }
+
           .shimmer-item::after {
             content: "";
             position: absolute;
@@ -28,6 +32,15 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
             animation: shimmer 2s infinite;
           }
 
+          .dark .shimmer-item::after {
+            background-image: linear-gradient(
+              90deg,
+              rgba(255,255,255,0) 0%,
+              rgba(255,255,255,0.1) 50%,
+              rgba(255,255,255,0) 100%
+            );
+          }
+
           @keyframes shimmer {
             100% {
               transform: translateX(100%);
@@ -42,8 +55,8 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
           ${size == "small" ? "w-full" : "w-[90vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
           ${size == "small" ? "h-auto sm:h-28 md:h-32 lg:h-35" : "h-auto sm:h-36 md:h-40 lg:h-44"} 
           flex flex-col sm:flex-row overflow-hidden
-          rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 shadow-xs 
-          bg-white/75  backdrop-blur-sm
+          rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 dark:border-gray-700/30 shadow-xs 
+          bg-white/75 dark:bg-black/50 backdrop-blur-sm
         `}
       >
         {/* Mobile: Upper part - Title and Subtitle */}
@@ -89,7 +102,7 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
             <div className={`shimmer-item ${size == "small" ? "h-4" : "h-5 lg:h-6"} rounded-md w-[70%]`}></div>
           </div>
 
-          <div className=" h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+          <div className=" h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent"></div>
 
           {/* Author info and article info*/}
           <div className='flex flex-col sm:flex-row justify-between gap-2 sm:gap-0'>
@@ -102,7 +115,7 @@ export const BlogShimmer = ({ size }: { size: "small" | "large" }) => {
             {/* Readtime info */}
             <div className='flex items-center gap-1 sm:gap-2.5'>
               <div className="shimmer-item h-3 lg:h-4 w-16 rounded-md"></div>
-              <div className="text-lg sm:text-2xl p-1 text-gray-300">•</div>
+              <div className="text-lg sm:text-2xl p-1 text-gray-300 dark:text-gray-600">•</div>
               <div className="shimmer-item h-3 lg:h-4 w-20 sm:w-24 rounded-md"></div>
             </div>
 

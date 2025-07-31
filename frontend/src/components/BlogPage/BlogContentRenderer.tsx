@@ -8,7 +8,7 @@ import BlogImageRenderer from './BlogImageRenderer'
 
 
 const renderList = (items: any[]): JSX.Element => (
-  <ul className="list-disc pl-6 space-y-1 font-body">
+  <ul className="list-disc pl-6 space-y-1 font-body text-gray-800 dark:text-gray-200">
     {items.map((item, idx) => (
       <li key={item.id || item.content || idx}>
         <span dangerouslySetInnerHTML={{ __html: item.content }} />
@@ -19,7 +19,7 @@ const renderList = (items: any[]): JSX.Element => (
 )
 
 const renderOrderedList = (items: any[]): JSX.Element => (
-  <ol className="list-decimal pl-6 space-y-1 font-body">
+  <ol className="list-decimal pl-6 space-y-1 font-body text-gray-800 dark:text-gray-200">
     {items.map((item, idx) => (
       <li key={item.id || item.content || idx}>
         <span dangerouslySetInnerHTML={{ __html: item.content }} />
@@ -41,7 +41,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
   return (
     <article
       id="blog-content"
-      className="prose max-w-3xl mx-auto py-8"
+      className="prose max-w-4xl mx-auto py-8"
     >
       {content.blocks.map((block: any) => {
         const { type, data, id } = block
@@ -49,7 +49,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
         switch (type) {
           case 'header': {
             const Tag = `h${data.level}` as keyof JSX.IntrinsicElements
-            const className = `font-title font-bold mb-4 ${
+            const className = `font-title font-bold mb-4 text-gray-900 dark:text-gray-100 ${
               data.level === 1 ? 'text-3xl lg:text-4xl ' : 
               data.level === 2 ? 'text-2xl lg:text-3xl' : 
               data.level === 3 ? 'text-xl lg:text-2xl' : 
@@ -62,7 +62,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
             return (
               <p
                 key={id}
-                className="font-body mb-4 leading-relaxed text-lg"
+                className="font-body mb-4 leading-relaxed text-xl text-gray-800 dark:text-gray-200"
                 dangerouslySetInnerHTML={{ __html: data.text }}
               />
             )
@@ -70,15 +70,15 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
 
           case 'list': {
             return data.style === 'ordered'
-              ? <div key={id}>{renderOrderedList(data.items)}</div>
-              : <div key={id}>{renderList(data.items)}</div>
+              ? <div key={id} className='text-lg'>{renderOrderedList(data.items)}</div>
+              : <div key={id} className='text-lg'>{renderList(data.items)}</div>
           }
 
           case 'code': {
             return (
               <div key={id} className="my-6">
-                <pre className="bg-gray-900 rounded p-4 overflow-x-auto">
-                  <code className="language-javascript">
+                <pre className="bg-gray-900 dark:bg-gray-800 rounded p-4 overflow-x-auto">
+                  <code className="language-javascript text-gray-100">
                     {data.code || ''}
                   </code>
                 </pre>
@@ -91,7 +91,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
             return (
               <figure key={id} className={`my-8 flex flex-col items-${alignment} w-full`}>
                 <blockquote
-                  className={`font-quote relative px-6 py-4 bg-gray-50 border-l-4 border-blue-400 rounded-md shadow-sm text-lg sm:text-xl md:text-2xl italic text-gray-800 text-${alignment}`}
+                  className={`font-quote relative px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-l-4 border-blue-400 dark:border-blue-500 rounded-md shadow-sm text-lg sm:text-xl md:text-2xl italic text-gray-800 dark:text-gray-200 text-${alignment}`}
                   style={{
                     marginLeft: alignment === 'left' ? 0 : 'auto',
                     marginRight: alignment === 'right' ? 0 : 'auto',
@@ -100,7 +100,7 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
                   <span className="block">{data.text}</span>
                 </blockquote>
                 {data.caption && (
-                  <figcaption className="font-body mt-2 text-sm text-gray-500 text-left pl-2">{data.caption}</figcaption>
+                  <figcaption className="font-body mt-2 text-sm text-gray-500 dark:text-gray-400 text-left pl-2">{data.caption}</figcaption>
                 )}
               </figure>
             );
@@ -112,11 +112,11 @@ const BlogContentRenderer = ({ content } : {content : OutputData}) => {
 
           default:
             return (
-              <div key={id}>
+              <div key={id} className="text-gray-800 dark:text-gray-200">
                 <p>
                   Unsupported block type: <strong>{type}</strong>
                 </p>
-                <pre>
+                <pre className="text-gray-600 dark:text-gray-400">
                   {JSON.stringify(data, null, 2)}
                 </pre>
               </div>

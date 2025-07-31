@@ -10,6 +10,9 @@ const FullBlogShimmer = () => {
             position: relative;
             overflow: hidden;
           }
+          .dark .shimmer-item {
+            background: #374151;
+          }
           .shimmer-item::after {
             content: "";
             position: absolute;
@@ -23,12 +26,20 @@ const FullBlogShimmer = () => {
             );
             animation: shimmer 2s infinite;
           }
+          .dark .shimmer-item::after {
+            background-image: linear-gradient(
+              90deg,
+              rgba(255,255,255,0) 0%,
+              rgba(255,255,255,0.1) 50%,
+              rgba(255,255,255,0) 100%
+            );
+          }
           @keyframes shimmer {
             100% { transform: translateX(100%); }
           }
         `}
       </style>
-      <div className="w-full min-h-screen bg-gray-100">
+      <div className="w-full min-h-screen bg-gray-100 dark:bg-gradient-to-br dark:from-black/90 dark:to-gray-950/80">
         {/* Banner shimmer */}
         <div className="relative w-full h-[60vh] lg:h-[50vh]">
           <div className="shimmer-item w-full h-full absolute top-0 left-0 rounded-none" />
@@ -76,7 +87,7 @@ const FullBlogShimmer = () => {
           </div>
         </div>
         {/* Blog content shimmer */}
-        <div className="bg-gray-100 px-4 py-8 max-w-3xl mx-auto">
+        <div className="bg-gray-100 dark:bg-gradient-to-br dark:from-black/90 dark:to-gray-950/80 px-4 py-8 max-w-4xl mx-auto">
           <div className="space-y-4">
             <div className="shimmer-item h-6 w-3/4 rounded-md" />
             <div className="shimmer-item h-5 w-2/3 rounded-md" />

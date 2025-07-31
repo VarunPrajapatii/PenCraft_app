@@ -110,19 +110,20 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                                         onClick={() => {
                                             handleClickEdit();
                                         }}
-                                        className={`font-subtitle group relative inline-flex items-center rounded-full bg-gray-200
+                                        className={`font-subtitle group relative inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700
                                     px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
-                                    font-semibold text-black shadow transition-all duration-200 cursor-pointer
+                                    font-semibold text-black dark:text-white shadow transition-all duration-200 cursor-pointer
                                     hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                                    dark:hover:from-blue-500/30 dark:hover:to-red-500/30
                                     hover:shadow-lg hover:scale-105
                                     active:scale-95 active:shadow
-                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400
+                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 dark:focus:ring-gray-500
                                   `}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="md:inline-block size-6 lg:mr-2 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="md:inline-block size-6 lg:mr-2 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-700 dark:group-hover:text-blue-400">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.25 2.25 0 1 1 3.182 3.182L6.75 19.963l-4.5 1.318 1.318-4.5 13.294-13.294Z" />
                                         </svg>
-                                        <span className={`hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group_hover:text-blue-700`}>
+                                        <span className={`hidden lg:block transition-transform duration-200 group-hover:translate-x-1 group-hover:text-blue-700 dark:group-hover:text-blue-400`}>
                                             Edit Draft
                                         </span>
                                     </button>
@@ -180,12 +181,13 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                                         ${(loggedInUserIsAuthor || loading) ? 'hidden' : ''}
                                         rounded-full 
                                         px-6 py-1 mt-1 
-                                        font-semibold text-black shadow transition-all duration-200
+                                        font-semibold text-black dark:text-white shadow transition-all duration-200
                                         hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-                                        hover:shadow-lg hover:scale-105 hover:text-red-800
+                                        dark:hover:from-blue-500/30 dark:hover:to-red-500/30
+                                        hover:shadow-lg hover:scale-105 hover:text-red-800 dark:hover:text-red-400
                                         active:scale-95 active:shadow
                                         focus:outline-none  ring-offset-1 
-                                        ${isFollowing ? 'bg-white/40 text-black/80 ' : 'bg-gray-200'}`}
+                                        ${isFollowing ? 'bg-white/40 dark:bg-gray-600/40 text-black/80 dark:text-white/80' : 'bg-gray-200 dark:bg-gray-700'}`}
                                     onClick={handleFollowUnfollowClick}
                                 >
                                     {isFollowing ? "Unfollow" : "Follow"}
@@ -204,7 +206,7 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                     </div>
                 </div>
                 {/* Blog section */}
-                <div className='px-4 sm:px-6 bg-gray-100 '>
+                <div className='px-4 sm:px-6 bg-gray-100 dark:bg-gradient-to-br dark:from-black/90 dark:to-gray-950/80'>
                     <BlogContentRenderer content={blog.content} />
                 </div>
             </div>

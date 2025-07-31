@@ -1,14 +1,19 @@
-import logo from "/images/PenCraft_logo_light.png";
-import subtitleLogo from "/images/PenCraft_subtitle_light.png"
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/types";
+import logolight from "/images/PenCraft_logo_light.png";
+import logodark from "/images/PenCraft_logo_dark.png";
+import subtitleLogolight from "/images/PenCraft_subtitle_dark.png"
+import subtitleLogodark from "/images/PenCraft_subtitle_dark.png"
 
 
 const Footer = () => {
+  const { isDarkMode } = useSelector((store: RootState) => store.darkMode);
   return (
-    <footer className="absolute z-10  w-full h-[35vh] bg-gradient-to-b from-emerald-500/80 via-emerald-700/90 to-emerald-900/90  shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
+    <footer className="absolute z-10  w-full h-[35vh] bg-emerald-950 dark:to-emerald-950/80 shadow-2xl flex flex-col items-center justify-between px-8 py-8 ">
       <div className="flex w-full items-center justify-between mb-6">
         <div className="flex items-center">
-          <img src={logo} alt="Pencraft Logo" className="h-[6vh] mr-4" />
-          <img src={subtitleLogo} className="hidden lg:block  h-[5vh]" />
+          <img src={isDarkMode ? logodark : logolight} alt="Pencraft Logo" className="h-[6vh] mr-4" />
+          <img src={isDarkMode ? subtitleLogodark : subtitleLogolight} className="hidden lg:block  h-[5vh]" />
         </div>
         <div className="flex gap-4">
           <button className="group rounded-full bg-white/20 hover:bg-white/40 p-2 transition"
@@ -22,7 +27,7 @@ const Footer = () => {
           </button>
           <button className="group rounded-full bg-white/20 hover:bg-white/40 p-2 transition"
             onClick={() => {
-              window.open("https://portfolio.varuntd.com/");
+              window.open("https://varuntd.com/");
             }}
           >
             <svg className="w-6 h-6 text-gray-100 group-hover:text-pink-400 transition" fill="currentColor" viewBox="0 0 24 24">
@@ -63,7 +68,7 @@ const Footer = () => {
       </div>
       {/* Bottom Row: Copyright */}
       <div className="w-full text-center text-gray-200 text-sm sm:text-lg">
-        © {new Date().getFullYear()} Pencraft. Made by <a className="font-body hover:text-white transition" href="http://portfolio.varuntd.com" >Varun Prajapati</a>
+        © {new Date().getFullYear()} Pencraft. Made by <a className="font-body hover:text-white transition" href="http://varuntd.com" >Varun Prajapati</a>
       </div>
     </footer>
   );

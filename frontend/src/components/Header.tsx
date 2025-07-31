@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import logo from "/images/PenCraft_logo_light.png"
+import logoDark from "/images/PenCraft_logo_dark.png"
 import subtitleLogo from "/images/PenCraft_subtitle_light.png"
+import subtitleLogoDark from "/images/PenCraft_subtitle_dark.png"
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/types";
 import ProfileDropdown from "./ProfileDropDown";
@@ -9,6 +11,7 @@ import ProfileDropdown from "./ProfileDropDown";
 const Header = () => {
   const location = useLocation();
   const user = useSelector((store: RootState) => store.auth.user);
+  const { isDarkMode } = useSelector((store: RootState) => store.darkMode);
 
   const renderRightContent = () => {
     if(location.pathname === "/") {
@@ -23,19 +26,19 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white/20 dark:bg-gray-900/20 backdrop-blur-lg shadow-lg">
+    <header className="fixed inset-x-0 top-0 z-50 bg-white/20 dark:bg-black/50 backdrop-blur-lg shadow-lg">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1">
         {/* Logo Area */}
         <div className="flex items-center space-x-3">
           <Link to={"/blogs"}>
             <img
-              src={logo}
+              src={isDarkMode ? logoDark : logo}
               alt="Pencraft logo"
               className="h-9 sm:h-10 md:h-12 cursor-pointer"
             />
           </Link>
           <img
-            src={subtitleLogo}
+            src={isDarkMode ? subtitleLogoDark : subtitleLogo}
             alt="Pencraft subtitle"
             className="hidden sm:block h-6 sm:h-8 md:h-10"
           />

@@ -14,7 +14,7 @@ import LandingTitle from './LandingTitle'
 const AnimateThree = () => {
   return (
     <>
-      <FlyUpSection className="bg-emerald-500/80 w-[100vw] overflow-hidden" containerHeight="h-[120vh]" triggerThreshold={0.7}>
+      <FlyUpSection className="bg-emerald-500/80 dark:bg-emerald-800 w-[100vw] overflow-hidden" containerHeight="h-[120vh]" triggerThreshold={0.7}>
         {/* LEFT SIDE */}
         <FlyUpImage
           imageSrc={g_l_1}

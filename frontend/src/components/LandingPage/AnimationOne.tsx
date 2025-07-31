@@ -14,7 +14,7 @@ import LandingTitle from './LandingTitle'
 const AnimationOne = () => {
   return (
     <>
-      <FlyUpSection className="bg-red-400 w-[100vw] overflow-hidden" containerHeight="h-[100vh]" triggerThreshold={0.7}>
+      <FlyUpSection className="bg-red-400 dark:bg-red-900 w-[100vw] overflow-hidden" containerHeight="h-[100vh]" triggerThreshold={0.7}>
         {/* LEFT SIDE */}
         <FlyUpImage
           imageSrc={r_l_1}

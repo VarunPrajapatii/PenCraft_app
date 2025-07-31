@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useUserFollowings } from "../../hooks/hooks";
 import { formatDate } from "../../utils/generalUtils";
-import { UserCardFollowing, UserCardShimmer } from "./UserFollowers";
+import { UserCardFollowing } from "./UserFollowers";
+import UserCardShimmer from "../shimmers/UserCardShimmer";
 
 const UserFollowings = () => {
   const { username } = useParams();
@@ -16,7 +17,7 @@ const UserFollowings = () => {
   if (loading) {
     return (
       <div className="max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto ">
-        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
+        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 dark:text-gray-100">
           People Followed
         </div>
         {/* 
@@ -34,15 +35,15 @@ const UserFollowings = () => {
   return (
     <div>
       <div className="max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto ">
-        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
+        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 dark:text-gray-100">
           {followings.length} People Followed
         </div>
         {followings.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-500 text-lg">
+            <div className="text-gray-500 text-lg dark:text-gray-400">
               Not following anyone yet
             </div>
-            <div className="text-gray-400 text-sm mt-2">
+            <div className="text-gray-400 text-sm mt-2 dark:text-gray-500">
               This user hasn't followed anyone
             </div>
           </div>

@@ -18,15 +18,15 @@ const LandingTitle = ({
     const navigate = useNavigate();
     
     const gradientClasses = {
-        red: "bg-gradient-to-r from-red-500 to-red-900",
-        blue: "bg-gradient-to-r from-blue-500 to-blue-900",
-        green: "bg-gradient-to-r from-emerald-500 to-emerald-900",
+        red: "bg-gradient-to-r from-red-500 to-red-900 dark:bg-gradient-to-r dark:from-red-400 dark:to-red-700",
+        blue: "bg-gradient-to-r from-blue-500 to-blue-900 dark:bg-gradient-to-r dark:from-blue-300 dark:to-blue-700",
+        green: "bg-gradient-to-r from-emerald-500 to-emerald-900 dark:bg-gradient-to-r dark:from-emerald-300 dark:to-emerald-700",
     }
 
     const joinLineTextClasses = {
-        red: "text-red-300 lg:text-red-800/70",
-        blue: "text-blue-300 lg:text-blue-800/70",
-        green: "text-green-300 lg:text-green-800/70",
+        red: "text-red-300 lg:text-red-800/70 dark:text-red-300/70",
+        blue: "text-blue-300 lg:text-blue-800/70 dark:text-blue-300/70",
+        green: "text-green-300 lg:text-green-800/70 dark:text-green-300/70",
     }
 
     const gradientClass = gradientClasses[color as keyof typeof gradientClasses] || gradientClasses.blue

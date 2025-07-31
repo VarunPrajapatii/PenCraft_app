@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { ClapIcon } from "./Icons/ClapIcon";
 import { CommentsIcon } from "./Icons/CommentsIcon";
 import defaultProfilePicture from '/images/default_profile_picture.jpg';
-import { blogImageSrcs } from "../blogss"
 import { OutputData } from "@editorjs/editorjs";
 import { useState } from "react";
 import { useDeleteBlog } from "../hooks/hooks";
+import { getConsistentGradient } from "../utils/gradientUtils";
 
 
 interface BlogCardProps {
@@ -36,6 +36,7 @@ export const BlogCard = ({
   size
 }: BlogCardProps) => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const { deleteLoading, deleteBlog } = useDeleteBlog();
   
   const formatDate = (dateString: string): string => {
@@ -91,11 +92,11 @@ export const BlogCard = ({
           />
           
           {/* Popup */}
-          <div className="relative bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 w-full max-w-sm mx-auto">
-            <h3 className="font-title text-lg font-semibold text-gray-900 mb-4 text-center">
+          <div className="relative bg-white/20 dark:bg-gray-800/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 w-full max-w-sm mx-auto">
+            <h3 className="font-title text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 text-center">
               Delete Blog
             </h3>
-            <p className="font-body text-gray-700 mb-6 text-center">
+            <p className="font-body text-gray-700 dark:text-gray-300 mb-6 text-center">
               Are you sure you want to delete this blog? This action cannot be undone.
             </p>
             
@@ -104,16 +105,17 @@ export const BlogCard = ({
               <button
                 onClick={handleCancelDelete}
                 disabled={deleteLoading}
-                className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200
+                className="group relative inline-flex items-center cursor-pointer rounded-full bg-gray-200 dark:bg-gray-700
                           px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
-                          font-subtitle font-semibold text-black shadow transition-all duration-200
+                          font-subtitle font-semibold text-black dark:text-white shadow transition-all duration-200
                           hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
+                          dark:hover:from-blue-500/30 dark:hover:to-red-500/30
                           hover:shadow-lg hover:scale-105
                           active:scale-95 active:shadow
                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400
                           disabled:opacity-50 disabled:cursor-not-allowed w-full justify-center"
               >
-                <span className="transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700">
+                <span className="transition-transform duration-200 group-hover:translate-x-1 group-hover:text-red-700 dark:group-hover:text-red-400">
                   Cancel
                 </span>
               </button>
@@ -144,31 +146,41 @@ export const BlogCard = ({
       )}
 
       <Link to={`/blog/${blogId}`}>
-        <div className={`
+        <div 
+          className={`
                 sm:pr-2 mt-1 sm:mb-1.5 group
                 ${size == "small" ? "w-full" : "w-[90vw] sm:w-[90vw] md:w-[95vw] lg:w-[85vw]"} 
                 ${size == "small" ? "h-auto sm:h-28 md:h-32 lg:h-35" : "h-auto sm:h-36 md:h-40 lg:h-44"} 
                 flex flex-col sm:flex-row overflow-hidden
-                rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 shadow-xs 
-                bg-white/75 backdrop-blur-sm
-                transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:bg-white/90
+                rounded-xl sm:rounded-2xl lg:rounded-3xl border border-gray-200/30 dark:border-gray-700/30 shadow-xs 
+                bg-white/75 dark:bg-black/50 backdrop-blur-sm
+                transition-all duration-200 
+                ${isHovered ? '-translate-y-1 shadow-lg bg-white/90 dark:bg-black/75' : ''}
                 `}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {/* Mobile: Upper part - Title and Subtitle */}
           <div className="sm:hidden p-3 pb-2">
-            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} font-title font-semibold leading-[1.2] mb-2 line-clamp-2 overflow-hidden text-ellipsis`}>{title}</h2>
-            <p className={`${size == "small" ? "text-sm" : "text-sm"} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis text-gray-600`}>{subtitle}</p>
+            <h2 className={`${size == "small" ? "text-lg" : "text-lg"} font-title font-semibold leading-[1.2] mb-2 line-clamp-2 overflow-hidden text-ellipsis text-gray-900 dark:text-gray-100`}>{title}</h2>
+            <p className={`${size == "small" ? "text-sm" : "text-sm"} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis text-gray-600 dark:text-gray-400`}>{subtitle}</p>
           </div>
 
           {/* Mobile: Lower part - Image and Info */}
           <div className="sm:hidden flex p-1 pt-0">
             {/* Left: Image (40% width) */}
             <div className="w-[40%] h-24 overflow-hidden rounded-lg mr-2">
-              <img
-                src={bannerImageUrl ? bannerImageUrl : blogImageSrcs[Math.floor(Math.random() * blogImageSrcs.length)]}
-                alt="Blog"
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
+              {bannerImageUrl ? (
+                <img
+                  src={bannerImageUrl}
+                  alt="Blog"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+              ) : (
+                <div
+                  className={`w-full h-full transition-transform duration-300 group-hover:scale-110 ${getConsistentGradient(blogId)}`}
+                />
+              )}
             </div>
 
             {/* Right: Info (60% width) */}
@@ -181,7 +193,7 @@ export const BlogCard = ({
                     className="w-9 h-9 rounded-full object-cover mr-2 transition-transform duration-200 group-hover/author:scale-105"
                     alt="author"
                   />
-                  <div className='font-body text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
+                  <div className='font-body text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400 dark:text-gray-200 dark:group-hover/author:text-gray-500'>
                     {authorName}
                   </div>
                 </Link>
@@ -189,10 +201,10 @@ export const BlogCard = ({
 
               {/* Bottom: Read time, Date, and Claps */}
               <div className="flex flex-col gap-1">
-                <div className='font-body text-xs text-gray-600'>
+                <div className='font-body text-xs text-gray-600 dark:text-gray-400'>
                   {`${Math.ceil(content.toString().length / 1000)} min read ${publishedDate ? "•" : ""} ${publishedDate ? formatDate(publishedDate) : ""}`}
                 </div>
-                <div className='font-body flex text-sm gap-3'>
+                <div className='font-body flex text-sm gap-3 text-gray-800 dark:text-gray-200'>
                   <div className='flex items-center gap-1'>
                     <ClapIcon />
                     <span>{claps}</span>
@@ -208,22 +220,28 @@ export const BlogCard = ({
 
           {/* Desktop: Left - Image (hidden on mobile) */}
           <div className={`hidden sm:block ${size == "small" ? "w-[25%] sm:w-[22%] md:w-[20%]" : "w-[35%] sm:w-[32%] md:w-[30%]"} h-full overflow-hidden`}>
-            <img
-              src={bannerImageUrl ? bannerImageUrl : blogImageSrcs[Math.floor(Math.random() * blogImageSrcs.length)]}
-              alt="Blog"
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
+            {bannerImageUrl ? (
+              <img
+                src={bannerImageUrl}
+                alt="Blog"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            ) : (
+              <div
+                className={`w-full h-full transition-transform duration-300 group-hover:scale-110 ${getConsistentGradient(blogId)}`}
+              />
+            )}
           </div>
 
             {/* Desktop: Right - Content (hidden on mobile) */}
             <div className="hidden sm:flex pl-2 sm:pl-3 pr-1 w-[75%] sm:w-[78%] md:w-[70%] flex-col justify-between">
               {/* title and subtitle */}
               <div className='py-2 sm:py-3'>
-                <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-title font-bold leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis mb-3`}>{title}</h2>
-                <p className={`${size == "small" ? "text-sm lg:text-sm" : "text-base lg:text-base "} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis`}>{subtitle}</p>
+                <h2 className={`${size == "small" ? "sm:text-lg md:text-xl" : "text-xl md:text-2xl lg:text-2xl"} font-title font-bold leading-[1.2] line-clamp-2 overflow-hidden text-ellipsis mb-3 text-gray-900 dark:text-gray-100`}>{title}</h2>
+                <p className={`${size == "small" ? "text-sm lg:text-sm" : "text-base lg:text-base "} font-subtitle leading-[1.2] line-clamp-1 overflow-hidden text-ellipsis text-gray-700 dark:text-gray-300`}>{subtitle}</p>
               </div>
 
-              <div className=" h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>            {/* Author info and article info*/}
+              <div className=" h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent"></div>            {/* Author info and article info*/}
             <div className='font-body flex flex-col sm:flex-row justify-between gap-2 sm:gap-0'>
               {/* author info */}
               <div className={`${size == "small" ? "hidden" : ""} flex items-center `}>
@@ -238,7 +256,7 @@ export const BlogCard = ({
                     />
                   </div>
                   <div>
-                    <div className='font-body ml-2 text-sm sm:text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400'>
+                    <div className='font-body ml-2 text-sm sm:text-base transition-all duration-200 group-hover/author:underline group-hover/author:text-gray-400 dark:text-gray-200 dark:group-hover/author:text-gray-500'>
                       {authorName}
                     </div>
                   </div>
@@ -246,7 +264,7 @@ export const BlogCard = ({
               </div>  
 
               {/* Readtime info */}
-              <div className='font-subtitle flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600'>
+              <div className='font-subtitle flex items-center gap-1 sm:gap-2.5 text-xs lg:text-sm text-gray-600 dark:text-gray-400'>
                 <div className="">{`${Math.ceil(content.toString().length / 1000)} minute(s) read`}</div>
                 <div className="text-lg sm:text-2xl p-1">{publishedDate? "•" : ""}</div>
                 <span className="hidden sm:block">{publishedDate? "Published on " : ""}{formatDate(publishedDate)}</span>
@@ -254,7 +272,7 @@ export const BlogCard = ({
               </div>
 
               {/* claps and comments */}
-              <div className='font-subtitle flex text-sm sm:text-lg gap-1.5 sm:gap-2.5'>
+              <div className='font-subtitle flex text-sm sm:text-lg gap-1.5 sm:gap-2.5 text-gray-800 dark:text-gray-200'>
                 <div className='flex items-center'>
                   <div><ClapIcon /></div>
                   <div>{claps}</div>

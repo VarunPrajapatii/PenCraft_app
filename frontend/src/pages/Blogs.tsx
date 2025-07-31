@@ -1,4 +1,4 @@
-import { BlogCard } from '../components/BlogCard'
+import { BlogCard } from '../components/BlogCard';
 import { useBlogs } from '../hooks/hooks'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
@@ -7,10 +7,9 @@ import bg_img from "/images/BG_homepage.jpg";
 
 import BlogCardShimmer from '../components/shimmers/BlogCardShimmer';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
 const Blogs = () => {
     const { loading, blogs, hasMore, loadMore } = useBlogs();
-    const user = useSelector((store: RootState) => store.auth.user)
+    const user = useSelector((store: RootState) => store.auth.user);
 
 
     if (!user) return (<Navigate to="/signup" />)
@@ -24,11 +23,11 @@ const Blogs = () => {
                 <img
                     src={bg_img}
                     alt="bg-img"
-                    className="-z-50 fixed top-0 left-0 w-screen h-screen object-cover object-center brightness-70 opacity-50  m-0 p-0"
+                    className="-z-50 fixed top-0 left-0 w-screen h-screen object-cover object-center dark:brightness-[0.2] dark:opacity-70 opacity-50 brightness-70 m-0 p-0"
                 />
-                <div className='-z-40 fixed top-0 left-0 w-screen backdrop-blur-xs h-screen'></div>
+                <div className='-z-40 fixed top-0 left-0 w-screen backdrop-blur-xs h-screen dark:bg-black/40'></div>
 
-                <div className="w-full pt-10 px-4 sm:px-6 lg:px-8 text-white bg-gradient-to-b from-black/20 to-transparent backdrop-blur-sm">
+                <div className="w-full pt-10 px-4 sm:px-6 lg:px-8 text-white dark:bg-gradient-to-b dark:from-black/20 dark:to-transparent backdrop-blur-sm">
                     <div className="mt-15 max-w-4xl mx-auto text-center">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-title font-bold  mb-4">
                             Discover Amazing Stories
@@ -67,12 +66,12 @@ const Blogs = () => {
             <img
                 src={bg_img}
                 alt="bg-img"
-                className="-z-50 fixed top-0 left-0 w-screen h-screen object-cover object-center brightness-70 opacity-50  m-0 p-0"
+                className="-z-50 fixed top-0 left-0 w-screen h-screen object-cover object-center dark:brightness-[0.2] dark:opacity-70 opacity-50 brightness-70 m-0 p-0"
             />
-            <div className='-z-40 fixed top-0 left-0 w-screen backdrop-blur-xs h-screen'></div>
+            <div className={`-z-40 fixed top-0 left-0 w-screen backdrop-blur-xs h-screen dark:bg-black/40`}></div>
 
             <div className="min-h-screen ">
-                <div className="w-full pt-10 px-4 sm:px-6 lg:px-8 text-white bg-gradient-to-b from-black/20 to-transparent backdrop-blur-sm">
+                <div className="w-full pt-10 px-4 sm:px-6 lg:px-8 text-white dark:bg-gradient-to-b dark:from-black/20 dark:to-transparent backdrop-blur-sm">
                     <div className="mt-15 max-w-4xl mx-auto text-center">
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-title font-bold  mb-4">
                             Discover Amazing Stories

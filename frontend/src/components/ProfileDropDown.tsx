@@ -89,7 +89,7 @@ const ProfileDropdown = () => {
                         {/* Menu Items */}
                         <div className="relative p-1  backdrop-blur-sm">
                             {/* Menu items background glass effect */}
-                            <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 backdrop-blur-sm"></div>
+                            <div className="absolute inset-0 bg-gray-200 dark:bg-black/50 backdrop-blur-sm"></div>
 
                             <div className="relative space-y-1">
                                 {/* View Profile */}
