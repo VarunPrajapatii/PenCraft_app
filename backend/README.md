@@ -374,10 +374,14 @@ The main application (`index.ts`) defines the following top-level route groups:
 **Response:**
 ```json
 {
-  "message": "Blog deleted successfully"
+  "message": "Blog deleted successfully",
+  "deletedImages": {
+    "banner": "number",
+    "content": "number"
+  }
 }
 ```
-**Description:** Deletes a blog post and associated S3 images (only unpublished blogs).
+**Description:** Deletes a blog post (both published and unpublished) and all associated S3 images including banner and content images. Only the author can delete their own blogs.
 
 #### GET `/bulk`
 **Handler:** `blogCrudRouter.get('/bulk')`  
