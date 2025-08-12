@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useChangePassword, useChangeUsername } from '../../hooks/hooks';
+import { useChangePassword, useChangeUsername } from '../../hooks/userHooks';
 
 const UserEditProfile = () => {
   // input data states

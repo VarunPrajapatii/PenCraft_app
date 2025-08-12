@@ -1,5 +1,5 @@
 import { BlogCard } from '../components/BlogCard';
-import { useBlogs } from '../hooks/hooks'
+import { useBlogs } from '../hooks/blogHooks'
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/types';
 import { Navigate } from 'react-router-dom';

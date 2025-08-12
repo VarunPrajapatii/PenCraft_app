@@ -1,4 +1,4 @@
-import { useFullBlog } from '../hooks/hooks'
+import { useFullBlog } from '../hooks/blogHooks'
 import { Navigate, useParams } from 'react-router-dom';
 import FullBlog from '../components/BlogPage/FullBlog';
 import { useSelector } from 'react-redux';

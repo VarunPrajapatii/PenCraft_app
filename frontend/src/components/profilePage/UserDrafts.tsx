@@ -1,4 +1,4 @@
-import { useUserDrafts } from "../../hooks/hooks"
+import { useUserDrafts } from "../../hooks/blogHooks"
 import { BlogCard } from "../BlogCard";
 import BlogCardShimmer from "../shimmers/BlogCardShimmer";
 import { useParams } from "react-router-dom";

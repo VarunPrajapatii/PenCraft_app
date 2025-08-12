@@ -2,7 +2,7 @@ import { Link, Outlet, useParams, useNavigate, useLocation } from "react-router-
 import { useState, useRef } from "react";
 import profleInfo_top_bg from "/images/profleInfo_top_bg.jpg";
 import defaultProfilePicture from "/images/default_profile_picture.jpg";
-import { useUserProfileInfo, useIsFollowing } from "../hooks/hooks";
+import { useUserProfileInfo, useIsFollowing } from "../hooks/userHooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/types";
 import { handleFollowUnfollow } from "../utils/generalUtils";
@@ -10,6 +10,8 @@ import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { useDispatch } from "react-redux";
 import { authenticate } from "../redux/slice/authSlice";
+import BioSection from "../components/profilePage/BioSection";
+import ProfileLayoutShimmer from "../components/shimmers/ProfileLayoutShimmer";
 
 
 
@@ -21,12 +23,15 @@ const ProfileLayout = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { username: routeUsername } = useParams();
     const loggedInUser = useSelector((store: RootState) => store.auth.username);
-    const isOwnProfile = routeUsername && loggedInUser && routeUsername.split("@")[1] === loggedInUser.toLowerCase();
-    const { userProfileDetails } = useUserProfileInfo(
-        routeUsername  ? { username: routeUsername } : { username: "" }
+    const loggedInUserId = useSelector((store: RootState) => store.auth.user);
+    const isOwnProfile = Boolean(routeUsername && loggedInUser && routeUsername.split("@")[1] === loggedInUser.toLowerCase());
+    const { userProfileDetails, loading: userProfileLoading, refetch: refetchUserProfile } = useUserProfileInfo(
+        routeUsername ? { username: routeUsername } : { username: "" }
     );
     console.log("User Profile Details:", userProfileDetails);
     const { loading: followLoading, isFollowing, updateFollowStatus } = useIsFollowing({ authorId: !isOwnProfile && userProfileDetails?.userId ? userProfileDetails.userId : "" });
+
+
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch()
@@ -135,6 +140,10 @@ const ProfileLayout = () => {
     // Determine active tab from route
     const isDrafts = location.pathname.endsWith("/drafts");
 
+    // Show shimmer while loading user profile data
+    if (userProfileLoading) {
+        return <ProfileLayoutShimmer />;
+    }
 
     return (
         <>
@@ -234,23 +243,24 @@ const ProfileLayout = () => {
                                     </div>
 
                                     {/* Bio - responsive padding */}
-                                    <div className=" mt-4 sm:mt-5 md:mt-6 text-center max-w-xs">
-                                        <p className="font-body text-sm sm:text-base text-gray-700 dark:text-gray-300">
-                                            {userProfileDetails?.bio || "Passionate writer, avid reader, and lifelong learner. Sharing stories, insights, and inspiration one post at a time."}
-                                        </p>
-                                        
-                                        {/* Upload status indicator */}
-                                        {uploadStatus === 'success' && (
-                                            <div className="font-body mt-2 text-xs text-green-600 font-medium">
-                                                ✅ Profile image updated successfully!
-                                            </div>
-                                        )}
-                                        {uploadStatus === 'error' && (
-                                            <div className="font-body mt-2 text-xs text-red-600 font-medium">
-                                                ❌ Failed to upload image
-                                            </div>
-                                        )}
-                                    </div>
+                                    <BioSection 
+                                        userProfileDetails={userProfileDetails}
+                                        isOwnProfile={isOwnProfile}
+                                        loggedInUserId={loggedInUserId}
+                                        onBioUpdate={refetchUserProfile}
+                                    />
+
+                                    {/* Upload status indicator */}
+                                    {uploadStatus === 'success' && (
+                                        <div className="font-body mt-2 text-xs text-green-600 font-medium">
+                                            ✅ Profile image updated successfully!
+                                        </div>
+                                    )}
+                                    {uploadStatus === 'error' && (
+                                        <div className="font-body mt-2 text-xs text-red-600 font-medium">
+                                            ❌ Failed to upload image
+                                        </div>
+                                    )}
 
                                     {/* Stats - responsive layout */}
                                     <div className="font-subtitle w-full mt-4 sm:mt-5 text-base sm:text-lg md:text-xl flex sm:block lg:flex justify-around text-gray-800 dark:text-gray-200">
@@ -368,3 +378,5 @@ const ProfileLayout = () => {
 };
 
 export default ProfileLayout;
+
+

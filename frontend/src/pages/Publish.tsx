@@ -193,7 +193,7 @@ export const Publish = () => {
       />
 
       {/* Main Content */}
-      <div className="pt-20 bg-gray-400/20 dark:bg-gradient-to-br dark:from-black/90 dark:to-gray-950/80  ">
+      <div className="pt-20 dark:bg-gradient-to-br dark:from-black/90 dark:to-gray-950/80  ">
         <div className="flex w-full justify-center lg:justify-center lg:items-center">
           <div className="mt-15 lg:mt-0 max-w-screen-md w-full flex flex-col items-center text-center lg:text-left">
             {/* Editing indicator */}

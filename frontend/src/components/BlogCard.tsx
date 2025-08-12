@@ -4,7 +4,7 @@ import { CommentsIcon } from "./Icons/CommentsIcon";
 import defaultProfilePicture from '/images/default_profile_picture.jpg';
 import { OutputData } from "@editorjs/editorjs";
 import { useState } from "react";
-import { useDeleteBlog } from "../hooks/hooks";
+import { useDeleteBlog } from "../hooks/blogHooks";
 import { getConsistentGradient } from "../utils/gradientUtils";
 import { calculateReadingTime } from "../utils/generalUtils";
 import { useSelector } from "react-redux";

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useUserFollowings } from "../../hooks/hooks";
+import { useUserFollowings } from "../../hooks/userHooks";
 import { formatDate } from "../../utils/generalUtils";
 import { UserCardFollowing } from "./UserFollowers";
 import UserCardShimmer from "../shimmers/UserCardShimmer";

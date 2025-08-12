@@ -1,4 +1,4 @@
-import { Blog, useIsFollowing } from "../../hooks/hooks"
+import { useIsFollowing } from "../../hooks/userHooks";
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../redux/types"
@@ -12,6 +12,7 @@ import axios from "axios"
 import { BACKEND_URL } from "../../config"
 import { useDispatch } from "react-redux"
 import { setDraftData } from "../../redux/slice/draftSlice"
+import { Blog } from "../../hooks/hooksTypes";
 
 
 const FullBlog = ({ blog }: { blog: Blog }) => {

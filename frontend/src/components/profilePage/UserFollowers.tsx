@@ -1,4 +1,4 @@
-import { useIsFollowing, useUserFollowers } from "../../hooks/hooks";
+import { useIsFollowing, useUserFollowers } from "../../hooks/userHooks";
 import { formatDate, handleFollowUnfollow } from "../../utils/generalUtils";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";

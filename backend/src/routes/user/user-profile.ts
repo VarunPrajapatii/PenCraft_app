@@ -255,3 +255,38 @@ userProfileRouter.post("/changePassword", async (c) => {
       return c.text(errorMessage);
     }
 });
+
+
+userProfileRouter.post("/changeBio", async (c) => {
+    const { loggedInUser, bio } = await c.req.json();
+    const userId = c.get("userId");
+
+    if(userId !== loggedInUser) {
+        return c.json({ success: false, message: "Unauthorized" }, 401);
+    }
+
+    try {
+        const prisma = createPrismaClient(c.env.DATABASE_URL);
+
+        // check if username exists and password matches
+        const done = await prisma.user.update({
+            where: { userId },
+            data: { 
+                bio: bio 
+            }
+        })
+
+        if (done) {
+            return c.json({ success: true, message: "Bio changed successfully" }, 200);
+        } else {
+            return c.json({ success: false, message: "Failed to change bio" }, 500);
+        }
+
+    } catch (error) {
+        c.status(500);
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? "Something went wrong while processing your request" + String(error.message) 
+        : "Something went wrong while processing your request";
+      return c.text(errorMessage);
+    }
+});

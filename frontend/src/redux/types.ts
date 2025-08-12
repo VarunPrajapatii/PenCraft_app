@@ -1,6 +1,6 @@
 import { OutputData } from "@editorjs/editorjs";
-import { UserProfileDetails } from "../hooks/hooks";
 import { DarkModeState } from "./slice/darkModeSlice";
+import { UserProfileDetails } from "../hooks/hooksTypes";
 
 export interface AuthState {
     user: string | null;
