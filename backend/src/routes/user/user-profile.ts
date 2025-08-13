@@ -56,42 +56,10 @@ userProfileRouter.get("/profile/:username", async (c) => {
             profileImageUrl = getPublicS3Url(c, user.profileImageKey)
         }
 
-        // move this logic to separate route with pagination
-        const blogs = await prisma.blog.findMany({
-            where: {authorId: user.userId, published: true },
-            orderBy: {
-                publishedDate: 'desc'
-            },
-            select: {
-                blogId: true,
-                title: true,
-                subtitle: true,
-                bannerImageKey: true,
-                content: true,
-                publishedDate: true,
-                claps: true,
-            }
-        });
-        
-        const blogsWithUrls = blogs.map(blog => {
-            let bannerImageUrl = null;
-            if (blog.bannerImageKey) {
-                bannerImageUrl = getPublicS3Url(c, blog.bannerImageKey);
-            }
-            
-            
-            
-            return {
-                ...blog,
-                bannerImageUrl,
-            };
-        });
-
         return c.json({
             user: {
                 ...user,
                 profileImageUrl,
-                blogs: blogsWithUrls
             }
         })
     } catch (error) {
