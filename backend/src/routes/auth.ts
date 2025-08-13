@@ -117,15 +117,21 @@ authRouter.post('/signin', async (c) => {
       });
     
       if(!user) {
-        c.status(403);
-        return c.json({ message: "Incorrect Credentials" });
+        c.status(404);
+        return c.json({ 
+          message: "User not found", 
+          field: "username" 
+        });
       }
 
       // Compare password hash
       const isPasswordValid = await bcrypt.compare(body.password, user.password);
       if (!isPasswordValid) {
-        c.status(403);
-        return c.json({ message: "Incorrect Credentials" });
+        c.status(401);
+        return c.json({ 
+          message: "Incorrect password", 
+          field: "password" 
+        });
       }
     
       const token = await sign({userId: user.userId}, c.env.JWT_SECRET);

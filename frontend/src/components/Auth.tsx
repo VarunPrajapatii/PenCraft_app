@@ -36,6 +36,7 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
     setNameError("");
     setPasswordError("");
     setLoading(true);
+    
     try {
       // Validate inputs using Zod
       if (type === "signup") {
@@ -58,8 +59,8 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
           for (const issue of result.error.issues) {
             if (issue.path[0] === "username") setUsernameError(issue.message);
             if (issue.path[0] === "password") setPasswordError(issue.message);
-            setLoading(false);
           }
+          setLoading(false);
           return;
         }
       }
@@ -67,10 +68,13 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       if (type === "signup") {
         const usernameCheckResponse = await axios.post(`${BACKEND_URL}/api/v1/auth/check-username`, {
           username: postInputs.username
+        }, {
+          timeout: 10000 // 10 second timeout
         });
         
         if (!usernameCheckResponse.data.available) {
           setUsernameError("Username already taken");
+          setLoading(false);
           return;
         }
       }
@@ -79,7 +83,10 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       const postInputsSignin = {username: postInputs.username, password: postInputs.password};
       const response = await axios.post(`${BACKEND_URL}/api/v1/auth/${type === "signup" ? "signup" : "signin"}`, 
         type === "signup" ? postInputsSignup : postInputsSignin,
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          timeout: 10000 // 10 second timeout
+        }
       );
       
       
@@ -99,11 +106,39 @@ const Auth = ({type}: {type: "signup" | "signin"}) => {
       
     } catch (error) {
       console.error("Auth error:", error);
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
-        setUsernameError("Username already taken");
+      setLoading(false); // Always stop loading on error
+      
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK' || !error.response) {
+          // Network error or backend down
+          setUsernameError(`Error while ${type === "signup" ? "signing up" : "signing in"}, please try later`);
+          setPasswordError(`Error while ${type === "signup" ? "signing up" : "signing in"}, please try later`);
+        } else if (error.response?.status === 409) {
+          // Username already taken
+          setUsernameError("Username already taken");
+        } else if (error.response?.status === 404 && error.response?.data?.field === "username") {
+          // User not found
+          setUsernameError("Username not found");
+        } else if (error.response?.status === 401 && error.response?.data?.field === "password") {
+          // Wrong password
+          setPasswordError("Incorrect password");
+        } else if (error.response?.status === 411) {
+          // Validation error from backend
+          setUsernameError("Please check your inputs");
+          setPasswordError("Please check your inputs");
+        } else if (error.response?.status >= 500) {
+          // Server error
+          setUsernameError(`Server error, please try later`);
+          setPasswordError(`Server error, please try later`);
+        } else {
+          // Other errors
+          setUsernameError(`Error while ${type === "signup" ? "signing up" : "signing in"}`);
+          setPasswordError(`Error while ${type === "signup" ? "signing up" : "signing in"}`);
+        }
       } else {
-        setUsernameError(`${type === "signup" ? "Error while signing up" : "Error while signing in"}`)
-        setPasswordError(`${type === "signup" ? "Error while signing up" : "Error while signing in"}`)
+        // Non-axios error
+        setUsernameError(`Error while ${type === "signup" ? "signing up" : "signing in"}, please try later`);
+        setPasswordError(`Error while ${type === "signup" ? "signing up" : "signing in"}, please try later`);
       }
     }
   }
