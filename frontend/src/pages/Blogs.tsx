@@ -102,8 +102,7 @@ const Blogs = () => {
                                 </div>
                             }
                         >
-                            <BlogCardShimmer size={"large"} /><BlogCardShimmer size={"large"} /><BlogCardShimmer size={"large"} /><BlogCardShimmer size={"large"} /><BlogCardShimmer size={"large"} /><BlogCardShimmer size={"large"} />
-                            {/* {blogs.map(blog =>
+                            {blogs.map(blog =>
                                 <BlogCard
                                     bannerImageUrl={blog.bannerImageUrl}
                                     profileImageUrl={blog.author.profileImageUrl}
@@ -119,7 +118,7 @@ const Blogs = () => {
                                     size={"large"}
                                 />
 
-                            )} */}
+                            )}
                         </InfiniteScroll>
                     </div>
                 </div>
