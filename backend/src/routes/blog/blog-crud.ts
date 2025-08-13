@@ -91,7 +91,7 @@ blogCrudRouter.delete("/", async (c) => {
         if (blog.bannerImageKey && blog.bannerImageKey.trim() !== "") {
             try {
                 await deleteS3Object(c, blog.bannerImageKey);
-                console.log(`Successfully deleted banner image: ${blog.bannerImageKey}`);
+                // console.log(`Successfully deleted banner image: ${blog.bannerImageKey}`);
             } catch (error) {
                 console.error(`Failed to delete banner image ${blog.bannerImageKey}:`, error);
                 // Continue with deletion even if banner image deletion fails
@@ -125,7 +125,7 @@ blogCrudRouter.delete("/", async (c) => {
                 
                 deletionResults.forEach((result, index) => {
                     if (result.status === 'fulfilled') {
-                        console.log(`Successfully deleted content image: ${imageKeys[index]}`);
+                        // console.log(`Successfully deleted content image: ${imageKeys[index]}`);
                     } else {
                         console.error(`Failed to delete content image ${imageKeys[index]}:`, result.reason);
                     }
@@ -143,7 +143,7 @@ blogCrudRouter.delete("/", async (c) => {
             }
         });
 
-        console.log(`Successfully deleted blog: ${blogId}`);
+        // console.log(`Successfully deleted blog: ${blogId}`);
         return c.json({ 
             message: "Blog deleted successfully",
             deletedImages: {

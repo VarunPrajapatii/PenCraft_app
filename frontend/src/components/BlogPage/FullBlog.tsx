@@ -18,6 +18,7 @@ import { Blog } from "../../hooks/hooksTypes";
 const FullBlog = ({ blog }: { blog: Blog }) => {
     const [claps, setClaps] = useState(blog.claps);
     const { loading, isFollowing, updateFollowStatus } = useIsFollowing({ authorId: blog.author.userId || "" });
+    const [followActionLoading, setFollowActionLoading] = useState(false);
     const loggedInUser = useSelector((store: RootState) => store.auth.user);
     const loggedInUserIsAuthor = loggedInUser === blog.author.userId;
     const navigate = useNavigate();
@@ -25,8 +26,7 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
     // for UI conditional rendering
     const isDraft = !blog.publishedDate;
 
-
-
+    
     const incrementClap = async () => {
         try {
             const response = await axios.post(`${BACKEND_URL}/api/v1/blog/${blog.blogId}/clap`, {}, {
@@ -43,11 +43,18 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
     }
 
     const handleFollowUnfollowClick = async () => {
-        await handleFollowUnfollow(
-            blog.author.userId || "",
-            isFollowing,
-            updateFollowStatus
-        );
+        setFollowActionLoading(true);
+        try {
+            await handleFollowUnfollow(
+                blog.author.userId || "",
+                isFollowing,
+                updateFollowStatus
+            );
+        } catch (error) {
+            console.error("Failed to follow/unfollow:", error);
+        } finally {
+            setFollowActionLoading(false);
+        }
     }
 
     const handleClickEdit = async () => {
@@ -175,24 +182,33 @@ const FullBlog = ({ blog }: { blog: Blog }) => {
                                 <div className='font-body block sm:hidden text-xs sm:text-sm text-gray-300'>
                                     <span className="font-semibold">{blog.publishedDate ? formatDate(blog.publishedDate) : ""}</span> - {calculateReadingTime(blog.content)}
                                 </div>
-                                <button
-                                    type="button"
-                                    aria-label="Follow"
-                                    className={`font-subtitle
-                                        ${(loggedInUserIsAuthor || loading) ? 'hidden' : ''}
-                                        rounded-full 
-                                        px-6 py-1 mt-1 
-                                        font-semibold text-black dark:text-white shadow transition-all duration-200
-                                        hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-                                        dark:hover:from-blue-500/30 dark:hover:to-red-500/30
-                                        hover:shadow-lg hover:scale-105 hover:text-red-800 dark:hover:text-red-400
-                                        active:scale-95 active:shadow
-                                        focus:outline-none  ring-offset-1 
-                                        ${isFollowing ? 'bg-white/40 dark:bg-gray-600/40 text-black/80 dark:text-white/80' : 'bg-gray-200 dark:bg-gray-700'}`}
-                                    onClick={handleFollowUnfollowClick}
-                                >
-                                    {isFollowing ? "Unfollow" : "Follow"}
-                                </button>
+                                {!loggedInUserIsAuthor && !loading && (
+                                    <button
+                                        type="button"
+                                        aria-label="Follow"
+                                        disabled={loading || followActionLoading}
+                                        className={`group relative inline-flex items-center cursor-pointer rounded-full
+                                            px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-2 text-sm sm:text-base md:text-lg
+                                            font-subtitle font-semibold shadow transition-all duration-200
+                                            hover:shadow-lg hover:scale-105
+                                            active:scale-95 active:shadow
+                                            focus:outline-none focus:ring-2
+                                            disabled:opacity-50 disabled:cursor-not-allowed justify-center mt-1
+                                            ${isFollowing 
+                                                ? 'bg-red-500/60 text-white hover:bg-red-600/80 hover:bg-gradient-to-r hover:from-red-400/30 hover:to-red-600/30' 
+                                                : 'bg-red-600 text-white hover:bg-red-600 hover:bg-gradient-to-r hover:from-red-400/30 hover:to-red-700/30'
+                                            }`}
+                                        onClick={handleFollowUnfollowClick}
+                                    >
+                                        {(loading || followActionLoading) ? (
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                        ) : (
+                                            <span className="transition-transform duration-200 group-hover:translate-x-1">
+                                                {isFollowing ? "Unfollow" : "Follow"}
+                                            </span>
+                                        )}
+                                    </button>
+                                )}
                             </div>
                             <div className={`${isDraft && "hidden"} pl-15 sm:hidden`}>
                                 <div className='text-white ' onClick={incrementClap}>

@@ -20,7 +20,6 @@ const draftSlice = createSlice({
             state.title = payload.title || "";
             state.subtitle = payload.subtitle || "";
             state.content = payload.content || { time: 0, blocks: [], version: "2.26.0" };
-            console.log("Setting draft data:", payload.content);
             state.bannerImageUrl = payload.bannerImageUrl || "";
             state.isEditingDraft = payload.isEditingDraft || false;
             state.editingBlogId = payload.editingBlogId || null;

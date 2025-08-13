@@ -44,7 +44,6 @@ export const Publish = () => {
     const loadDraftData = async () => {
       if (draftData && draftData.isEditingDraft && draftData.editingBlogId === draftBlogId) {
         setIsLoadingDraft(true);
-        console.log("Draft Data came from store:", draftData);        
         setTitle(draftData.title);
         setSubtitle(draftData.subtitle);
         setBannerImageUrl(draftData.bannerImageUrl);
@@ -301,7 +300,6 @@ export const Publish = () => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   changeInEditor={(data: any) => {
                     setContent(data);
-                    console.log('Editor content:', data)
                   }}
                 />
               </div>

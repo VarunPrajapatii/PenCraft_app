@@ -30,7 +30,6 @@ const renderOrderedList = (items: any[]): JSX.Element => (
 )
 
 const BlogContentRenderer = ({ content } : {content : OutputData}) => {
-  console.log("Content Rendered:", content)
   useEffect(() => {
     const container = document.getElementById('blog-content')
     if (container) {

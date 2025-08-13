@@ -16,12 +16,7 @@ const UserPublished = () => {
   // Remove @ symbol from username if present for comparison
   const cleanUsername = username?.startsWith('@') ? username.slice(1) : username;
   const isOwnProfile = Boolean(cleanUsername && loggedInUser && cleanUsername === loggedInUser.toLowerCase());
-console.log("UserPublished Debug:", {
-    username,
-    loggedInUser,
-    loggedInUserLower: loggedInUser?.toLowerCase(),
-    isOwnProfile
-  });
+
   if(loading) {
     return (
       <div className="flex flex-col max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto">

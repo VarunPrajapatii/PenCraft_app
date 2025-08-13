@@ -57,7 +57,6 @@ export function getEditorTools() {
                         // Store file reference for later batch upload
                         const fileId = crypto.randomUUID();
                         const blobUrl = URL.createObjectURL(file);
-                        console.log("blobUrl:", blobUrl, "fileId:", fileId, "file:", file);
 
                         // Store file in a global map for later upload
                         window.pendingBlogImages = window.pendingBlogImages || new Map();
@@ -66,8 +65,6 @@ export function getEditorTools() {
                             blobUrl,
                             uploaded: false,
                         });
-                        console.log("Pending images:", window.pendingBlogImages);
-                        console.log("Uploaded Image object:", blobUrl, fileId, file);
 
                         return {
                             success: 1,

@@ -28,9 +28,8 @@ const ProfileLayout = () => {
     const { userProfileDetails, loading: userProfileLoading, refetch: refetchUserProfile } = useUserProfileInfo(
         routeUsername ? { username: routeUsername } : { username: "" }
     );
-    console.log("User Profile Details:", userProfileDetails);
     const { loading: followLoading, isFollowing, updateFollowStatus } = useIsFollowing({ authorId: !isOwnProfile && userProfileDetails?.userId ? userProfileDetails.userId : "" });
-
+    const [followActionLoading, setFollowActionLoading] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,11 +38,18 @@ const ProfileLayout = () => {
     const handleFollowUnfollowClick = async () => {
         if (!userProfileDetails?.userId) return;
 
-        await handleFollowUnfollow(
-            userProfileDetails.userId,
-            isFollowing,
-            updateFollowStatus
-        );
+        setFollowActionLoading(true);
+        try {
+            await handleFollowUnfollow(
+                userProfileDetails.userId,
+                isFollowing,
+                updateFollowStatus
+            );
+        } catch (error) {
+            console.error("Failed to follow/unfollow:", error);
+        } finally {
+            setFollowActionLoading(false);
+        }
     };
 
     const handleProfileImageClick = () => {
@@ -282,44 +288,33 @@ const ProfileLayout = () => {
                                         </div>
                                     </div>
 
-                                    {/* Follow button - responsive spacing */}
-                                    <button
-                                        type="button"
-                                        className={`font-subtitle
-                                    ${(isOwnProfile || followLoading) ? 'hidden' : ''}
-                                    rounded-full 
-                                    px-6 py-1 mt-1 
-                                    font-semibold text-black dark:text-white shadow transition-all duration-200
-                                    hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-                                    dark:hover:from-blue-500/30 dark:hover:to-red-500/30
-                                    hover:shadow-lg hover:scale-105 hover:text-red-800 dark:hover:text-red-300
-                                    active:scale-95 active:shadow
-                                    focus:outline-none  ring-offset-1 
-                                    ${isFollowing ? 'bg-white/40 dark:bg-gray-700/60 text-black/80 dark:text-white/90' : 'bg-gray-200 dark:bg-gray-700'}`}
-                                        onClick={async () => {
-                                            await handleFollowUnfollowClick()
-                                            window.location.reload()
-                                        }}
-                                    >
-                                        {isFollowing ? "Unfollow" : "Follow"}
-                                    </button>
-                                    {/* <Link to={`${routeUsername}/editProfile`}>
+                                    {/* follow/unfollow button */}
+                                    {!isOwnProfile && !followLoading &&(
                                         <button
                                             type="button"
-                                            className={`
-                                        ${isOwnProfile ? '' : 'hidden'}
-                                        rounded-full 
-                                        px-6 py-1 mt-1 
-                                        font-semibold text-black shadow transition-all duration-200
-                                        hover:bg-gradient-to-r hover:from-blue-400/30 hover:to-red-400/30
-                                        hover:shadow-lg hover:scale-105 hover:text-red-800
-                                        active:scale-95 active:shadow
-                                        focus:outline-none  ring-offset-1 
-                                        ${isFollowing ? 'bg-white/40 text-black/80 ' : 'bg-gray-200'}`}
+                                            disabled={followActionLoading}
+                                            className={`group relative inline-flex items-center cursor-pointer rounded-full
+                                                px-4 py-2 sm:px-3 sm:py-2 md:px-5 md:py-1.5 mt-5 text-sm sm:text-base md:text-lg
+                                                font-subtitle font-semibold shadow transition-all duration-200
+                                                hover:shadow-lg hover:scale-105
+                                                active:scale-95 active:shadow
+                                                focus:outline-none focus:ring-2
+                                                disabled:opacity-50 disabled:cursor-not-allowed justify-center
+                                                ${isFollowing 
+                                                    ? 'bg-red-500/60 text-white hover:bg-red-600/80 hover:bg-gradient-to-r hover:from-red-400/30 hover:to-red-600/30' 
+                                                    : 'bg-red-600 text-white hover:bg-red-600 hover:bg-gradient-to-r hover:from-red-400/30 hover:to-red-700/30'
+                                                }`}
+                                            onClick={handleFollowUnfollowClick}
                                         >
-                                            Edit Profile
+                                            {followActionLoading ? (
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                            ) : (
+                                                <span className="transition-transform duration-200 group-hover:translate-x-1">
+                                                    {isFollowing ? "Unfollow" : "Follow"}
+                                                </span>
+                                            )}
                                         </button>
-                                    </Link> */}
+                                    )}
                                 </div>
 
                                 {/* Left part (content) - moves to bottom on mobile */}

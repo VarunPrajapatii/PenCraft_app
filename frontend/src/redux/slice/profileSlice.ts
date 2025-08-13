@@ -15,7 +15,6 @@ const userProfileSlice = createSlice({
     initialState,
     reducers: {
         setUserProfile: (state, { payload }) => {
-            // console.log("Payload received in setUserProfile:", payload)
             state.email= payload.email;
             state.name= payload.name;
             state.bio= payload.bio;

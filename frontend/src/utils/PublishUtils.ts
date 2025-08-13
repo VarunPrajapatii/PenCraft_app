@@ -54,7 +54,6 @@ export const uploadBlogImages = async ({
 
     const pendingImages = window.pendingBlogImages || new Map();
     // TODO: Remove logs
-    console.log("Pending images:", pendingImages);
     const imagesToUpload: Array<{
         filename: string;
         contentType: string;
@@ -133,7 +132,6 @@ export const uploadBlogImages = async ({
             return block;
         });
         // TODO: Remove logs
-        console.log("Updated content with removed blobs to s3 keys:", updatedContent);
         return updatedContent;
     } catch (error) {
         console.error("Failed to upload blog images:", error);
@@ -154,7 +152,6 @@ export const convertS3ImagesToBlobs = async (content: OutputData): Promise<Outpu
         // Check if it's an S3 key (not already a blob URL)
         if (!s3Key.startsWith('blob:') && !s3Key.startsWith('http://') && !s3Key.startsWith('https://')) {
           try {
-            console.log('Converting S3 key to blob:', s3Key);
             
             // Fetch the image using your backend endpoint
             const response = await axios.get(
@@ -212,7 +209,6 @@ export const convertS3ImagesToBlobs = async (content: OutputData): Promise<Outpu
   if (imagesToDelete.length > 0) {
     try {
       await deleteS3Images(imagesToDelete);
-      console.log('Deleted original S3 images:', imagesToDelete);
     } catch (error) {
       console.error('Failed to delete some S3 images:', error);
       // Continue anyway - the conversion worked

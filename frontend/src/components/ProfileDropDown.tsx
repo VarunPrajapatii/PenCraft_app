@@ -23,7 +23,6 @@ const ProfileDropdown = () => {
     const navigate = useNavigate();
     const signOut = async () => {
         await axios.get(`${BACKEND_URL}/api/v1/auth/logout`, { withCredentials: true });
-        console.log("User logged out successfully");
         dispatch(logout());
         navigate("/signin");
     }

@@ -219,7 +219,6 @@ authRouter.post('/check-username', async (c) => {
 authRouter.get('/logout', authMiddleware, async (c) => {
     try {
       c.header('Set-Cookie', `token=; ${clearDomainCookie}`);
-      console.log(`token=; ${clearDomainCookie}`);
       return c.json({ success: true });
     } catch (error) {
       c.status(500);

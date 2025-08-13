@@ -9,7 +9,6 @@ type Props = {
 }
 
 const Editor = ({ contentData, changeInEditor }: Props) => {
-    console.log("Editor component rendered with contentData:", contentData);
     const holderRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<EditorJS | null>(null);
 

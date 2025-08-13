@@ -32,8 +32,6 @@ const UserEditProfile = () => {
 
     try {
       const result = await changeUsername(username);
-      console.log("results: " , result);
-      
       if (!result.canChangeUsername && !result.success) {
         setUsernameError(result.message || 'You can only change your username once every 60 days!');
         setUsername('');

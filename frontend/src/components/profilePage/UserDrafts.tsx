@@ -10,19 +10,12 @@ const UserDrafts = () => {
 
   const { username } = useParams();
   const { loading, userDrafts } = useUserDrafts( username ? { username: username } : { username: "" });
-  console.log("User Drafts coming in component: ", userDrafts);
 
   // Check if this is the logged-in user's own profile
   const loggedInUser = useSelector((store: RootState) => store.auth.username);
   // Remove @ symbol from username if present for comparison
   const cleanUsername = username?.startsWith('@') ? username.slice(1) : username;
   const isOwnProfile = Boolean(cleanUsername && loggedInUser && cleanUsername === loggedInUser.toLowerCase());
-  console.log("UserDrafts Debug:", {
-    username,
-    loggedInUser,
-    loggedInUserLower: loggedInUser?.toLowerCase(),
-    isOwnProfile
-  });
   if(loading) {
     return (
       <div className="flex flex-col max-h-[calc(100vh-150px)]  custom-scrollbar overflow-auto">
